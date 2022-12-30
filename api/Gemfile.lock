@@ -147,6 +147,8 @@ GEM
     rake (13.0.6)
     regexp_parser (2.6.1)
     rexml (3.2.5)
+    rss (0.2.9)
+      rexml
     rubocop (1.41.1)
       json (~> 2.3)
       parallel (~> 1.10)
@@ -184,6 +186,7 @@ DEPENDENCIES
   pg
   puma
   rails (= 7.0.4)
+  rss
   rubocop
   rubocop-rails
 
