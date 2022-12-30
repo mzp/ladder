@@ -1,0 +1,9 @@
+require:
+  - rubocop-rails
+AllCops:
+  NewCops: enable
+  Exclude:
+    - 'db/**/*.rb'
+    - 'bin/**/*'
+Style/Documentation:
+  Enabled: false
