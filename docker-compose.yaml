@@ -5,6 +5,30 @@ services:
         dockerfile: Dockerfile.dev
     command: npm run dev
     ports:
-      - 3000:3000
+      - 8080:3000
     volumes:
       - ./frontend:/app
+  api:
+    build:
+        context: api/
+        dockerfile: Dockerfile.dev
+    ports:
+      - 3000:3000
+    command: bundle exec rails s -b 0.0.0.0
+    volumes:
+      - ./api:/app
+      - bundle:/usr/local/bundle
+    links:
+      - db
+  db:
+    image: postgres:14.3
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres-db:/var/lib/postgresql/data
+
+volumes:
+  bundle:
+  postgres-db:
