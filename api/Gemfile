@@ -10,6 +10,7 @@ gem 'bootsnap', require: false
 gem 'pg'
 gem 'puma'
 gem 'rss'
+gem 'rack-cors'
 
 group :development, :test do
   gem 'debug'
