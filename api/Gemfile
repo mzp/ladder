@@ -9,8 +9,8 @@ gem 'rails', '7.0.4'
 gem 'bootsnap', require: false
 gem 'pg'
 gem 'puma'
-gem 'rss'
 gem 'rack-cors'
+gem 'rss'
 
 group :development, :test do
   gem 'debug'

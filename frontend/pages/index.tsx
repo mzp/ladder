@@ -1,23 +1,22 @@
 import Head from 'next/head'
 import { useState, useEffect } from 'react'
 
-
 export default function Home() {
-  const [data, setData] = useState(null)
-  const [isLoading, setLoading] = useState(false)
+    const [data, setData] = useState(null)
+    const [isLoading, setLoading] = useState(false)
 
-  useEffect(() => {
-		  setLoading(true)
-		  fetch('http://localhost:3000/reader/unread')
-		  .then((res) => res.json())
-		  .then((data) => {
-				  setData(data)
-				  setLoading(false)
-				  })
-		  }, [])
+    useEffect(() => {
+        setLoading(true)
+        fetch('/api/reader/unread')
+            .then((res) => res.json())
+            .then((data) => {
+                setData(data)
+                setLoading(false)
+            })
+    }, [])
 
-  if (isLoading) return <p>Loading...</p>
-	  if (!data) return <p>No profile data</p>
+    if (isLoading) return <p>Loading...</p>
+    if (!data) return <p>No profile data</p>
 
     return (
         <>
@@ -35,7 +34,7 @@ export default function Home() {
             </Head>
             <main>
                 <h1 className="text-3xl font-bold underline">Hello world!</h1>
-		<p>{data.items.length}</p>
+                <p>{data.items.length}</p>
             </main>
         </>
     )

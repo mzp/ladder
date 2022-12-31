@@ -1,17 +1,19 @@
 services:
   frontend:
     build:
-        context: frontend/
-        dockerfile: Dockerfile.dev
+      context: frontend/
+      dockerfile: Dockerfile.dev
     command: npm run dev
+    environment:
+      NODE_ENV: development
     ports:
       - 8080:3000
     volumes:
       - ./frontend:/app
   api:
     build:
-        context: api/
-        dockerfile: Dockerfile.dev
+      context: api/
+      dockerfile: Dockerfile.dev
     ports:
       - 3000:3000
     command: bundle exec rails s -b 0.0.0.0
@@ -28,7 +30,6 @@ services:
       POSTGRES_PASSWORD: password
     volumes:
       - postgres-db:/var/lib/postgresql/data
-
 volumes:
   bundle:
   postgres-db:
