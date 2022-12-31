@@ -7,7 +7,7 @@ class RssItem < ApplicationRecord
     logger.info "#{self.class}##{__callee__}: Update #{item.title} - #{item.link}"
     update!(
       title: item.title,
-      published_at: item.date,
+      published_at: item.date || Time.zone.now,
       description: item.description,
       imageurl: item.hatena_imageurl
     )

@@ -2,9 +2,10 @@ import Head from 'next/head'
 import getConfig from 'next/config'
 const { serverRuntimeConfig, publicRuntimeConfig } = getConfig()
 import { useState, useEffect } from 'react'
+import { default as RssItem, RssItemType } from '@/components/rssItem'
 
 export default function Home() {
-    const [data, setData] = useState(null)
+    const [data, setData] = useState<any>(null)
     const [isLoading, setLoading] = useState(false)
 
     useEffect(() => {
@@ -36,30 +37,9 @@ export default function Home() {
             </Head>
             <main className="max-w-3xl mx-10">
                 <div className="space-y-10">
-                    {data.items.map((item) => {
-                        return (
-                            <div>
-                                <h2 className="font-bold">
-                                    <a href={item.url} target="_blank">
-                                        {item.title}
-                                    </a>
-                                </h2>
-				       <div>                             <a href={item.url} target="_blank">
-                                        {item.url}
-                                    </a></div>
-                                    <div>{item.published_at}</div>
-                                <div className="flex space-x-4">
-                                    {item.imageurl ? (
-                                        <img
-                                            src={item.imageurl}
-                                            className="max-w-40 max-h-24"
-                                        />
-                                    ) : null}
-                                    <div>{item.description}</div>
-                                </div>
-                            </div>
-                        )
-                    })}
+                    {data.items.map((item: RssItemType) => (
+                        <RssItem item={item} />
+                    ))}
                 </div>
             </main>
         </>
