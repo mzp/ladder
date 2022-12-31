@@ -8,7 +8,7 @@ class RssItem < ApplicationRecord
     update!(
       title: item.title,
       published_at: item.date,
-      description: item.content_encoded || item.description,
+      description: item.description,
       imageurl: item.hatena_imageurl
     )
   end
