@@ -4,9 +4,11 @@ require 'json'
 
 module RssItemResponse
   include ActionView::Helpers::DateHelper
+  include ActionView::Helpers::TextHelper
+
   def title
     # Hatena bookmark on twitter has duplicated content
-    super.gsub(description, '...')
+    super&.gsub(description, '...')
   end
 
   def imageurl
@@ -23,14 +25,20 @@ module RssItemResponse
     URI(url).host
   end
 
+  def content
+    description.gsub(URI::DEFAULT_PARSER.make_regexp) do |url|
+      %(<a href="#{url}" target="_blank">#{url}</a>)
+    end
+  end
+
   def date
     time_ago_in_words(published_at)
   end
 
   def as_json(options = {})
     super(options.merge(
-      only: %i[url published_at description],
+      only: %i[url published_at hatena_bookmark_count],
       methods: %i[title imageurl date site]
-    ))
+    )).merge(description: content)
   end
 end

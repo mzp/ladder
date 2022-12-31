@@ -9,7 +9,8 @@ class RssItem < ApplicationRecord
       title: item.title,
       published_at: item.date || Time.zone.now,
       description: item.description,
-      imageurl: item.hatena_imageurl
+      imageurl: item.hatena_imageurl,
+      hatena_bookmark_count: item.hatena_bookmarkcount.to_i
     )
   end
 end

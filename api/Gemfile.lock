@@ -138,6 +138,8 @@ GEM
       nokogiri (>= 1.6)
     rails-html-sanitizer (1.4.4)
       loofah (~> 2.19, >= 2.19.1)
+    rails_autolink (1.1.7)
+      rails (> 3.1)
     railties (7.0.4)
       actionpack (= 7.0.4)
       activesupport (= 7.0.4)
@@ -189,6 +191,7 @@ DEPENDENCIES
   puma
   rack-cors
   rails (= 7.0.4)
+  rails_autolink
   rss
   rubocop
   rubocop-rails

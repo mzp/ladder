@@ -11,7 +11,10 @@ module RSS
   module HatenaModel
     extend BaseModel
 
-    ELEMENTS = ["#{HATENA_PREFIX}_imageurl"].freeze
+    ELEMENTS = [
+      "#{HATENA_PREFIX}_imageurl",
+      "#{HATENA_PREFIX}_bookmarkcount"
+    ].freeze
 
     def self.append_features(klass)
       super
