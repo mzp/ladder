@@ -1,4 +1,6 @@
 import Head from 'next/head'
+import getConfig from 'next/config'
+const { serverRuntimeConfig, publicRuntimeConfig } = getConfig()
 import { useState, useEffect } from 'react'
 
 export default function Home() {
@@ -7,7 +9,7 @@ export default function Home() {
 
     useEffect(() => {
         setLoading(true)
-        fetch('/api/reader/unread')
+        fetch(`${publicRuntimeConfig.apiRoot}/reader/unread`)
             .then((res) => res.json())
             .then((data) => {
                 setData(data)
