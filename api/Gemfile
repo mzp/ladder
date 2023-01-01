@@ -14,7 +14,9 @@ gem 'rss'
 gem 'sidekiq'
 
 group :development, :test do
+  gem 'database_cleaner-active_record'
   gem 'debug'
+  gem 'factory_bot_rails'
 end
 
 group :development do

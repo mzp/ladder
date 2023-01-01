@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'uri'
 require 'rss/hatena'
 
@@ -11,11 +12,16 @@ class FetchFeedJob < ApplicationJob
     URI(url).open do |rss|
       feed = RSS::Parser.parse(rss, false)
 
-      record = RssChannel.find_or_create_by(url: feed.channel.link)
-      record.update_from_rss!(feed.channel)
+      # update channel
+      channel = feed.channel
+      record = RssChannel.find_or_create_by(url: channel.link)
+      record.update_from_rss!(channel)
+
+      # update item
       feed.items.each do |item|
-        item_record = record.items.find_or_create_by(url: item.link)
-        item_record.update_from_rss!(item)
+        record.items
+              .find_or_create_by(url: item.link)
+              .update_from_rss!(item)
       end
     end
   end

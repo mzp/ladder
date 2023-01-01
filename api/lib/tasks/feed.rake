@@ -8,4 +8,3 @@ namespace :feed do
     FetchFeedJob.perform_now args[:url]
   end
 end
-

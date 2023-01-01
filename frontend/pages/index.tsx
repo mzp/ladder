@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { default as fetchChannel, RssChannel } from '@/api/channels'
 import ItemSummary from '@/components/itemSummary'
 import ChannelEntry from '@/components/channelEntry'
@@ -13,6 +13,12 @@ type State = {
 export default function Home() {
     const [data, setData] = useState<State | null>(null)
     const [isLoading, setLoading] = useState<boolean>(false)
+    const containerRef = useRef<HTMLDivElement>(null)
+
+      const handleScroll = (event : any) => {
+    console.log('scrollTop: ', event.currentTarget.scrollTop);
+    console.log('offsetHeight: ', event.currentTarget.offsetHeight);
+  };
 
     useEffect(() => {
         setLoading(true)
@@ -51,17 +57,20 @@ export default function Home() {
                                     selected={
                                         data.selectedChannel.id == channel.id
                                     }
-                                    onClick={(channel) =>
+                                    onClick={(channel) => {
                                         setData({
                                             ...data,
                                             selectedChannel: channel,
                                         })
-                                    }
+				        if (containerRef.current) {
+  					  containerRef.current.scrollTo(0,0)
+					}
+                                    }}
                                 />
                             ))}
                         </div>
                     </div>
-                    <div className="m-w-3xl overflow-scroll snap-y snap-mandatory scroll-pt-14">
+                    <div className="m-w-3xl overflow-scroll snap-y snap-mandatory scroll-pt-14" ref={containerRef} onScroll={handleScroll}>
                         <ChannelSummary
                             channel={data.selectedChannel}
                             className="snap-start fixed h-14 py-1 px-4"
