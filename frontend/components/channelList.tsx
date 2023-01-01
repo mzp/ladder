@@ -25,7 +25,6 @@ export default function ItemList({ channels, className, onSelect }: Props) {
 		    ${
                       (selected.id == channel.id) ? 'font-bold text-sky-400 border-sky-400' : ''
                     }`}
-                    channel={channel}
                     onClick={() => {
                         setSelected(channel)
                         if (onSelect) {

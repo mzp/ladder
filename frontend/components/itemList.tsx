@@ -10,9 +10,6 @@ interface Props {
 
 export default function ItemList(props: Props) {
     const [items, setItems] = useState<RssItem[]>(props.items)
-    const handleRead = (item: RssItem) => {
-        console.log(item)
-    }
     useEffect(() => {
         setItems(props.items)
     }, [props.channel])
@@ -24,7 +21,6 @@ export default function ItemList(props: Props) {
                     key={item.id}
                     item={item}
                     className="snap-start px-4"
-                    onRead={handleRead}
                 />
             ))}
         </div>

@@ -1,21 +1,21 @@
 import { RssItem } from '@/api/channels'
-import { useEffect, useRef } from 'react'
+import markAsRead from '@/api/markAsRead'
+import { useEffect, useRef, useState } from 'react'
 interface Props {
     item: RssItem
     className?: string
-    onRead?(item: RssItem): void
 }
 
-export default function ItemSummary({ item, className, onRead }: Props) {
+export default function ItemSummary({ item, className }: Props) {
     const ref = useRef<HTMLDivElement>(null)
-
+    const [readAt, setReadAt] = useState<string>(item.read_at)
     useEffect(() => {
+    if (readAt != null) { return }
         const observer = new IntersectionObserver(
             ([element]) => {
                 if (element.isIntersecting) {
-                    if (onRead !== undefined) {
-                        onRead(item)
-                    }
+		  markAsRead(item)
+		    .then((readAt) => setReadAt(readAt))
                 }
             },
             { threshold: 1 }
@@ -30,7 +30,7 @@ export default function ItemSummary({ item, className, onRead }: Props) {
         return () => {
             observer.unobserve(current)
         }
-    }, [])
+    }, [item.id, readAt])
 
     const Link = (props: any) => {
         return (
@@ -41,7 +41,7 @@ export default function ItemSummary({ item, className, onRead }: Props) {
     }
 
     return (
-        <div className={className} ref={ref}>
+        <div className={`${className} ${item.read_at != null ? 'opacity-30' : ''}`} ref={ref}>
             <h2 className="font-bold">
                 <Link>{item.title}</Link>
             </h2>
@@ -68,6 +68,7 @@ export default function ItemSummary({ item, className, onRead }: Props) {
                         users
                     </div>
                 ) : null}
+		{readAt && <div>✓</div>}
             </Link>
         </div>
     )
