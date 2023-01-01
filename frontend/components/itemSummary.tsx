@@ -1,20 +1,12 @@
-export interface RssItemType {
-    url: string
-    title: string
-    site: string
-    date: string
-    imageurl: string | null
-    description: string
-    hatena_bookmark_count: number
-}
+import { RssItem } from '@/api/channels'
 
 interface Props {
-    item: RssItemType
+    item: RssItem
 }
 
-export default function RssItem(props: Props) {
+export default function ItemSummary(props: Props) {
     const item = props.item
-    const Link = (props) => {
+    const Link = (props: any) => {
         return (
             <a href={item.url} target="_blank" {...props}>
                 {props.children}

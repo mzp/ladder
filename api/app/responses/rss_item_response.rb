@@ -4,7 +4,6 @@ require 'json'
 
 module RssItemResponse
   include ActionView::Helpers::DateHelper
-  include ActionView::Helpers::TextHelper
 
   def title
     # Hatena bookmark on twitter has duplicated content

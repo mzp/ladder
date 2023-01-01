@@ -4,7 +4,7 @@ require 'open-uri'
 require 'rss/hatena'
 
 class RssChannel < ApplicationRecord
-  has_many :rss_item, dependent: :destroy
+  has_many :items, foreign_key: 'rss_channel_id', class_name: 'RssItem'
 
   def update_from_rss!(channel)
     logger.info "#{self.class}##{__callee__}: Update #{channel.title} - #{channel.link}"
@@ -17,11 +17,12 @@ class RssChannel < ApplicationRecord
       logger.info "#{self}.#{__callee__}: Fetch #{url}"
 
       url.open do |rss|
-        feed = RSS::Parser.parse(rss)
+        feed = RSS::Parser.parse(rss, false)
+
         record = RssChannel.find_or_create_by(url: feed.channel.link)
         record.update_from_rss!(feed.channel)
         feed.items.each do |item|
-          item_record = RssItem.find_or_create_by(url: item.link, rss_channel: record)
+          item_record = record.items.find_or_create_by(url: item.link)
           item_record.update_from_rss!(item)
         end
       end

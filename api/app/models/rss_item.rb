@@ -9,8 +9,16 @@ class RssItem < ApplicationRecord
       title: item.title,
       published_at: item.date || Time.zone.now,
       description: item.description,
-      imageurl: item.hatena_imageurl,
-      hatena_bookmark_count: item.hatena_bookmarkcount.to_i
+      imageurl: item.try(:hatena_imageurl) || thumbnail_enclosure(item),
+      hatena_bookmark_count: item.try(:hatena_bookmarkcount).to_i
     )
+  end
+
+  private
+
+  def thumbnail_enclosure(item)
+    if item.enclosure.type =~ %r(image/*)
+      item.enclosure.url
+    end
   end
 end
