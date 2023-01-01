@@ -3,6 +3,7 @@
 - [ ] Unread management
 - [ ] Authentication
 - [ ] RSS crawler(schedule job)
+- [ ] Continuation scroll
 
 ### Basic
 - [ ] Optimize on mobile phone
@@ -23,3 +24,5 @@
 - [ ] Duplicated entry remover
 - [ ] Full text search
 - [ ] Subscribe twitter account
+- [ ] NSFW filter
+- [ ] Image slidershow
