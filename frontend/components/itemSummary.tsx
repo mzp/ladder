@@ -22,7 +22,7 @@ export default function ItemSummary(props: Props) {
             </h2>
             <div className="flex space-x-4 my-2 leading-6">
                 <div
-                    className="text-gray-600"
+                    className="text-gray-600 max-w-3xl flex-auto"
                     dangerouslySetInnerHTML={{ __html: item.description }}
                 />
                 {item.imageurl ? (

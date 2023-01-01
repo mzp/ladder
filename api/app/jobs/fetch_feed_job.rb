@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 require 'uri'
+require 'rss/hatena'
 
 class FetchFeedJob < ApplicationJob
   queue_as :default

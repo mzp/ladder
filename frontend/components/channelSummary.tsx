@@ -2,21 +2,24 @@ import { RssChannel } from '@/api/channels'
 
 interface Props {
     channel: RssChannel
-    selected?: boolean
-    onClick?(channel: RssChannel): void
+    className?: string
 }
 
-export default function ChannelSummary({ channel, selected, onClick }: Props) {
+export default function ChannelSummary({ channel, className }: Props) {
     return (
         <div
-            className={`text-xs p-2 cursor-pointer ${
-                selected ? 'bg-slate-200' : ''
-            }`}
-            onClick={() => {
-                onClick && onClick(channel)
-            }}
+            className={`backdrop-blur-sm w-full bg-slate-200/90 border-b-[1px] border-slate-300 ${className}`}
         >
-            {channel.title}
+            <h2 className="text-lg font-bold">
+                <a href={channel.url} target="_blank">
+                    {channel.title}
+                </a>
+            </h2>
+            <div className="text-sm">
+                <a href={channel.url} target="_blank">
+                    {channel.description}
+                </a>
+            </div>
         </div>
     )
 }

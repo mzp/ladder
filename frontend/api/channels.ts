@@ -15,6 +15,7 @@ export interface RssChannel {
     id: number
     url: string
     title: string
+    description: string
     items: RssItem[]
 }
 

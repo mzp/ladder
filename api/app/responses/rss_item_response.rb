@@ -27,7 +27,7 @@ module RssItemResponse
   def content
     description.gsub(URI::DEFAULT_PARSER.make_regexp) do |url|
       %(<a href="#{url}" target="_blank">#{url}</a>)
-    end
+    end.gsub("\n", "<br />")
   end
 
   def date
