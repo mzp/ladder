@@ -4,5 +4,6 @@ require 'sidekiq/web'
 
 Rails.application.routes.draw do
   resources 'channels', only: [:index]
+  post 'items/:id/markAsRead', to: 'items#mark_as_read'
   mount Sidekiq::Web => '/sidekiq'
 end

@@ -17,6 +17,7 @@ export interface RssChannel {
     title: string
     description: string
     items: RssItem[]
+    read_at: string | null
 }
 
 const { publicRuntimeConfig } = getConfig()

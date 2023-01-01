@@ -1,4 +1,6 @@
 import Head from 'next/head'
+import { RssItem } from '@/api/channels'
+import markAsRead from '@/api/markAsRead'
 import { useState, useEffect, useRef } from 'react'
 import { default as fetchChannel, RssChannel } from '@/api/channels'
 import ItemSummary from '@/components/itemSummary'
@@ -25,8 +27,9 @@ export default function Home() {
         })
     }, [])
 
-    const markAsRead = (item: RssItem) => {
+    const handleRead = (item: RssItem) => {
       console.log(item)
+      markAsRead(item)
     }
     
 
@@ -84,7 +87,7 @@ export default function Home() {
                                     key={item.id}
                                     item={item}
                                     className="snap-start px-4"
-				    onRead={markAsRead}
+				    onRead={handleRead}
                                 />
                             ))}
                         </div>
