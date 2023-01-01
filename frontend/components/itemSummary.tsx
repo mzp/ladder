@@ -2,6 +2,7 @@ import { RssItem } from '@/api/channels'
 
 interface Props {
     item: RssItem
+    className?: string
 }
 
 export default function ItemSummary(props: Props) {
@@ -15,7 +16,7 @@ export default function ItemSummary(props: Props) {
     }
 
     return (
-        <div>
+        <div className={props.className}>
             <h2 className="font-bold">
                 <Link>{item.title}</Link>
             </h2>

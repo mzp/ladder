@@ -36,7 +36,7 @@ module RssItemResponse
 
   def as_json(options = {})
     super(options.merge(
-      only: %i[url published_at hatena_bookmark_count],
+      only: %i[id url published_at hatena_bookmark_count],
       methods: %i[title imageurl date site]
     )).merge(description: content)
   end

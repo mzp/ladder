@@ -36,11 +36,12 @@ export default function Home() {
                 />
             </Head>
             <main>
-                <h1 className="text-xl">Ultraladder</h1>
-                <div className="flex space-x-2">
-                    <div className="w-64 flex-none border-r-[1px] h-screenoverflow-auto">
+                <div className="flex h-screen">
+                    <div className="w-64 flex-none border-r-[1px] overflow-scroll">
+		        <h1 className="text-xl m-2">Ultraladder</h1>
                         {data.channels.map((channel) => (
                             <ChannelSummary
+			        key={channel.id}
                                 channel={channel}
                                 selected={data.selectedChannel.id == channel.id}
                                 onClick={(channel) =>
@@ -52,15 +53,15 @@ export default function Home() {
                             />
                         ))}
                     </div>
-                    <div className="m-w-3xl overflow-scroll">
-                        <h2 className="text-2xl">
+                    <div className="m-w-3xl overflow-scroll snap-y snap-mandatory scroll-pt-16">
+                        <h2 className="text-2xl backdrop-blur-sm w-full bg-slate-200/90 p-1 border-b-[1px] border-slate-200 snap-start fixed h-16">
                             {data.selectedChannel.title}
                         </h2>
-                        <div className="space-y-10 h-full">
+			<div className="space-y-4">
                             {data.selectedChannel.items.map((item) => (
-                                <ItemSummary item={item} />
+                                <ItemSummary key={item.id} item={item} className="snap-start first:pt-16"/>
                             ))}
-                        </div>
+			</div>
                     </div>
                 </div>
             </main>

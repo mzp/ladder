@@ -1,6 +1,7 @@
 import getConfig from 'next/config'
 
 export interface RssItem {
+    id: string
     url: string
     title: string
     site: string
