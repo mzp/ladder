@@ -11,6 +11,7 @@ gem 'pg'
 gem 'puma'
 gem 'rack-cors'
 gem 'rss'
+gem 'sidekiq'
 
 group :development, :test do
   gem 'debug'

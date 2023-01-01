@@ -71,6 +71,7 @@ GEM
       msgpack (~> 1.2)
     builder (3.2.4)
     concurrent-ruby (1.1.10)
+    connection_pool (2.3.0)
     crass (1.0.6)
     date (3.3.3)
     debug (1.7.1)
@@ -138,8 +139,6 @@ GEM
       nokogiri (>= 1.6)
     rails-html-sanitizer (1.4.4)
       loofah (~> 2.19, >= 2.19.1)
-    rails_autolink (1.1.7)
-      rails (> 3.1)
     railties (7.0.4)
       actionpack (= 7.0.4)
       activesupport (= 7.0.4)
@@ -149,6 +148,8 @@ GEM
       zeitwerk (~> 2.5)
     rainbow (3.1.1)
     rake (13.0.6)
+    redis-client (0.11.2)
+      connection_pool
     regexp_parser (2.6.1)
     rexml (3.2.5)
     rss (0.2.9)
@@ -170,6 +171,11 @@ GEM
       rack (>= 1.1)
       rubocop (>= 1.33.0, < 2.0)
     ruby-progressbar (1.11.0)
+    sidekiq (7.0.2)
+      concurrent-ruby (< 2)
+      connection_pool (>= 2.3.0)
+      rack (>= 2.2.4)
+      redis-client (>= 0.11.0)
     thor (1.2.1)
     timeout (0.3.1)
     tzinfo (2.0.5)
@@ -191,10 +197,10 @@ DEPENDENCIES
   puma
   rack-cors
   rails (= 7.0.4)
-  rails_autolink
   rss
   rubocop
   rubocop-rails
+  sidekiq
 
 RUBY VERSION
    ruby 3.2.0p0

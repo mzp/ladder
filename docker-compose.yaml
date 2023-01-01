@@ -22,6 +22,9 @@ services:
       - bundle:/usr/local/bundle
     links:
       - db
+      - redis
+    environment:
+      REDIS_URL: redis://redis:6379
   db:
     image: postgres:14.3
     restart: always
@@ -30,6 +33,27 @@ services:
       POSTGRES_PASSWORD: password
     volumes:
       - postgres-db:/var/lib/postgresql/data
+  job:
+    build:
+      context: api/
+      dockerfile: Dockerfile.dev
+    command: bundle exec sidekiq
+    volumes:
+      - ./api:/app
+      - bundle:/usr/local/bundle
+    depends_on:
+      - db
+      - redis
+    environment:
+      REDIS_URL: redis://redis:6379
+  redis:
+    image: redis
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis:/var/lib/redis/data
 volumes:
   bundle:
   postgres-db:
+  redis:
