@@ -17,8 +17,8 @@ class RssItem < ApplicationRecord
   private
 
   def thumbnail_enclosure(item)
-    if item.enclosure.type =~ %r(image/*)
-      item.enclosure.url
-    end
+    return unless item.try(:enclosure).try(:type) =~ %r{image/*}
+
+    item.enclosure.url
   end
 end

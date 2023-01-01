@@ -19,9 +19,13 @@ Bundler.require(*Rails.groups)
 module Ladder
   class Application < Rails::Application
     config.load_defaults 7.0
-    config.active_job.queue_adapter = :sidekiq
+    config.active_job.queue_name_prefix = Rails.env
     config.autoload_paths << "#{root}/responses"
     config.api_only = true
+
+    # Sidekiq
+    config.active_job.queue_adapter = :sidekiq
+    config.active_job.queue_name_prefix = Rails.env
 
     # For sidekiq monitor
     config.session_store :cookie_store, key: '_interslice_session'

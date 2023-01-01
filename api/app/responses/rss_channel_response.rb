@@ -4,7 +4,7 @@ require 'json'
 
 module RssChannelResponse
   def items
-    super.order(published_at: :desc).each do|item|
+    super.order(published_at: :desc).each do |item|
       item.extend RssItemResponse
     end
   end
@@ -13,6 +13,6 @@ module RssChannelResponse
     super(options.merge(
       only: %i[id title url],
       methods: %i[items]
-    )).merge(items: items)
+    )).merge(items:)
   end
 end
