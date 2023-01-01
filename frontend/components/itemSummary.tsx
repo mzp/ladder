@@ -1,12 +1,37 @@
 import { RssItem } from '@/api/channels'
-
+import { useEffect, useRef } from 'react'
 interface Props {
     item: RssItem
     className?: string
+    onRead?(item: RssItem): void
 }
 
-export default function ItemSummary(props: Props) {
-    const item = props.item
+export default function ItemSummary({ item, className, onRead }: Props) {
+    const ref = useRef<HTMLDivElement>(null)
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([element]) => {
+                if (element.isIntersecting) {
+                    if (onRead !== undefined) {
+                        onRead(item)
+                    }
+                }
+            },
+            { threshold: 0.5 }
+        )
+
+        if (ref.current === null) return
+
+        observer.observe(ref.current)
+
+        const { current } = ref
+
+        return () => {
+            observer.unobserve(current)
+        }
+    }, [])
+
     const Link = (props: any) => {
         return (
             <a href={item.url} target="_blank" {...props}>
@@ -16,7 +41,7 @@ export default function ItemSummary(props: Props) {
     }
 
     return (
-        <div className={props.className}>
+        <div className={className} ref={ref}>
             <h2 className="font-bold">
                 <Link>{item.title}</Link>
             </h2>
@@ -40,7 +65,7 @@ export default function ItemSummary(props: Props) {
                 {item.hatena_bookmark_count > 0 ? (
                     <div>
                         {item.hatena_bookmark_count}
-                        <span className="text-xs">users</span>
+                        users
                     </div>
                 ) : null}
             </Link>

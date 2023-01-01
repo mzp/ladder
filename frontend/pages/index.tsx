@@ -15,11 +15,6 @@ export default function Home() {
     const [isLoading, setLoading] = useState<boolean>(false)
     const containerRef = useRef<HTMLDivElement>(null)
 
-      const handleScroll = (event : any) => {
-    console.log('scrollTop: ', event.currentTarget.scrollTop);
-    console.log('offsetHeight: ', event.currentTarget.offsetHeight);
-  };
-
     useEffect(() => {
         setLoading(true)
         fetchChannel().then((channels) => {
@@ -29,6 +24,11 @@ export default function Home() {
             setLoading(false)
         })
     }, [])
+
+    const markAsRead = (item: RssItem) => {
+      console.log(item)
+    }
+    
 
     if (isLoading) return <p>Loading...</p>
     if (!data) return <p>No data</p>
@@ -62,15 +62,18 @@ export default function Home() {
                                             ...data,
                                             selectedChannel: channel,
                                         })
-				        if (containerRef.current) {
-  					  containerRef.current.scrollTo(0,0)
-					}
+                                        if (containerRef.current) {
+                                            containerRef.current.scrollTo(0, 0)
+                                        }
                                     }}
                                 />
                             ))}
                         </div>
                     </div>
-                    <div className="m-w-3xl overflow-scroll snap-y snap-mandatory scroll-pt-14" ref={containerRef} onScroll={handleScroll}>
+                    <div
+                        className="m-w-3xl overflow-scroll snap-y snap-mandatory scroll-pt-14"
+                        ref={containerRef}
+                    >
                         <ChannelSummary
                             channel={data.selectedChannel}
                             className="snap-start fixed h-14 py-1 px-4"
@@ -81,6 +84,7 @@ export default function Home() {
                                     key={item.id}
                                     item={item}
                                     className="snap-start px-4"
+				    onRead={markAsRead}
                                 />
                             ))}
                         </div>
