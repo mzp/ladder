@@ -18,7 +18,7 @@ export default function ItemSummary({ item, className, onRead }: Props) {
                     }
                 }
             },
-            { threshold: 0.5 }
+            { threshold: 1 }
         )
 
         if (ref.current === null) return
