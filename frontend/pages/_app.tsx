@@ -1,30 +1,21 @@
 import '../styles/globals.css'
 import type { AppProps } from 'next/app'
 
-import { useContext, useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { RssChannel, RssItem } from '@/api/types'
 import { default as APIContext, BackendAPI } from '@/api/context'
 
 function Provider(props: { children: any }) {
-    const [channels, setChannels] = useState<RssChannel[]>([])
-    const [selected, setSelected] = useState<RssChannel | null>(null)
     const [isLoading, setLoading] = useState<boolean>(false)
     const [markAsRead, setMarkAsRead] = useState<{
         item: RssItem
         resolver: any
     } | null>()
     const [canMarkAsRead, setCanMarkAsRead] = useState<boolean>(false)
-    const [channelsAPI, setChannelsAPI] = useState<{
-        id: string
-        resolver: any
+    const [apiCall, setAPICall] = useState<{
+	    api: () => any,
+	    resolver: any
     }>()
-
-    const [channelAPI, setChannelAPI] = useState<{
-        id: string
-        upto: string
-        resolver: any
-    } | null>()
-    const ref = useRef<HTMLDivElement>(null)
 
     const ContextAPI = {
         markAsRead(item: RssItem) {
@@ -34,14 +25,19 @@ function Provider(props: { children: any }) {
         },
         channels(id: string) {
             return new Promise<RssChannel[]>((resolver) => {
-                setChannelsAPI({ id, resolver })
+                setAPICall({ resolver, api: () => BackendAPI.channels(id) })
             })
         },
         channel(id: string, upto: string) {
-            return new Promise<RssChannel>((resolver) => {
-                setChannelAPI({ id, upto, resolver })
+            return new Promise<RssChannel[]>((resolver) => {
+                setAPICall({ resolver, api: () => BackendAPI.channel(id, upto) })
             })
         },
+	updateChannel(id: string, option: { category_id: string }) {
+            return new Promise<void>((resolver) => {
+                setAPICall({ resolver, api: () => BackendAPI.updateChannel(id, option) })
+            })
+	},
         canMarkAsRead,
         setCanMarkAsRead,
         isLoading,
@@ -61,27 +57,18 @@ function Provider(props: { children: any }) {
             .then(() => setLoading(false))
     }, [markAsRead, canMarkAsRead])
 
-    useEffect(() => {
-        if (!channelAPI) {
-            return
-        }
-        const { id, upto, resolver } = channelAPI
-        setLoading(true)
-        BackendAPI.channel(id, upto)
-            .then(resolver)
-            .then(() => setLoading(false))
-    }, [channelAPI])
-
-    useEffect(() => {
-        if (!channelsAPI) {
-            return
-        }
-        const { id, resolver } = channelsAPI
-        setLoading(true)
-        BackendAPI.channels(id)
-            .then(resolver)
-            .then(() => setLoading(false))
-    }, [channelsAPI])
+    useEffect(()=>{
+       if (!apiCall) {
+         return
+       }
+       const { resolver, api } = apiCall
+       setLoading(true)
+       api()
+         .then(resolver)
+	 .then(() => { 
+	 console.log('done')
+	 setLoading(false) })
+    }, [apiCall])
 
     return (
         <APIContext.Provider value={ContextAPI}>

@@ -26,13 +26,9 @@ export default function Folder() {
                 <div className="flex h-screen">
                     <div className="w-64 flex-none border-r-[1px] overflow-scroll snap-y scroll-pt-8">
                         <Toolbar className="w-64 h-8 fixed border-r-[1px]" />
+                        <div
+                          className="mt-8 border-l-4 p-2 cursor-pointer font-bold text-sky-400 border-sky-400">Feeds</div>
                     </div>
-                    <datalist id="category">
-                        <option value="Chocolate" />
-                        <option value="Coconut" />
-                        <option value="Mint" />
-                    </datalist>
-
                     <div className="m-w-3xl overflow-scroll snap-y snap-mandatory scroll-pt-14 p-4">
                         <table className="my-10">
                             <thead>
@@ -46,12 +42,18 @@ export default function Folder() {
                                 {channels.map((channel) => (
                                     <tr key={channel.id}>
                                         <td className="py-2">
-                                            <input
-                                                list="category"
-                                                placeholder="no category"
-						onChange={(e) => { console.log(e.target.value)} }
-                                                className="p-2 ring-1 ring-slate-900/10 text-slate-500 rounded-lg shadow-sm w-32"
-                                            />
+                                            <select
+						onChange={(e) => { 
+						    // TODO: debounce
+						    console.log(e)
+						    api.updateChannel(channel.id, { category_id: e.target.value })
+						}}
+                                                className="rounded-lg shadow-sm w-32"
+                                            >
+					      <option value="0">no category</option>
+					      <option value="1">Mint</option>
+					      <option value="2">Chocolate</option>
+					    </select>
                                         </td>
                                         <td className="px-4 py-2">
                                             {channel.title}

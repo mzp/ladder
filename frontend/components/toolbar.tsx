@@ -12,7 +12,7 @@ export default function Toolbar({ className }: { className?: string }) {
                 <h1 className="pr-2 flex-none">Ultraladder</h1>
                 <div className="flex-auto">{api.isLoading && <Spin />}</div>
                 <div className="text-slate-400">
-                    <Link href="/folder">
+                    <Link href="/settings/feeds">
                         <Cog />
                     </Link>
                 </div>

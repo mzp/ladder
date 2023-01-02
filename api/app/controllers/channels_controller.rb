@@ -21,4 +21,9 @@ class ChannelsController < ApplicationController
     channel.upto = params[:upto] if params[:upto].present?
     render json: channel
   end
+
+  def update
+    p params[:category]
+    render json: {'status':'ok'}
+  end
 end
