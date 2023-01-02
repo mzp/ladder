@@ -3,6 +3,26 @@
 require 'test_helper'
 
 class ItemsControllerTest < ActionDispatch::IntegrationTest
+  test 'index' do
+    FactoryBot.create_list(:rss_item, 5, rss_channel: FactoryBot.create(:rss_channel))
+    FactoryBot.create_list(:rss_item, 6, rss_channel: FactoryBot.create(:rss_channel))
+
+    get items_url
+    assert_response :success
+
+    channels = response.parsed_body['channels']
+    assert_equal channels.count, 2
+
+    first_channel = channels[0]
+    assert_equal 5, first_channel['items'].count
+    assert_equal 5, first_channel['unreadCount']
+
+    second_channel = channels[1]
+    assert_equal 0, second_channel['items'].count
+    assert_equal 6, second_channel['unreadCount']
+  end
+
+
   test 'mark as read' do
     channel1 = FactoryBot.create(:rss_channel)
     channel2 = FactoryBot.create(:rss_channel)

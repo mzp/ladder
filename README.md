@@ -13,6 +13,7 @@
 - [ ] Site folder(group)
 - [ ] Favicon 
 - [ ] Read later
+- [ ] unread count
 
 ### Infrastracture
 - [ ] Deploy on AWS
@@ -21,7 +22,7 @@
 ### Advance
 - [ ] Paywall marker
 - [ ] Default OGP image remover
-- [ ] Duplicated entry remover
+- [x] Duplicated entry remover
 - [ ] Full text search
 - [ ] Subscribe twitter account
 - [ ] NSFW filter

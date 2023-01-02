@@ -17,7 +17,7 @@ export default function Home() {
 
     const api = useContext(APIContext)
     useEffect(() => {
-        api.channels(fetchInitalChannel()).then(({ channels }) => {
+        api.items(fetchInitalChannel()).then(({ channels }) => {
             if (channels.length > 0) {
                 setChannels(channels)
             }
@@ -42,7 +42,6 @@ export default function Home() {
                                 className="mt-8"
                                 channels={channels}
                                 onSelect={(channel) => {
-                                    console.log(channel)
                                     setSelected(channel)
                                     storeInitialChannel(channel.id)
                                     if (ref.current) {

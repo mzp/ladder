@@ -3,14 +3,10 @@
 class ChannelsController < ApplicationController
   def index
     channels = RssChannel.all.includes(:items).order(:id)
-    channels.each.with_index do |channel, index|
+    channels.each do |channel|
       channel.extend RssChannelResponse
-      if channel.id == params[:initial].to_i || (params[:initial].blank? && index.zero?)
-        channel.extend RssChannelResponse::WithLatestItem 
-      end
     end
-    response = channels.as_json
-    render json: { channels: response, categories: Category.all }
+    render json: { channels: channels, categories: Category.all }
   end
 
   def show

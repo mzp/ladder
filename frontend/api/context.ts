@@ -4,7 +4,8 @@ import getConfig from 'next/config'
 
 interface API {
     markAsRead(item: RssItem): Promise<string | null>
-    channels(
+    channels(): Promise<{ channels: RssChannel[]; categories: Category[] }>
+    items(
         id?: string
     ): Promise<{ channels: RssChannel[]; categories: Category[] }>
     channel(id: string, upto?: string): Promise<RssChannel>
@@ -29,12 +30,19 @@ export const BackendAPI: API = {
         )
         return response.then((res) => res.json())
     },
-    channels(initialSelectedID?: string): Promise<RssChannel[]> {
+    channels() {
         const response: Promise<any> = fetch(
-            `${publicRuntimeConfig.apiRoot}/channels?initial=${initialSelectedID}`
+            `${publicRuntimeConfig.apiRoot}/channels`
         )
         return response.then((res) => res.json())
     },
+    items(initialSelectedID?: string) {
+        const response: Promise<any> = fetch(
+            `${publicRuntimeConfig.apiRoot}/items?initial=${initialSelectedID}`
+        )
+        return response.then((res) => res.json())
+    },
+
     channel(id: string, upto: string): Promise<RssChannel> {
         const response: Promise<any> = fetch(
             `${publicRuntimeConfig.apiRoot}/channels/${id}?upto=${

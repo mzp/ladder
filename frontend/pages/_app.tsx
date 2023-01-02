@@ -24,9 +24,14 @@ function Provider(props: { children: any }) {
                 setMarkAsRead({ item, resolver })
             })
         },
-        channels(id: string) {
+        channels() {
             return new Promise<RssChannel[]>((resolver) => {
-                setAPICall({ resolver, api: () => BackendAPI.channels(id) })
+                setAPICall({ resolver, api: () => BackendAPI.channels() })
+            })
+        },
+        items(id: string) {
+            return new Promise<RssChannel[]>((resolver) => {
+                setAPICall({ resolver, api: () => BackendAPI.items(id) })
             })
         },
         channel(id: string, upto: string) {

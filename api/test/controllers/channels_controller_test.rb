@@ -12,19 +12,16 @@ class ChannelsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should get index' do
+    FactoryBot.create_list(:category, 3)
+
     get channels_url
     assert_response :success
 
     channels = response.parsed_body['channels']
     assert_equal channels.count, 5
 
-    first_channel = channels[0]
-    assert_equal 5, first_channel['items'].count
-    assert_equal 5, first_channel['unreadCount']
-
-    second_channel = channels[1]
-    assert_equal 0, second_channel['items'].count
-    assert_equal 6, second_channel['unreadCount']
+    categories = response.parsed_body['categories']
+    assert_equal categories.count, 3
   end
 
   test 'should get show' do

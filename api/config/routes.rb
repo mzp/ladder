@@ -6,6 +6,8 @@ Rails.application.routes.draw do
   resources 'channels', only: %i[index show update]
   resources 'categories', only: %i[index create update destroy]
 
-  post 'items/:id/markAsRead', to: 'items#mark_as_read', as: :item_mark_as_read
+  resources 'items', only: %i[index] do
+    post 'markAsRead', to: 'items#mark_as_read', as: :mark_as_read
+  end
   mount Sidekiq::Web => '/sidekiq'
 end
