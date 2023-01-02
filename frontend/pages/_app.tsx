@@ -5,7 +5,7 @@ import { useContext, useState, useEffect, useRef } from 'react'
 import { RssChannel, RssItem } from '@/api/types'
 import { default as APIContext, BackendAPI } from '@/api/context'
 
-function Provider(props : { children: any }) {
+function Provider(props: { children: any }) {
     const [channels, setChannels] = useState<RssChannel[]>([])
     const [selected, setSelected] = useState<RssChannel | null>(null)
     const [isLoading, setLoading] = useState<boolean>(false)

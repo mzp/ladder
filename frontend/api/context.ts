@@ -18,7 +18,7 @@ export const BackendAPI: API = {
     channel,
     isLoading: false,
     setCanMarkAsRead(value: boolean) {},
-    canMarkAsRead: false
+    canMarkAsRead: false,
 }
 
 const context = createContext<API>(BackendAPI)

@@ -4,8 +4,7 @@ import Cog from '@/components/cog'
 import { useContext, useState, useEffect } from 'react'
 import APIContext from '@/api/context'
 
-
-export default function Toolbar({ className }: { className?: string}) {
+export default function Toolbar({ className }: { className?: string }) {
     const api = useContext(APIContext)
     return (
         <div className={`text-xl  align-middle bg-white px-2 ${className}`}>
