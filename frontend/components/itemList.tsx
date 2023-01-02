@@ -43,7 +43,7 @@ export default function ItemList(props: Props) {
                     onRead={
                         index == Math.max(items.length - 3, 0)
                             ? () => {
-			          // prefetch
+                                  // prefetch
                                   handleLoadMore(items[items.length - 1])
                               }
                             : undefined

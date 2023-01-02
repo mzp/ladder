@@ -4,7 +4,7 @@ import { RssChannel, RssItem } from '@/api/types'
 import { default as APIContext, BackendAPI } from '@/api/context'
 import fetchChannels from '@/api/channels'
 import ItemList from '@/components/itemList'
-import Spin from '@/components/spin'
+import Toolbar from '@/components/toolbar'
 import ChannelList from '@/components/channelList'
 import ChannelSummary from '@/components/channelSummary'
 import useLocalStorage from '@/components/hook/useLocalStorage'
@@ -23,6 +23,8 @@ export default function Home() {
         resolver: any
     } | null>()
     const [canMarkAsRead, setCanMarkAsRead] = useState<boolean>(false)
+    const [channelsAPI, setChannelsAPI] = useState<{ id: string, resolver: any}>()
+
     const [channelAPI, setChannelAPI] = useState<{
         id: string
         upto: string
@@ -39,6 +41,11 @@ export default function Home() {
                 setMarkAsRead({ item, resolver })
             })
         },
+	channels(id: string) {
+	    return new Promise<RssChannel[]>((resolver) => {
+	        setChannelsAPI({ id, resolver })
+	    })
+	},
         channel(id: string, upto: string) {
             return new Promise<RssChannel>((resolver) => {
                 setChannelAPI({ id, upto, resolver })
@@ -72,12 +79,21 @@ export default function Home() {
     }, [channelAPI])
 
     useEffect(() => {
+        if (!channelsAPI) {
+            return
+        }
+        const { id, resolver } = channelsAPI
         setLoading(true)
-        fetchChannels(fetchInitalChannel()).then((channels) => {
-            if (channels.length > 0) {
+        BackendAPI.channels(id)
+            .then(resolver)
+            .then(() => setLoading(false))
+    }, [channelsAPI])
+
+    useEffect(() => {
+        ContextAPI.channels(fetchInitalChannel()).then((channels) => { 
+	    if (channels.length > 0) {
                 setChannels(channels)
             }
-            setLoading(false)
         })
     }, [])
 
@@ -93,16 +109,11 @@ export default function Home() {
             <main>
                 <APIContext.Provider value={ContextAPI}>
                     <div className="flex h-screen">
-                        <div className="w-64 flex-none border-r-[1px] overflow-scroll scroll-pt-14 snap-y scroll-pt-8">
-                            <div className="text-xl fixed h-8 align-middle bg-white w-full px-2">
-                                <div className="flex items-center">
-                                    <h1 className="pr-2">Ultraladder</h1>
-                                    {isLoading && <Spin />}
-                                </div>
-                            </div>
+                        <div className="w-64 flex-none border-r-[1px] overflow-scroll snap-y scroll-pt-16">
+			    <Toolbar isLoading={isLoading} />
                             {channels.length && (
                                 <ChannelList
-                                    className="mt-8"
+                                    className="mt-16"
                                     channels={channels}
                                     onSelect={(channel) => {
                                         console.log(channel)
