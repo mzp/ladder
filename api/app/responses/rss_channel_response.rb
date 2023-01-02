@@ -21,8 +21,29 @@ module RssChannelResponse
   end
 
   module WithLatestItem
+    attr_accessor :upto
+
     def items_for_response
-      items.latest.limit(10).each do |item|
+      if upto
+        published_at = RssItem.find(upto).published_at
+        offset = items
+                 .where('? <= published_at', published_at)
+                 .where('id <= ?', upto)
+                 .where(read_at: nil)
+                 .count
+        if offset == items.unread.count
+          offset += items
+                    .where('? <= published_at', published_at)
+                    .where('id <= ?', upto)
+                    .where.not(read_at: nil)
+                    .count
+        end
+        result = items.latest.offset(offset)
+      else
+        result = items.latest
+      end
+
+      result.limit(10).each do |item|
         item.extend RssItemResponse
       end
     end

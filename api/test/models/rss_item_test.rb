@@ -5,11 +5,13 @@ require 'test_helper'
 class RssItemTest < ActiveSupport::TestCase
   test 'latest' do
     channel = FactoryBot.create(:rss_channel)
-    read_item = FactoryBot.create(:rss_item, rss_channel: channel, read_at: Time.current, published_at: Time.current)
+    time = Time.current
+    read_item1 = FactoryBot.create(:rss_item, rss_channel: channel, read_at: Time.current, published_at: time)
+    read_item2 = FactoryBot.create(:rss_item, rss_channel: channel, read_at: Time.current, published_at: time)
     unread_item1 = FactoryBot.create(:rss_item, rss_channel: channel, read_at: nil, published_at: 1.day.ago)
     unread_item2 = FactoryBot.create(:rss_item, rss_channel: channel, read_at: nil, published_at: 2.days.ago)
 
-    assert_equal [unread_item1, unread_item2, read_item], channel.items.latest.to_a
+    assert_equal [unread_item1, unread_item2, read_item1, read_item2], channel.items.latest.to_a
   end
 
   test 'unread' do

@@ -4,22 +4,28 @@ import APIContext from '@/api/context'
 interface Props {
     item: RssItem
     className?: string
+    onRead: ((item: RssItem) => void) | undefined
 }
 
-export default function ItemSummary({ item, className }: Props) {
+export default function ItemSummary({ item, className, onRead }: Props) {
     const ref = useRef<HTMLDivElement>(null)
     const [readAt, setReadAt] = useState<string | null>(item.readAt)
     const api = useContext(APIContext)
 
     useEffect(() => {
-        if (readAt != null) {
+        if (readAt != null && onRead == null) {
             return
         }
         const observer = new IntersectionObserver(
             ([element]) => {
-                if (element.isIntersecting) {
-                    api.markAsRead(item).then((readAt) => setReadAt(readAt))
-                }
+	        if (element.isIntersecting) {
+                    if (readAt == null) {
+           		api.markAsRead(item).then((readAt) => setReadAt(readAt))
+                    }
+		    if (onRead) {
+		        onRead(item)
+		    }
+		}
             },
             { threshold: 1 }
         )

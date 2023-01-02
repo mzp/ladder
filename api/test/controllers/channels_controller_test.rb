@@ -34,4 +34,41 @@ class ChannelsControllerTest < ActionDispatch::IntegrationTest
     channel = response.parsed_body
     assert_equal 5, channel['items'].count
   end
+
+  test 'should get show with upto' do
+    channel = FactoryBot.create(:rss_channel)
+    read_item = FactoryBot.create(:rss_item, published_at: 1.day.ago, rss_channel: channel, read_at: Time.current)
+    FactoryBot.create(:rss_item, published_at: 1.day.ago, rss_channel: channel)
+    FactoryBot.create(:rss_item, published_at: 2.days.ago, rss_channel: channel)
+    time = 3.days.ago
+    FactoryBot.create(:rss_item, published_at: time, rss_channel: channel)
+    item = FactoryBot.create(:rss_item, published_at: time, rss_channel: channel)
+    older_item1 = FactoryBot.create(:rss_item, published_at: time, rss_channel: channel)
+    older_item2 = FactoryBot.create(:rss_item, published_at: 5.days.ago, rss_channel: channel)
+
+    get channel_url(channel.id), params: { upto: item.id }
+
+    assert_response :success
+    channel = response.parsed_body
+    assert_equal 3, channel['items'].count
+    assert_equal older_item1.id, channel['items'][0]['id']
+    assert_equal older_item2.id, channel['items'][1]['id']
+    assert_equal read_item.id, channel['items'][2]['id']
+  end
+
+  test 'should get show with read' do
+    channel = FactoryBot.create(:rss_channel)
+    FactoryBot.create(:rss_item, published_at: 1.day.ago, rss_channel: channel, read_at: Time.current)
+    item = FactoryBot.create(:rss_item, published_at: 2.days.ago, rss_channel: channel, read_at: Time.current)
+    older_item1 = FactoryBot.create(:rss_item, published_at: 3.days.ago, rss_channel: channel, read_at: Time.current)
+    older_item2 = FactoryBot.create(:rss_item, published_at: 4.days.ago, rss_channel: channel, read_at: Time.current)
+
+    get channel_url(channel.id), params: { upto: item.id }
+
+    assert_response :success
+    channel = response.parsed_body
+    assert_equal 2, channel['items'].count
+    assert_equal older_item1.id, channel['items'][0]['id']
+    assert_equal older_item2.id, channel['items'][1]['id']
+  end
 end

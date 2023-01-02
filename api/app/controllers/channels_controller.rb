@@ -15,6 +15,8 @@ class ChannelsController < ApplicationController
     channel = RssChannel.find(params[:id])
     channel.extend RssChannelResponse
     channel.extend RssChannelResponse::WithLatestItem
+
+    channel.upto = params[:upto]
     render json: channel
   end
 end

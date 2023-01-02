@@ -10,21 +10,29 @@ interface Props {
 
 export default function ItemList(props: Props) {
     const [items, setItems] = useState<RssItem[]>(props.items)
+
+    function handleLoadMore(lastItem: RssItem | null) {
+       const oldestID = lastItem ? lastItem.id : null
+       console.log(['request', props.channel, oldestID])
+    }
+
     useEffect(() => {
         setItems(props.items)
 
 	if (props.items.length == 0 && props.channel.unreadCount != 0) {
-	  console.log('request')
+	    console.log('initial load')
+	    handleLoadMore(null)
 	}
     }, [props.channel])
 
     return (
         <div className={`space-y-4 ${props.className}`}>
-            {items.map((item) => (
+            {items.map((item, index) => (
                 <ItemSummary
                     key={item.id}
                     item={item}
                     className="snap-start px-4"
+		    onRead={(index == items.length - 1) ? handleLoadMore : undefined}
                 />
             ))}
         </div>
