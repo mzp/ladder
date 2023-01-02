@@ -1,6 +1,6 @@
-import { RssItem } from '@/api/channels'
-import markAsRead from '@/api/markAsRead'
-import { useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
+import { RssItem } from '@/api/types'
+import APIContext from '@/api/context'
 interface Props {
     item: RssItem
     className?: string
@@ -8,14 +8,17 @@ interface Props {
 
 export default function ItemSummary({ item, className }: Props) {
     const ref = useRef<HTMLDivElement>(null)
-    const [readAt, setReadAt] = useState<string>(item.read_at)
+    const [readAt, setReadAt] = useState<string | null>(item.readAt)
+    const api = useContext(APIContext)
+
     useEffect(() => {
-    if (readAt != null) { return }
+        if (readAt != null) {
+            return
+        }
         const observer = new IntersectionObserver(
             ([element]) => {
                 if (element.isIntersecting) {
-		  markAsRead(item)
-		    .then((readAt) => setReadAt(readAt))
+                    api.markAsRead(item).then((readAt) => setReadAt(readAt))
                 }
             },
             { threshold: 1 }
@@ -41,7 +44,10 @@ export default function ItemSummary({ item, className }: Props) {
     }
 
     return (
-        <div className={`${className} ${item.read_at != null ? 'opacity-30' : ''}`} ref={ref}>
+        <div
+            className={`${className} ${item.readAt && 'opacity-30'}`}
+            ref={ref}
+        >
             <h2 className="font-bold">
                 <Link>{item.title}</Link>
             </h2>
@@ -62,13 +68,13 @@ export default function ItemSummary({ item, className }: Props) {
             <Link className="border-t-[1px] text-xs text-gray-600 flex space-x-4 font-light">
                 <div>{item.date}</div>
                 <div>{item.site}</div>
-                {item.hatena_bookmark_count > 0 ? (
+                {item.hatenaBookmarkCount > 0 && (
                     <div>
-                        {item.hatena_bookmark_count}
+                        {item.hatenaBookmarkCount}
                         users
                     </div>
-                ) : null}
-		{readAt && <div>✓</div>}
+                )}
+                {readAt && <div>✓</div>}
             </Link>
         </div>
     )

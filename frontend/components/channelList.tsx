@@ -23,15 +23,19 @@ export default function ItemList({ channels, className, onSelect }: Props) {
                     key={channel.id}
                     className={`snap-start border-l-4 text-xs p-2 cursor-pointer truncate whitespace-nowrap
 		    ${
-                      (selected.id == channel.id) ? 'font-bold text-sky-400 border-sky-400' : ''
-                    }`}
+                selected.id == channel.id
+                    ? 'font-bold text-sky-400 border-sky-400'
+                    : ''
+            }`}
                     onClick={() => {
                         setSelected(channel)
                         if (onSelect) {
                             onSelect(channel)
                         }
                     }}
-                >{channel.title}</div>
+                >
+                    {channel.title}
+                </div>
             ))}
         </div>
     )

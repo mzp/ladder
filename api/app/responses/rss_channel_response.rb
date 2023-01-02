@@ -3,16 +3,28 @@
 require 'json'
 
 module RssChannelResponse
-  def items
-    super.order(published_at: :desc).each do |item|
-      item.extend RssItemResponse
-    end
+  def unread_count
+    items.unread.count
+  end
+
+  def items_for_response
+    []
   end
 
   def as_json(options = {})
     super(options.merge(
       only: %i[id title url description],
-      methods: %i[items]
-    )).merge(items:)
+    )).merge(
+      unreadCount: unread_count, 
+      items: items_for_response
+    )
+  end
+
+  module WithLatestItem
+    def items_for_response
+      items.latest.each do|item|
+        item.extend RssItemResponse
+      end
+    end
   end
 end

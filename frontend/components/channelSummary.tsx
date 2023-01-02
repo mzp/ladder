@@ -1,4 +1,4 @@
-import { RssChannel } from '@/api/channels'
+import { RssChannel } from '@/api/types'
 
 interface Props {
     channel: RssChannel

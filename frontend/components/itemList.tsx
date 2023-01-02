@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { RssChannel, RssItem } from '@/api/channels'
+import { RssChannel, RssItem } from '@/api/types'
 import ItemSummary from '@/components/itemSummary'
 
 interface Props {

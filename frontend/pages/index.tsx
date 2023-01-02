@@ -1,9 +1,9 @@
-import Head from 'next/head'
-import { RssItem } from '@/api/channels'
-import markAsRead from '@/api/markAsRead'
 import { useState, useEffect, useRef } from 'react'
-import { default as fetchChannel, RssChannel } from '@/api/channels'
+import Head from 'next/head'
+import { RssChannel, RssItem } from '@/api/types'
+import { default as APIContext, StandardAPI } from '@/api/context'
 import ItemList from '@/components/itemList'
+import Spin from '@/components/spin'
 import ChannelList from '@/components/channelList'
 import ChannelSummary from '@/components/channelSummary'
 
@@ -15,22 +15,36 @@ type State = {
 export default function Home() {
     const [channels, setChannels] = useState<RssChannel[]>([])
     const [selected, setSelected] = useState<RssChannel | null>(null)
-    const [isLoading, setLoading] = useState<boolean>(false)
+    const [requestCount, setRequestCount] = useState<number>(0)
     const containerRef = useRef<HTMLDivElement>(null)
     const ref = useRef<HTMLDivElement>(null)
 
+    const ContextAPI = {
+        markAsRead(item: RssItem) {
+	    setRequestCount(requestCount + 1) 
+/*	    return StandardAPI.markAsRead().then((response) => {
+	        setRequestCount(requestCount - 1) 
+	        return response
+	    })*/
+	    console.log('ok')
+	    return Promise.resolve(null)
+        },
+        fetchChannels() {
+	    setRequestCount(requestCount + 1) 
+            return StandardAPI.fetchChannels().then((response) => {
+	        setRequestCount(requestCount - 1) 
+                return response
+            })
+        },
+    }
+
     useEffect(() => {
-        setLoading(true)
-        fetchChannel().then((channels) => {
+        ContextAPI.fetchChannels().then((channels) => {
             if (channels.length > 0) {
                 setChannels(channels)
             }
-            setLoading(false)
         })
     }, [])
-
-    if (isLoading) return <p>Loading...</p>
-    if (channels.length == 0) return <p>No data</p>
 
     return (
         <>
@@ -42,41 +56,48 @@ export default function Home() {
                 />
             </Head>
             <main>
-                <div className="flex h-screen">
-                    <div className="w-64 flex-none border-r-[1px] overflow-scroll scroll-pt-14 snap-y scroll-pt-8">
-                        <div className="text-xl fixed h-8 align-middle bg-white w-full px-2">
-                            <h1>Ultraladder</h1>
+                <APIContext.Provider value={ContextAPI}>
+                    <div className="flex h-screen">
+                        <div className="w-64 flex-none border-r-[1px] overflow-scroll scroll-pt-14 snap-y scroll-pt-8">
+                            <div className="text-xl fixed h-8 align-middle bg-white w-full px-2">
+                                <div className="flex items-center">
+                                    <h1 className="pr-2">Ultraladder</h1>
+                                    {requestCount > 0 && <Spin />}
+                                </div>
+                            </div>
+                            {channels.length && (
+                                <ChannelList
+                                    className="mt-8"
+                                    channels={channels}
+                                    onSelect={(channel) => {
+                                        setSelected(channel)
+                                        if (containerRef.current) {
+                                            containerRef.current.scrollTo(0, 0)
+                                        }
+                                    }}
+                                />
+                            )}
                         </div>
-                        <ChannelList
-                            className="mt-8"
-                            channels={channels}
-                            onSelect={(channel) => {
-                                setSelected(channel)
-                                if (containerRef.current) {
-                                    containerRef.current.scrollTo(0, 0)
-                                }
-                            }}
-                        />
+                        <div
+                            className="m-w-3xl overflow-scroll snap-y snap-mandatory scroll-pt-14"
+                            ref={containerRef}
+                        >
+                            {selected ? (
+                                <ChannelSummary
+                                    channel={selected}
+                                    className="snap-start fixed h-14 py-1 px-4"
+                                />
+                            ) : null}
+                            {selected ? (
+                                <ItemList
+                                    channel={selected}
+                                    className="mt-16"
+                                    items={selected.items}
+                                />
+                            ) : null}
+                        </div>
                     </div>
-                    <div
-                        className="m-w-3xl overflow-scroll snap-y snap-mandatory scroll-pt-14"
-                        ref={containerRef}
-                    >
-                        {selected ? (
-                            <ChannelSummary
-                                channel={selected}
-                                className="snap-start fixed h-14 py-1 px-4"
-                            />
-                        ) : null}
-                        {selected ? (
-                            <ItemList
-                                channel={selected}
-                                className="mt-16"
-                                items={selected.items}
-                            />
-                        ) : null}
-                    </div>
-                </div>
+                </APIContext.Provider>
             </main>
         </>
     )

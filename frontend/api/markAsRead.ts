@@ -1,5 +1,5 @@
 import getConfig from 'next/config'
-import { RssItem } from '@/api/channels'
+import { RssItem } from '@/api/types'
 
 const { publicRuntimeConfig } = getConfig()
 export default function markAsRead(item: RssItem): Promise<string> {

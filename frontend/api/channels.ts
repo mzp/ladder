@@ -1,24 +1,5 @@
 import getConfig from 'next/config'
-
-export interface RssItem {
-    id: string
-    url: string
-    title: string
-    site: string
-    date: string
-    imageurl: string | null
-    description: string
-    hatena_bookmark_count: number
-}
-
-export interface RssChannel {
-    id: number
-    url: string
-    title: string
-    description: string
-    items: RssItem[]
-    read_at: string | null
-}
+import { RssChannel, RssItem } from '@/api/types'
 
 const { publicRuntimeConfig } = getConfig()
 export default function fetchChannels(): Promise<RssChannel[]> {
