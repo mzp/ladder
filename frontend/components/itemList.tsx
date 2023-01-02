@@ -14,7 +14,7 @@ export default function ItemList(props: Props) {
     const api = useContext(APIContext)
 
     function handleLoadMore(lastItem: RssItem | null) {
-        const oldestID = lastItem ? lastItem.id : null
+        const oldestID = lastItem ? lastItem.id : undefined
         api.channel(props.channel.id, oldestID).then((channel) => {
             if (lastItem) {
                 setItems([...items, ...channel.items])

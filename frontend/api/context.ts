@@ -6,17 +6,19 @@ import channel from '@/api/channel'
 
 interface API {
     markAsRead(item: RssItem): Promise<string | null>
-    channels(id?: string): Promise<RssChannel[]>,
-    channel(id: string, upto: string): Promise<RssChannel>,
+    channels(id?: string): Promise<RssChannel[]>
+    channel(id: string, upto?: string): Promise<RssChannel>
     isLoading: boolean
     setCanMarkAsRead(value: boolean): void
+    canMarkAsRead: boolean
 }
 export const BackendAPI: API = {
     markAsRead,
     channels,
     channel,
     isLoading: false,
-    setCanMarkAsRead(value: boolean) {}
+    setCanMarkAsRead(value: boolean) {},
+    canMarkAsRead: false
 }
 
 const context = createContext<API>(BackendAPI)
