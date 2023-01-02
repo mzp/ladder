@@ -6,6 +6,7 @@ import { useContext, useEffect, useState } from 'react'
 
 export default function Folder() {
     const [channels, setChannels] = useState<RssChannel[]>([])
+    const [categories, setCategories] = useState<Category[]>([])
     const api = useContext(APIContext)
     useEffect(() => {
         api.channels().then((channels) => {

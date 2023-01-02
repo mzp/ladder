@@ -44,6 +44,22 @@ function Provider(props: { children: any }) {
                 })
             })
         },
+        createCategory(title: string): Promise<Category[]> {
+            return new Promise<void>((resolver) => {
+                setAPICall({
+                    resolver,
+                    api: () => BackendAPI.createCategory(title),
+                })
+            })
+        },
+        categories(): Promise<Category[]> {
+            return new Promise<void>((resolver) => {
+                setAPICall({
+                    resolver,
+                    api: () => BackendAPI.categories(),
+                })
+            })
+        },
         canMarkAsRead,
         setCanMarkAsRead,
         isLoading,

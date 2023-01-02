@@ -22,3 +22,8 @@ export interface RssChannel {
 export interface ChannelOption {
     category_id: string
 }
+
+export interface Category {
+    id: string
+    title: string
+}

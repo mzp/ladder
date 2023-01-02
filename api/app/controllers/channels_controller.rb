@@ -23,7 +23,6 @@ class ChannelsController < ApplicationController
   end
 
   def update
-    p params[:category]
     render json: {'status':'ok'}
   end
 end

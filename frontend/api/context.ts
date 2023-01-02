@@ -1,5 +1,5 @@
 import { createContext } from 'react'
-import { RssChannel, RssItem, ChannelOption } from '@/api/types'
+import { Category, RssChannel, RssItem, ChannelOption } from '@/api/types'
 import getConfig from 'next/config'
 
 interface API {
@@ -7,6 +7,8 @@ interface API {
     channels(id?: string): Promise<RssChannel[]>
     channel(id: string, upto?: string): Promise<RssChannel>
     updateChannel(id: string, option: { category_id: string }): Promise<void>
+    createCategory(title: string): Promise<Category[]>
+    categories(): Promise<Category[]>
     isLoading: boolean
     setCanMarkAsRead(value: boolean): void
     canMarkAsRead: boolean
@@ -36,10 +38,7 @@ export const BackendAPI: API = {
         )
         return response.then((res) => res.json())
     },
-    updateChannel(
-        id: string,
-        option: ChannelOption
-    ): Promise<RssChannel> {
+    updateChannel(id: string, option: ChannelOption): Promise<RssChannel> {
         const response: Promise<any> = fetch(
             `${publicRuntimeConfig.apiRoot}/channels/${id}`,
             {
@@ -50,6 +49,24 @@ export const BackendAPI: API = {
         )
         return response.then((res) => res.json())
     },
+    createCategory(title: string): Promise<Category[]> {
+        const response: Promise<any> = fetch(
+            `${publicRuntimeConfig.apiRoot}/categories`,
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title }),
+            }
+        )
+        return response.then((res) => res.json())
+    },
+    categories(): Promise<Category[]> {
+        const response: Promise<any> = fetch(
+            `${publicRuntimeConfig.apiRoot}/categories`
+        )
+        return response.then((res) => res.json())
+    },
+
     isLoading: false,
     setCanMarkAsRead(value: boolean) {},
     canMarkAsRead: false,

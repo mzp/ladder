@@ -1,15 +1,17 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import Toolbar from '@/components/toolbar'
+import { Category } from '@/api/types'
 import APIContext from '@/api/context'
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState, useRef } from 'react'
 
 export default function Folder() {
-    const [channels, setChannels] = useState<RssChannel[]>([])
+    const [categories, setCategories] = useState<Category[]>([])
+    const ref = useRef<HTMLInputElement>(null)
     const api = useContext(APIContext)
     useEffect(() => {
-        api.channels().then((channels) => {
-            setChannels(channels)
+        api.categories().then((categories) => {
+            setCategories(categories)
         })
     }, [])
 
@@ -30,55 +32,36 @@ export default function Folder() {
                             <Link href="/settings/feeds">Feeds</Link>
                         </div>
                         <div className="border-l-4 p-2 cursor-pointer font-bold text-sky-400 border-sky-400">
-                            <Link href="/settings/category">Category</Link>
+                            Category
                         </div>
                     </div>
                     <div className="m-w-3xl overflow-scroll snap-y snap-mandatory scroll-pt-14 p-4">
-                        <table className="my-10">
-                            <thead>
-                                <tr>
-                                    <th>Category</th>
-                                    <th>Title</th>
-                                    <th>Description</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {channels.map((channel) => (
-                                    <tr key={channel.id}>
-                                        <td className="py-2">
-                                            <select
-                                                onChange={(e) => {
-                                                    // TODO: debounce
-                                                    console.log(e)
-                                                    api.updateChannel(
-                                                        channel.id,
-                                                        {
-                                                            category_id:
-                                                                e.target.value,
-                                                        }
-                                                    )
-                                                }}
-                                                className="rounded-lg shadow-sm w-32"
-                                            >
-                                                <option value="0">
-                                                    no category
-                                                </option>
-                                                <option value="1">Mint</option>
-                                                <option value="2">
-                                                    Chocolate
-                                                </option>
-                                            </select>
-                                        </td>
-                                        <td className="px-4 py-2">
-                                            {channel.title}
-                                        </td>
-                                        <td className="px-4 py-2">
-                                            {channel.description}
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                        <form
+                            className="my-4 flex space-x-2"
+                            onSubmit={(event) => {
+			        event.preventDefault()
+				api.createCategory(ref.current.value).then((categories) => setCategories(categories))
+                                ref.current.value = ""
+                            }}
+                        >
+                            <input
+                                ref={ref}
+                                type="text"
+                                className="p-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg"
+                                placeholder="category"
+                            />
+                            <button
+                                type="submit"
+                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold p-2 text-sm rounded"
+                            >
+                                Add
+                            </button>
+                        </form>
+                        <ul className="my-4">
+                            {categories.map((category) => (
+                                <li key={category.id}>{category.title}</li>
+                            ))}
+                        </ul>
                         <div>
                             <Link
                                 href="/"
