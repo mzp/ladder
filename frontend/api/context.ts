@@ -15,6 +15,8 @@ interface API {
     isLoading: boolean
     setCanMarkAsRead(value: boolean): void
     canMarkAsRead: boolean
+    readCount: number
+    setReadCount(value: number): void
 }
 
 const { publicRuntimeConfig } = getConfig()
@@ -93,6 +95,8 @@ export const BackendAPI: API = {
     isLoading: false,
     setCanMarkAsRead(value: boolean) {},
     canMarkAsRead: false,
+    readCount: 0,
+    setReadCount(value: number) {},
 }
 
 const context = createContext<API>(BackendAPI)

@@ -35,8 +35,8 @@ export default function Home() {
             </Head>
             <main>
                 <div className="flex h-screen">
-                    <div className="w-64 flex-none border-r-[1px] overflow-scroll snap-y scroll-pt-8">
-                        <Toolbar className="w-64 h-8 fixed border-r-[1px]" />
+                    <div className="w-80 flex-none border-r-[1px] overflow-scroll snap-y scroll-pt-8">
+                        <Toolbar className="w-80 h-8 fixed border-r-[1px]" />
                         {channels.length && (
                             <ChannelList
                                 className="mt-8"

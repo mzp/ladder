@@ -7,6 +7,7 @@ import { default as APIContext, BackendAPI } from '@/api/context'
 
 function Provider(props: { children: any }) {
     const [isLoading, setLoading] = useState<boolean>(false)
+    const [readCount, setReadCount] = useState<number>(0)
     const [markAsRead, setMarkAsRead] = useState<{
         item: RssItem
         resolver: any
@@ -80,11 +81,14 @@ function Provider(props: { children: any }) {
         canMarkAsRead,
         setCanMarkAsRead,
         isLoading,
+        readCount,
+        setReadCount,
     }
     useEffect(() => {
         if (!canMarkAsRead) {
             return
         }
+        setReadCount(readCount + 1)
         if (!markAsRead) {
             return
         }
