@@ -4,7 +4,9 @@ import getConfig from 'next/config'
 
 interface API {
     markAsRead(item: RssItem): Promise<string | null>
-    channels(id?: string): Promise<RssChannel[]>
+    channels(
+        id?: string
+    ): Promise<{ channels: RssChannel[]; categories: Category[] }>
     channel(id: string, upto?: string): Promise<RssChannel>
     updateChannel(id: string, option: { category_id: string }): Promise<void>
     createCategory(title: string): Promise<Category[]>
@@ -56,6 +58,15 @@ export const BackendAPI: API = {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ title }),
+            }
+        )
+        return response.then((res) => res.json())
+    },
+    removeCategory(id: string): Promise<Category[]> {
+        const response: Promise<any> = fetch(
+            `${publicRuntimeConfig.apiRoot}/categories/${id}`,
+            {
+                method: 'DELETE',
             }
         )
         return response.then((res) => res.json())

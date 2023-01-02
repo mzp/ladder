@@ -13,4 +13,9 @@ class CategoriesController < ApplicationController
     Category.find(params[:id]).update(params.permit(:title))
     render json: Category.all 
   end
+
+  def destroy
+    Category.find(params[:id]).destroy
+    render json: Category.all 
+  end
 end

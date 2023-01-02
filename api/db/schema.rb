@@ -27,8 +27,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_02_085420) do
     t.datetime "updated_at", null: false
     t.string "description"
     t.string "feed_url"
-    t.bigint "category_id_id"
-    t.index ["category_id_id"], name: "index_rss_channels_on_category_id_id"
+    t.bigint "category_id"
+    t.index ["category_id"], name: "index_rss_channels_on_category_id"
   end
 
   create_table "rss_items", force: :cascade do |t|

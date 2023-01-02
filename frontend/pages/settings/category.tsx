@@ -39,9 +39,11 @@ export default function Folder() {
                         <form
                             className="my-4 flex space-x-2"
                             onSubmit={(event) => {
-			        event.preventDefault()
-				api.createCategory(ref.current.value).then((categories) => setCategories(categories))
-                                ref.current.value = ""
+                                event.preventDefault()
+                                api.createCategory(ref.current.value).then(
+                                    setCategories
+                                )
+                                ref.current.value = ''
                             }}
                         >
                             <input
@@ -57,11 +59,31 @@ export default function Folder() {
                                 Add
                             </button>
                         </form>
-                        <ul className="my-4">
-                            {categories.map((category) => (
-                                <li key={category.id}>{category.title}</li>
-                            ))}
-                        </ul>
+                        <table className="my-4">
+                            <tbody>
+                                {categories.map((category) => (
+                                    <tr key={category.id}>
+                                        <td className="w-48">
+                                            {category.title || '<null>'}
+                                        </td>
+                                        <td>
+                                            <button
+                                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold p-1 text-sm rounded"
+                                                onClick={() =>
+                                                    api
+                                                        .removeCategory(
+                                                            category.id
+                                                        )
+                                                        .then(setCategories)
+                                                }
+                                            >
+                                                Remove
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                         <div>
                             <Link
                                 href="/"

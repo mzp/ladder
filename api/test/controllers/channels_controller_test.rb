@@ -15,7 +15,7 @@ class ChannelsControllerTest < ActionDispatch::IntegrationTest
     get channels_url
     assert_response :success
 
-    channels = response.parsed_body
+    channels = response.parsed_body['channels']
     assert_equal channels.count, 5
 
     first_channel = channels[0]

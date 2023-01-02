@@ -13,7 +13,7 @@ module RssChannelResponse
 
   def as_json(options = {})
     super(options.merge(
-      only: %i[id title url description]
+      only: %i[id title url description category_id]
     )).merge(
       unreadCount: unread_count,
       items: items_for_response

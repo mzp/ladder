@@ -9,8 +9,9 @@ export default function Folder() {
     const [categories, setCategories] = useState<Category[]>([])
     const api = useContext(APIContext)
     useEffect(() => {
-        api.channels().then((channels) => {
+        api.channels().then(({ channels, categories }) => {
             setChannels(channels)
+            setCategories(categories)
         })
     }, [])
 
@@ -48,26 +49,31 @@ export default function Folder() {
                                     <tr key={channel.id}>
                                         <td className="py-2">
                                             <select
+					        value={channel.category_id || ""}
                                                 onChange={(e) => {
-                                                    // TODO: debounce
-                                                    console.log(e)
                                                     api.updateChannel(
                                                         channel.id,
                                                         {
                                                             category_id:
                                                                 e.target.value,
                                                         }
-                                                    )
+                                                    ).then(({channels}) => setChannels(channels) )
                                                 }}
                                                 className="rounded-lg shadow-sm w-32"
                                             >
-                                                <option value="0">
+                                                <option value="">
                                                     no category
                                                 </option>
-                                                <option value="1">Mint</option>
-                                                <option value="2">
-                                                    Chocolate
-                                                </option>
+                                                {categories.map(
+                                                    ({ id, title }) => (
+                                                        <option
+                                                            value={id}
+                                                            key={id}
+                                                        >
+                                                            {title}
+                                                        </option>
+                                                    )
+                                                )}
                                             </select>
                                         </td>
                                         <td className="px-4 py-2">

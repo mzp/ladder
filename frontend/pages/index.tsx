@@ -17,7 +17,7 @@ export default function Home() {
 
     const api = useContext(APIContext)
     useEffect(() => {
-        api.channels(fetchInitalChannel()).then((channels) => {
+        api.channels(fetchInitalChannel()).then(({ channels }) => {
             if (channels.length > 0) {
                 setChannels(channels)
             }
