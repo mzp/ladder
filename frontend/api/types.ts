@@ -18,3 +18,7 @@ export interface RssChannel {
     items: RssItem[]
     unreadCount: number
 }
+
+export interface ChannelOption {
+    category_id: string
+}

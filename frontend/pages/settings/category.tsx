@@ -26,10 +26,10 @@ export default function Folder() {
                 <div className="flex h-screen">
                     <div className="w-64 flex-none border-r-[1px] overflow-scroll snap-y scroll-pt-8">
                         <Toolbar className="w-64 h-8 fixed border-r-[1px]" />
-                        <div className="mt-8 border-l-4 p-2 cursor-pointer font-bold text-sky-400 border-sky-400">
-                            Feeds
+                        <div className="mt-8 border-l-4 p-2 cursor-pointer border-transparent">
+                            <Link href="/settings/feeds">Feeds</Link>
                         </div>
-                        <div className="border-l-4 p-2 cursor-pointer border-transparent">
+                        <div className="border-l-4 p-2 cursor-pointer font-bold text-sky-400 border-sky-400">
                             <Link href="/settings/category">Category</Link>
                         </div>
                     </div>

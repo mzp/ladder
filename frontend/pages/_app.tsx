@@ -2,7 +2,7 @@ import '../styles/globals.css'
 import type { AppProps } from 'next/app'
 
 import { useState, useEffect } from 'react'
-import { RssChannel, RssItem } from '@/api/types'
+import { RssChannel, RssItem, ChannelOption } from '@/api/types'
 import { default as APIContext, BackendAPI } from '@/api/context'
 
 function Provider(props: { children: any }) {
@@ -13,8 +13,8 @@ function Provider(props: { children: any }) {
     } | null>()
     const [canMarkAsRead, setCanMarkAsRead] = useState<boolean>(false)
     const [apiCall, setAPICall] = useState<{
-	    api: () => any,
-	    resolver: any
+        api: () => any
+        resolver: any
     }>()
 
     const ContextAPI = {
@@ -30,14 +30,20 @@ function Provider(props: { children: any }) {
         },
         channel(id: string, upto: string) {
             return new Promise<RssChannel[]>((resolver) => {
-                setAPICall({ resolver, api: () => BackendAPI.channel(id, upto) })
+                setAPICall({
+                    resolver,
+                    api: () => BackendAPI.channel(id, upto),
+                })
             })
         },
-	updateChannel(id: string, option: { category_id: string }) {
+        updateChannel(id: string, option: ChannelOption) {
             return new Promise<void>((resolver) => {
-                setAPICall({ resolver, api: () => BackendAPI.updateChannel(id, option) })
+                setAPICall({
+                    resolver,
+                    api: () => BackendAPI.updateChannel(id, option),
+                })
             })
-	},
+        },
         canMarkAsRead,
         setCanMarkAsRead,
         isLoading,
@@ -57,17 +63,18 @@ function Provider(props: { children: any }) {
             .then(() => setLoading(false))
     }, [markAsRead, canMarkAsRead])
 
-    useEffect(()=>{
-       if (!apiCall) {
-         return
-       }
-       const { resolver, api } = apiCall
-       setLoading(true)
-       api()
-         .then(resolver)
-	 .then(() => { 
-	 console.log('done')
-	 setLoading(false) })
+    useEffect(() => {
+        if (!apiCall) {
+            return
+        }
+        const { resolver, api } = apiCall
+        setLoading(true)
+        api()
+            .then(resolver)
+            .then(() => {
+                console.log('done')
+                setLoading(false)
+            })
     }, [apiCall])
 
     return (
