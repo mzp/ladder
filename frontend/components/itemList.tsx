@@ -14,33 +14,40 @@ export default function ItemList(props: Props) {
     const api = useContext(APIContext)
 
     function handleLoadMore(lastItem: RssItem | null) {
-       const oldestID = lastItem ? lastItem.id : null
-       api.channel(props.channel.id, oldestID).then((channel) => {
-           if (lastItem) {
-	       setItems([...items, ...channel.items])
-	   } else {
-	       setItems(channel.items)
-	   }
-       })
+        const oldestID = lastItem ? lastItem.id : null
+        api.channel(props.channel.id, oldestID).then((channel) => {
+            if (lastItem) {
+                setItems([...items, ...channel.items])
+            } else {
+                setItems(channel.items)
+            }
+        })
     }
 
     useEffect(() => {
         setItems(props.items)
 
-	if (props.items.length == 0 && props.channel.unreadCount != 0) {
-	    console.log('initial load')
-	    handleLoadMore(null)
-	}
+        if (props.items.length == 0 && props.channel.unreadCount != 0) {
+            console.log('initial load')
+            handleLoadMore(null)
+        }
     }, [props.channel])
 
     return (
-        <div className={`space-y-4 ${props.className}`}>
+        <div className={`space-y-2 ${props.className}`}>
             {items.map((item, index) => (
                 <ItemSummary
                     key={item.id}
                     item={item}
                     className="snap-start px-4"
-		    onRead={(index == items.length - 1) ? handleLoadMore : undefined}
+                    onRead={
+                        index == Math.max(items.length - 3, 0)
+                            ? () => {
+			          // prefetch
+                                  handleLoadMore(items[items.length - 1])
+                              }
+                            : undefined
+                    }
                 />
             ))}
         </div>

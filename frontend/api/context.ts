@@ -5,11 +5,11 @@ import channel from '@/api/channel'
 
 interface API {
     markAsRead(item: RssItem): Promise<string | null>
-    channel(id: string, upto: string): Promise<RssChannel> 
+    channel(id: string, upto: string): Promise<RssChannel>
 }
 export const BackendAPI: API = {
     markAsRead,
-    channel
+    channel,
 }
 
 const context = createContext<API>(BackendAPI)

@@ -9,7 +9,9 @@ interface Props {
 }
 
 export default function ItemList({ channels, className, onSelect }: Props) {
-    const [selected, setSelected] = useState<RssChannel>(channels[0])
+    const [selected, setSelected] = useState<RssChannel>(
+        channels.find(({ items }) => items.length > 0) || channels[0]
+    )
     useEffect(() => {
         if (onSelect) {
             onSelect(selected)
@@ -25,7 +27,7 @@ export default function ItemList({ channels, className, onSelect }: Props) {
 		    ${
                 selected.id == channel.id
                     ? 'font-bold text-sky-400 border-sky-400'
-                    : ''
+                    : 'border-transparent'
             }`}
                     onClick={() => {
                         setSelected(channel)

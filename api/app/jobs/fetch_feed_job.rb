@@ -14,7 +14,7 @@ class FetchFeedJob < ApplicationJob
 
       # update channel
       channel = feed.channel
-      record = RssChannel.find_or_create_by(url: channel.link)
+      record = RssChannel.find_or_create_by(feed_url: url)
       record.update_from_rss!(channel)
 
       # update item

@@ -7,6 +7,7 @@ import ItemList from '@/components/itemList'
 import Spin from '@/components/spin'
 import ChannelList from '@/components/channelList'
 import ChannelSummary from '@/components/channelSummary'
+import useLocalStorage from '@/components/hook/useLocalStorage'
 
 type State = {
     channels: RssChannel[]
@@ -17,50 +18,66 @@ export default function Home() {
     const [channels, setChannels] = useState<RssChannel[]>([])
     const [selected, setSelected] = useState<RssChannel | null>(null)
     const [isLoading, setLoading] = useState<boolean>(false)
-    const [markAsRead, setMarkAsRead] = useState<{ item: RssItem, resolver: any } | null>()
+    const [markAsRead, setMarkAsRead] = useState<{
+        item: RssItem
+        resolver: any
+    } | null>()
     const [canMarkAsRead, setCanMarkAsRead] = useState<boolean>(false)
-    const [channelAPI, setChannelAPI] = useState<{ id: string, upto: string, resolver: any } | null>()
+    const [channelAPI, setChannelAPI] = useState<{
+        id: string
+        upto: string
+        resolver: any
+    } | null>()
+    const [fetchInitalChannel, storeInitialChannel] =
+        useLocalStorage('initial-channel-id')
+
     const ref = useRef<HTMLDivElement>(null)
 
     const ContextAPI = {
         markAsRead(item: RssItem) {
-	    return new Promise<string | null>((resolver) => {
-	      setMarkAsRead({ item, resolver })
-	    })
+            return new Promise<string | null>((resolver) => {
+                setMarkAsRead({ item, resolver })
+            })
         },
-	channel(id: string, upto: string) {
+        channel(id: string, upto: string) {
             return new Promise<RssChannel>((resolver) => {
-	      setChannelAPI({ id, upto, resolver })
-	    })
-	}
+                setChannelAPI({ id, upto, resolver })
+            })
+        },
     }
     useEffect(() => {
-       if(!canMarkAsRead) { return }
-       if(!markAsRead) { return }
-       const {item, resolver} = markAsRead;
+        if (!canMarkAsRead) {
+            return
+        }
+        if (!markAsRead) {
+            return
+        }
+        const { item, resolver } = markAsRead
 
-       setLoading(true)
-       BackendAPI.markAsRead(item)
-           .then(resolver)
-	   .then(() => setLoading(false))
+        setLoading(true)
+        BackendAPI.markAsRead(item)
+            .then(resolver)
+            .then(() => setLoading(false))
     }, [markAsRead, canMarkAsRead])
 
     useEffect(() => {
-       if(!channelAPI) { return }
-       const { id, upto, resolver } = channelAPI
-       setLoading(true)
-       BackendAPI.channel(id, upto)
+        if (!channelAPI) {
+            return
+        }
+        const { id, upto, resolver } = channelAPI
+        setLoading(true)
+        BackendAPI.channel(id, upto)
             .then(resolver)
-	    .then(() => setLoading(false))
+            .then(() => setLoading(false))
     }, [channelAPI])
 
     useEffect(() => {
         setLoading(true)
-        fetchChannels().then((channels) => {
+        fetchChannels(fetchInitalChannel()).then((channels) => {
             if (channels.length > 0) {
                 setChannels(channels)
             }
-	    setLoading(false)
+            setLoading(false)
         })
     }, [])
 
@@ -88,7 +105,9 @@ export default function Home() {
                                     className="mt-8"
                                     channels={channels}
                                     onSelect={(channel) => {
+                                        console.log(channel)
                                         setSelected(channel)
+                                        storeInitialChannel(channel.id)
                                         if (ref.current) {
                                             ref.current.scrollTo(0, 0)
                                         }
@@ -98,9 +117,16 @@ export default function Home() {
                         </div>
                         <div
                             className="m-w-3xl overflow-scroll snap-y snap-mandatory scroll-pt-14"
-			    onScroll={canMarkAsRead ? undefined : () => { 
-			        ref.current && setCanMarkAsRead(ref.current.scrollTop > 100) 
-			    }}
+                            onScroll={
+                                canMarkAsRead
+                                    ? undefined
+                                    : () => {
+                                          ref.current &&
+                                              setCanMarkAsRead(
+                                                  ref.current.scrollTop > 100
+                                              )
+                                      }
+                            }
                             ref={ref}
                         >
                             {selected ? (

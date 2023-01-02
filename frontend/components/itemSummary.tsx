@@ -19,14 +19,15 @@ export default function ItemSummary({ item, className, onRead }: Props) {
         }
         const observer = new IntersectionObserver(
             ([element]) => {
-	        if (element.isIntersecting) {
-                    if (readAt == null) {
-           		api.markAsRead(item).then((readAt) => setReadAt(readAt))
+                if (element.isIntersecting) {
+                    if (onRead) {
+                        onRead(item)
                     }
-		    if (onRead) {
-		        onRead(item)
-		    }
-		}
+
+                    if (readAt == null) {
+                        api.markAsRead(item).then((readAt) => setReadAt(readAt))
+                    }
+                }
             },
             { threshold: 1 }
         )

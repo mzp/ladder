@@ -5,7 +5,9 @@ class ChannelsController < ApplicationController
     channels = RssChannel.all.includes(:items)
     channels.each.with_index do |channel, index|
       channel.extend RssChannelResponse
-      channel.extend RssChannelResponse::WithLatestItem if index.zero?
+      if channel.id == params[:initial].to_i || (params[:initial].empty? && index.zero?)
+        channel.extend RssChannelResponse::WithLatestItem 
+      end
     end
     response = channels.as_json
     render json: response
