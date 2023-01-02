@@ -13,20 +13,17 @@ type State = {
     selectedChannel: RssChannel
 }
 
-function ContextAPI(requestCount, setRequestCount) {
-}
-
 export default function Home() {
     const [channels, setChannels] = useState<RssChannel[]>([])
     const [selected, setSelected] = useState<RssChannel | null>(null)
     const [isLoading, setLoading] = useState<boolean>(false)
-    const [markAsRead, setMarkAsRead] = useState<{ item: RssItem, resolver: (time: string) => void } | null>()
+    const [markAsRead, setMarkAsRead] = useState<{ item: RssItem, resolver: any } | null>()
     const [canMarkAsRead, setCanMarkAsRead] = useState<boolean>(false)
     const ref = useRef<HTMLDivElement>(null)
 
     const ContextAPI = {
         markAsRead(item: RssItem) {
-	    return new Promise((resolver) => {
+	    return new Promise<string | null>((resolver) => {
 	      setMarkAsRead({ item, resolver })
 	    })
         },
@@ -87,8 +84,8 @@ export default function Home() {
                         </div>
                         <div
                             className="m-w-3xl overflow-scroll snap-y snap-mandatory scroll-pt-14"
-			    onScroll={canMarkAsRead ? null : () => { 
-			        setCanMarkAsRead(ref.current.scrollTop > 100) 
+			    onScroll={canMarkAsRead ? undefined : () => { 
+			        ref.current && setCanMarkAsRead(ref.current.scrollTop > 100) 
 			    }}
                             ref={ref}
                         >

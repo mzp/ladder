@@ -12,6 +12,10 @@ export default function ItemList(props: Props) {
     const [items, setItems] = useState<RssItem[]>(props.items)
     useEffect(() => {
         setItems(props.items)
+
+	if (props.items.length == 0 && props.channel.unreadCount != 0) {
+	  console.log('request')
+	}
     }, [props.channel])
 
     return (

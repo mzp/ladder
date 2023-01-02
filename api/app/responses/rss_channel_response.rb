@@ -22,7 +22,7 @@ module RssChannelResponse
 
   module WithLatestItem
     def items_for_response
-      items.latest.each do |item|
+      items.latest.limit(10).each do |item|
         item.extend RssItemResponse
       end
     end

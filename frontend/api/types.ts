@@ -16,4 +16,5 @@ export interface RssChannel {
     title: string
     description: string
     items: RssItem[]
+    unreadCount: number
 }

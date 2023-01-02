@@ -1,6 +1,7 @@
 import { createContext } from 'react'
-import { RssItem } from '@/api/types'
+import { RssChannel, RssItem } from '@/api/types'
 import markAsRead from '@/api/markAsRead'
+import channel from '@/api/channel'
 
 interface API {
     markAsRead(item: RssItem): Promise<string | null>
