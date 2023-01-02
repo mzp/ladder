@@ -1,13 +1,14 @@
 import Head from 'next/head'
 import Link from 'next/link'
+import SettingSidebar from '@/components/settingSidebar'
 import Toolbar from '@/components/toolbar'
 import { Category } from '@/api/types'
 import APIContext from '@/api/context'
 import { useContext, useEffect, useState, useRef } from 'react'
 
 type Props = {
-  category: Category
-  setCategories(categories: Category[]) : void
+    category: Category
+    setCategories(categories: Category[]): void
 }
 
 function CategoryRow({ category, setCategories }: Props) {
@@ -17,7 +18,7 @@ function CategoryRow({ category, setCategories }: Props) {
         <tr>
             <td className="w-48 p-2">
                 <input
-		    ref={ref}
+                    ref={ref}
                     type="text"
                     className="p-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg"
                     defaultValue={category.title || '<null>'}
@@ -27,7 +28,9 @@ function CategoryRow({ category, setCategories }: Props) {
                 <button
                     className="bg-blue-500 hover:bg-blue-700 text-white font-bold p-1 text-sm rounded mx-2"
                     onClick={() =>
-                        api.updateCategory(category.id, ref.current.value).then(setCategories)
+                        api
+                            .updateCategory(category.id, ref.current.value)
+                            .then(setCategories)
                     }
                 >
                     Update
@@ -68,12 +71,7 @@ export default function CategoryList() {
                 <div className="flex h-screen">
                     <div className="w-64 flex-none border-r-[1px] overflow-scroll snap-y scroll-pt-8">
                         <Toolbar className="w-64 h-8 fixed border-r-[1px]" />
-                        <div className="mt-8 border-l-4 p-2 border-transparent">
-                            <Link href="/settings/feeds">Feeds</Link>
-                        </div>
-                        <div className="border-l-4 p-2 font-bold text-sky-400 border-sky-400">
-                            Category
-                        </div>
+                        <SettingSidebar active="categories" />
                     </div>
                     <div className="m-w-3xl overflow-scroll snap-y snap-mandatory scroll-pt-14 p-4">
                         <form
@@ -102,18 +100,14 @@ export default function CategoryList() {
                         <table className="my-4">
                             <tbody>
                                 {categories.map((category) => (
-				    <CategoryRow key={category.id} category={category} setCategories={setCategories} />
+                                    <CategoryRow
+                                        key={category.id}
+                                        category={category}
+                                        setCategories={setCategories}
+                                    />
                                 ))}
                             </tbody>
                         </table>
-                        <div>
-                            <Link
-                                href="/"
-                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                            >
-                                Close
-                            </Link>
-                        </div>
                     </div>
                 </div>
             </main>

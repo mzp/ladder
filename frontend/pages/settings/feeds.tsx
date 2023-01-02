@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import Toolbar from '@/components/toolbar'
+import SettingSidebar from '@/components/settingSidebar'
 import APIContext from '@/api/context'
 import { useContext, useEffect, useState } from 'react'
 
@@ -28,12 +29,7 @@ export default function Folder() {
                 <div className="flex h-screen">
                     <div className="w-64 flex-none border-r-[1px] overflow-scroll snap-y scroll-pt-8">
                         <Toolbar className="w-64 h-8 fixed border-r-[1px]" />
-                        <div className="mt-8 border-l-4 p-2 font-bold text-sky-400 border-sky-400">
-                            Feeds
-                        </div>
-                        <div className="border-l-4 p-2 border-transparent">
-                            <Link href="/settings/category">Category</Link>
-                        </div>
+                        <SettingSidebar active="feeds" />
                     </div>
                     <div className="m-w-3xl overflow-scroll snap-y snap-mandatory scroll-pt-14 p-4">
                         <table className="my-10">
@@ -90,14 +86,6 @@ export default function Folder() {
                                 ))}
                             </tbody>
                         </table>
-                        <div>
-                            <Link
-                                href="/"
-                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                            >
-                                Close
-                            </Link>
-                        </div>
                     </div>
                 </div>
             </main>
