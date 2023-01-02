@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
 import Head from 'next/head'
 import { RssChannel, RssItem } from '@/api/types'
-import { default as APIContext, StandardAPI } from '@/api/context'
+import { default as APIContext, BackendAPI } from '@/api/context'
+import fetchChannels from '@/api/channels'
 import ItemList from '@/components/itemList'
 import Spin from '@/components/spin'
 import ChannelList from '@/components/channelList'
@@ -12,37 +13,43 @@ type State = {
     selectedChannel: RssChannel
 }
 
+function ContextAPI(requestCount, setRequestCount) {
+}
+
 export default function Home() {
     const [channels, setChannels] = useState<RssChannel[]>([])
     const [selected, setSelected] = useState<RssChannel | null>(null)
-    const [requestCount, setRequestCount] = useState<number>(0)
-    const containerRef = useRef<HTMLDivElement>(null)
+    const [isLoading, setLoading] = useState<boolean>(false)
+    const [markAsRead, setMarkAsRead] = useState<{ item: RssItem, resolver: (time: string) => void } | null>()
+    const [canMarkAsRead, setCanMarkAsRead] = useState<boolean>(false)
     const ref = useRef<HTMLDivElement>(null)
 
     const ContextAPI = {
         markAsRead(item: RssItem) {
-	    setRequestCount(requestCount + 1) 
-/*	    return StandardAPI.markAsRead().then((response) => {
-	        setRequestCount(requestCount - 1) 
-	        return response
-	    })*/
-	    console.log('ok')
-	    return Promise.resolve(null)
-        },
-        fetchChannels() {
-	    setRequestCount(requestCount + 1) 
-            return StandardAPI.fetchChannels().then((response) => {
-	        setRequestCount(requestCount - 1) 
-                return response
-            })
+	    return new Promise((resolver) => {
+	      setMarkAsRead({ item, resolver })
+	    })
         },
     }
+    useEffect(() => {
+       if(!canMarkAsRead) { return }
+       if(!markAsRead) { return }
+       const {item, resolver} = markAsRead;
+       console.log(item.title)
+
+       setLoading(true)
+       BackendAPI.markAsRead(item)
+           .then(resolver)
+	   .then(() => setLoading(false))
+    }, [markAsRead, canMarkAsRead])
 
     useEffect(() => {
-        ContextAPI.fetchChannels().then((channels) => {
+        setLoading(true)
+        fetchChannels().then((channels) => {
             if (channels.length > 0) {
                 setChannels(channels)
             }
+	    setLoading(false)
         })
     }, [])
 
@@ -62,7 +69,7 @@ export default function Home() {
                             <div className="text-xl fixed h-8 align-middle bg-white w-full px-2">
                                 <div className="flex items-center">
                                     <h1 className="pr-2">Ultraladder</h1>
-                                    {requestCount > 0 && <Spin />}
+                                    {isLoading && <Spin />}
                                 </div>
                             </div>
                             {channels.length && (
@@ -71,8 +78,8 @@ export default function Home() {
                                     channels={channels}
                                     onSelect={(channel) => {
                                         setSelected(channel)
-                                        if (containerRef.current) {
-                                            containerRef.current.scrollTo(0, 0)
+                                        if (ref.current) {
+                                            ref.current.scrollTo(0, 0)
                                         }
                                     }}
                                 />
@@ -80,7 +87,10 @@ export default function Home() {
                         </div>
                         <div
                             className="m-w-3xl overflow-scroll snap-y snap-mandatory scroll-pt-14"
-                            ref={containerRef}
+			    onScroll={canMarkAsRead ? null : () => { 
+			        setCanMarkAsRead(ref.current.scrollTop > 100) 
+			    }}
+                            ref={ref}
                         >
                             {selected ? (
                                 <ChannelSummary

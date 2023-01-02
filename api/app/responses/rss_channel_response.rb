@@ -13,16 +13,16 @@ module RssChannelResponse
 
   def as_json(options = {})
     super(options.merge(
-      only: %i[id title url description],
+      only: %i[id title url description]
     )).merge(
-      unreadCount: unread_count, 
+      unreadCount: unread_count,
       items: items_for_response
     )
   end
 
   module WithLatestItem
     def items_for_response
-      items.latest.each do|item|
+      items.latest.each do |item|
         item.extend RssItemResponse
       end
     end

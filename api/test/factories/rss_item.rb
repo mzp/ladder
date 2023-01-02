@@ -5,7 +5,7 @@ FactoryBot.define do
     rss_channel { association :rss_channel }
     title { 'RSS Entry' }
     description { 'Content' }
-    sequence(:url) {|i| "https://example.com/#{i}.html"}
+    sequence(:url) { |i| "https://example.com/#{i}.html" }
     published_at { Time.current }
   end
 end

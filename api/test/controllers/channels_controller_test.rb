@@ -6,7 +6,7 @@ class ChannelsControllerTest < ActionDispatch::IntegrationTest
   def setup
     super
 
-    @first_channel, @second_channel, *_ = FactoryBot.create_list(:rss_channel, 5)
+    @first_channel, @second_channel, = FactoryBot.create_list(:rss_channel, 5)
     FactoryBot.create_list(:rss_item, 5, rss_channel: @first_channel)
     FactoryBot.create_list(:rss_item, 6, rss_channel: @second_channel)
   end
@@ -18,7 +18,7 @@ class ChannelsControllerTest < ActionDispatch::IntegrationTest
     channels = response.parsed_body
     assert_equal channels.count, 5
 
-    first_channel= channels[0]
+    first_channel = channels[0]
     assert_equal 5, first_channel['items'].count
     assert_equal 5, first_channel['unreadCount']
 
