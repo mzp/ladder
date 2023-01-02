@@ -4,7 +4,14 @@ class RssItem < ApplicationRecord
   belongs_to :rss_channel
 
   scope :unread, -> { where(read_at: nil).order(published_at: :desc, id: :asc) }
+  scope :read,   -> { where.not(read_at: nil).order(published_at: :desc, id: :asc) }
   scope :latest, -> { order(Arel.sql('CASE WHEN read_at IS NULL THEN 0 ELSE 1 END, published_at DESC, id ASC')) }
+
+  scope :proceeding, ->(item) { where('(? < published_at) OR (id <= ? AND published_at = ?)', item.published_at, item.id, item.published_at) }
+
+  def read?
+    read_at.present?
+  end
 
   def update_from_rss!(item)
     logger.info "#{self.class}##{__callee__}: Update #{item.title} - #{item.link}"

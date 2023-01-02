@@ -1,9 +1,9 @@
 ## TODO
 ### Essential
-- [ ] Unread management
+- [x] Unread management
 - [ ] Authentication
 - [ ] RSS crawler(schedule job)
-- [ ] Continuation scroll
+- [x] Continuation scroll
 
 ### Basic
 - [ ] Optimize on mobile phone

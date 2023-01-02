@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useContext, useState, useEffect } from 'react'
 import { RssChannel, RssItem } from '@/api/types'
+import APIContext from '@/api/context'
 import ItemSummary from '@/components/itemSummary'
 
 interface Props {
@@ -10,10 +11,17 @@ interface Props {
 
 export default function ItemList(props: Props) {
     const [items, setItems] = useState<RssItem[]>(props.items)
+    const api = useContext(APIContext)
 
     function handleLoadMore(lastItem: RssItem | null) {
        const oldestID = lastItem ? lastItem.id : null
-       console.log(['request', props.channel, oldestID])
+       api.channel(props.channel.id, oldestID).then((channel) => {
+           if (lastItem) {
+	       setItems([...items, ...channel.items])
+	   } else {
+	       setItems(channel.items)
+	   }
+       })
     }
 
     useEffect(() => {

@@ -19,6 +19,7 @@ export default function Home() {
     const [isLoading, setLoading] = useState<boolean>(false)
     const [markAsRead, setMarkAsRead] = useState<{ item: RssItem, resolver: any } | null>()
     const [canMarkAsRead, setCanMarkAsRead] = useState<boolean>(false)
+    const [channelAPI, setChannelAPI] = useState<{ id: string, upto: string, resolver: any } | null>()
     const ref = useRef<HTMLDivElement>(null)
 
     const ContextAPI = {
@@ -27,18 +28,31 @@ export default function Home() {
 	      setMarkAsRead({ item, resolver })
 	    })
         },
+	channel(id: string, upto: string) {
+            return new Promise<RssChannel>((resolver) => {
+	      setChannelAPI({ id, upto, resolver })
+	    })
+	}
     }
     useEffect(() => {
        if(!canMarkAsRead) { return }
        if(!markAsRead) { return }
        const {item, resolver} = markAsRead;
-       console.log(item.title)
 
        setLoading(true)
        BackendAPI.markAsRead(item)
            .then(resolver)
 	   .then(() => setLoading(false))
     }, [markAsRead, canMarkAsRead])
+
+    useEffect(() => {
+       if(!channelAPI) { return }
+       const { id, upto, resolver } = channelAPI
+       setLoading(true)
+       BackendAPI.channel(id, upto)
+            .then(resolver)
+	    .then(() => setLoading(false))
+    }, [channelAPI])
 
     useEffect(() => {
         setLoading(true)

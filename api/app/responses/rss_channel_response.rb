@@ -25,20 +25,14 @@ module RssChannelResponse
 
     def items_for_response
       if upto
-        published_at = RssItem.find(upto).published_at
-        offset = items
-                 .where('? <= published_at', published_at)
-                 .where('id <= ?', upto)
-                 .where(read_at: nil)
-                 .count
-        if offset == items.unread.count
-          offset += items
-                    .where('? <= published_at', published_at)
-                    .where('id <= ?', upto)
-                    .where.not(read_at: nil)
-                    .count
+        target = RssItem.find(upto)
+        if target.read?
+          offset = items.read.proceeding(target).count
+          result = items.read.offset(offset)
+        else
+          offset = items.unread.proceeding(target).count
+          result = items.latest.offset(offset)
         end
-        result = items.latest.offset(offset)
       else
         result = items.latest
       end
