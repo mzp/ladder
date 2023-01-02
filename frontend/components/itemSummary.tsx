@@ -52,7 +52,7 @@ export default function ItemSummary({ item, className, onRead }: Props) {
 
     return (
         <div
-            className={`${className} ${item.readAt && 'opacity-30'}`}
+            className={`${className} ${item.readAt && 'opacity-30'} py-2`}
             ref={ref}
         >
             <h2 className="font-bold">
