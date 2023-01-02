@@ -5,7 +5,47 @@ import { Category } from '@/api/types'
 import APIContext from '@/api/context'
 import { useContext, useEffect, useState, useRef } from 'react'
 
-export default function Folder() {
+type Props = {
+  category: Category
+  setCategories(categories: Category[]) : void
+}
+
+function CategoryRow({ category, setCategories }: Props) {
+    const ref = useRef<HTMLInputElement>(null)
+    const api = useContext(APIContext)
+    return (
+        <tr>
+            <td className="w-48 p-2">
+                <input
+		    ref={ref}
+                    type="text"
+                    className="p-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg"
+                    defaultValue={category.title || '<null>'}
+                />
+            </td>
+            <td>
+                <button
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold p-1 text-sm rounded mx-2"
+                    onClick={() =>
+                        api.updateCategory(category.id, ref.current.value).then(setCategories)
+                    }
+                >
+                    Update
+                </button>
+                <button
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold p-1 text-sm rounded"
+                    onClick={() =>
+                        api.removeCategory(category.id).then(setCategories)
+                    }
+                >
+                    Remove
+                </button>
+            </td>
+        </tr>
+    )
+}
+
+export default function CategoryList() {
     const [categories, setCategories] = useState<Category[]>([])
     const ref = useRef<HTMLInputElement>(null)
     const api = useContext(APIContext)
@@ -28,10 +68,10 @@ export default function Folder() {
                 <div className="flex h-screen">
                     <div className="w-64 flex-none border-r-[1px] overflow-scroll snap-y scroll-pt-8">
                         <Toolbar className="w-64 h-8 fixed border-r-[1px]" />
-                        <div className="mt-8 border-l-4 p-2 cursor-pointer border-transparent">
+                        <div className="mt-8 border-l-4 p-2 border-transparent">
                             <Link href="/settings/feeds">Feeds</Link>
                         </div>
-                        <div className="border-l-4 p-2 cursor-pointer font-bold text-sky-400 border-sky-400">
+                        <div className="border-l-4 p-2 font-bold text-sky-400 border-sky-400">
                             Category
                         </div>
                     </div>
@@ -62,25 +102,7 @@ export default function Folder() {
                         <table className="my-4">
                             <tbody>
                                 {categories.map((category) => (
-                                    <tr key={category.id}>
-                                        <td className="w-48">
-                                            {category.title || '<null>'}
-                                        </td>
-                                        <td>
-                                            <button
-                                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold p-1 text-sm rounded"
-                                                onClick={() =>
-                                                    api
-                                                        .removeCategory(
-                                                            category.id
-                                                        )
-                                                        .then(setCategories)
-                                                }
-                                            >
-                                                Remove
-                                            </button>
-                                        </td>
-                                    </tr>
+				    <CategoryRow key={category.id} category={category} setCategories={setCategories} />
                                 ))}
                             </tbody>
                         </table>

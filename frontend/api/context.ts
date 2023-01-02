@@ -10,6 +10,7 @@ interface API {
     channel(id: string, upto?: string): Promise<RssChannel>
     updateChannel(id: string, option: { category_id: string }): Promise<void>
     createCategory(title: string): Promise<Category[]>
+    updateCategory(id: string, title: string): Promise<Category[]>
     categories(): Promise<Category[]>
     isLoading: boolean
     setCanMarkAsRead(value: boolean): void
@@ -56,6 +57,17 @@ export const BackendAPI: API = {
             `${publicRuntimeConfig.apiRoot}/categories`,
             {
                 method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title }),
+            }
+        )
+        return response.then((res) => res.json())
+    },
+    updateCategory(id: string, title: string): Promise<Category[]> {
+        const response: Promise<any> = fetch(
+            `${publicRuntimeConfig.apiRoot}/categories/${id}`,
+            {
+                method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ title }),
             }

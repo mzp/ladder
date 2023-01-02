@@ -28,10 +28,10 @@ export default function Folder() {
                 <div className="flex h-screen">
                     <div className="w-64 flex-none border-r-[1px] overflow-scroll snap-y scroll-pt-8">
                         <Toolbar className="w-64 h-8 fixed border-r-[1px]" />
-                        <div className="mt-8 border-l-4 p-2 cursor-pointer font-bold text-sky-400 border-sky-400">
+                        <div className="mt-8 border-l-4 p-2 font-bold text-sky-400 border-sky-400">
                             Feeds
                         </div>
-                        <div className="border-l-4 p-2 cursor-pointer border-transparent">
+                        <div className="border-l-4 p-2 border-transparent">
                             <Link href="/settings/category">Category</Link>
                         </div>
                     </div>
@@ -49,7 +49,9 @@ export default function Folder() {
                                     <tr key={channel.id}>
                                         <td className="py-2">
                                             <select
-					        value={channel.category_id || ""}
+                                                value={
+                                                    channel.category_id || ''
+                                                }
                                                 onChange={(e) => {
                                                     api.updateChannel(
                                                         channel.id,
@@ -57,9 +59,11 @@ export default function Folder() {
                                                             category_id:
                                                                 e.target.value,
                                                         }
-                                                    ).then(({channels}) => setChannels(channels) )
+                                                    ).then(({ channels }) =>
+                                                        setChannels(channels)
+                                                    )
                                                 }}
-                                                className="rounded-lg shadow-sm w-32"
+                                                className="rounded-lg shadow-sm text-sm"
                                             >
                                                 <option value="">
                                                     no category

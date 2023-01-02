@@ -52,6 +52,14 @@ function Provider(props: { children: any }) {
                 })
             })
         },
+        updateCategory(id: string, title: string): Promise<Category[]> {
+            return new Promise<void>((resolver) => {
+                setAPICall({
+                    resolver,
+                    api: () => BackendAPI.updateCategory(id, title),
+                })
+            })
+        },
         removeCategory(id: string): Promise<Category[]> {
             return new Promise<void>((resolver) => {
                 setAPICall({
