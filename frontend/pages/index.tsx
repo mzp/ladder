@@ -36,12 +36,13 @@ export default function Home() {
             </Head>
             <main>
                 <div className="flex h-screen">
-                    <div className="w-80 flex-none border-r-[1px] overflow-scroll snap-y scroll-pt-8">
-                        <Toolbar className="w-80 h-8 fixed border-r-[1px]" />
+                    <div className="w-80 flex-none border-r-[1px]">
+                        <Toolbar className="h-8" />
                         {channels.length && (
                             <ChannelList
-                                className="mt-8"
+                                className="overflow-scroll snap-y"
                                 channels={channels}
+                                style={{ height: 'calc(100vh - 2rem)' }}
                                 onSelect={(channel) => {
                                     setSelected(channel)
                                     storeInitialChannel(channel.id)
@@ -53,7 +54,7 @@ export default function Home() {
                         )}
                     </div>
                     <div
-                        className="m-w-3xl overflow-scroll snap-y snap-mandatory scroll-pt-14"
+                        className="m-w-3xl"
                         onScroll={
                             api.canMarkAsRead
                                 ? undefined
@@ -69,13 +70,14 @@ export default function Home() {
                         {selected ? (
                             <ChannelSummary
                                 channel={selected}
-                                className="snap-start fixed h-14 py-1 px-4"
+                                className="snap-start h-14 py-1 px-4"
                             />
                         ) : null}
                         {selected ? (
                             <ItemList
                                 channel={selected}
-                                className="mt-16"
+                                className="overflow-scroll snap-y snap-mandatory"
+                                style={{ height: 'calc(100vh - 3.5rem)' }}
                                 items={selected.items}
                             />
                         ) : null}

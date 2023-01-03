@@ -13,7 +13,7 @@
 - [ ] Site folder(group)
 - [ ] Favicon 
 - [ ] Read later
-- [ ] unread count
+- [x] unread count
 
 ### Infrastracture
 - [ ] Deploy on AWS

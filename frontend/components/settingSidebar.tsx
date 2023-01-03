@@ -1,7 +1,4 @@
 import Link from 'next/link'
-import getConfig from 'next/config'
-
-const { publicRuntimeConfig } = getConfig()
 
 type Props = {
     active: string
@@ -21,11 +18,6 @@ export default function SettingSidebar({ active }: Props) {
             </div>
             <div className={`border-l-4 p-2 ${className('categories')}`}>
                 <Link href="/settings/categories">Category</Link>
-            </div>
-            <div className="border-l-4 p-2">
-                <a href={`${publicRuntimeConfig.apiRoot}/sidekiq`}>
-                    Job Monitor
-                </a>
             </div>
             <div className="p-2 mt-4">
                 <Link href="/">←Back</Link>

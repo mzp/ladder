@@ -7,9 +7,15 @@ interface Props {
     channels: RssChannel[]
     className?: string
     onSelect?(channel: RssChannel): void
+    style?: { [key: string]: string }
 }
 
-export default function ItemList({ channels, className, onSelect }: Props) {
+export default function ItemList({
+    channels,
+    className,
+    onSelect,
+    style,
+}: Props) {
     const { unreadCount } = useContext(APIContext)
     const [selected, setSelected] = useState<RssChannel>(
         channels.find(({ items }) => items.length > 0) || channels[0]
@@ -21,7 +27,7 @@ export default function ItemList({ channels, className, onSelect }: Props) {
     }, [])
 
     return (
-        <div className={className}>
+        <div className={className} style={style}>
             {channels.map((channel) => (
                 <div
                     key={channel.id}

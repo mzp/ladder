@@ -4,17 +4,42 @@ import Cog from '@/components/cog'
 import { useContext, useState, useEffect } from 'react'
 import APIContext from '@/api/context'
 
+import getConfig from 'next/config'
+
+const { publicRuntimeConfig } = getConfig()
+
 export default function Toolbar({ className }: { className?: string }) {
     const api = useContext(APIContext)
     return (
-        <div className={`text-xl  align-middle bg-white px-2 ${className}`}>
+        <div
+            className={`w-full text-xl align-middle bg-white px-2 ${className}`}
+        >
             <div className="flex items-center">
                 <h1 className="pr-2 flex-none">Ultraladder</h1>
                 <div className="flex-auto">{api.isLoading && <Spin />}</div>
-                <div className="text-slate-400">
-                    <Link href="/settings/feeds">
+                <div>
+                    <div className="text-slate-400 hover:text-slate-600 peer">
                         <Cog />
-                    </Link>
+                    </div>
+                    <div
+                        className="hidden text-sm peer-hover:flex hover:flex
+		 w-[100px]
+		 flex-col bg-white ring-1 ring-slate-900/5 shadow fixed -ml-[80px] p-2 rounded-lg space-y-2"
+                    >
+                        <Link
+                            className="hover:text-sky-400"
+                            href="/settings/feeds"
+                        >
+                            Settings
+                        </Link>
+
+                        <a
+                            className="hover:text-sky-400"
+                            href={`${publicRuntimeConfig.apiRoot}/sidekiq`}
+                        >
+                            Job Monitor
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
