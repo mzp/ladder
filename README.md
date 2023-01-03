@@ -10,7 +10,7 @@
 - [ ] Optimize on tablet
 - [ ] Keyboard shortcut for PC
 - [ ] Import OPML
-- [ ] Site folder(group)
+- [x] Site folder(group)
 - [ ] Favicon 
 - [ ] Read later
 - [x] unread count
@@ -25,5 +25,5 @@
 - [x] Duplicated entry remover
 - [ ] Full text search
 - [ ] Subscribe twitter account
-- [ ] NSFW filter
+- [ ] Mark NSFW 
 - [ ] Image slidershow
