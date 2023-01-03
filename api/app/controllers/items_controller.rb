@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class ItemsController < ApplicationController
+  include UnreadCount
+
   def index
     channels = RssChannel.all.includes(:items).order(:id)
     channels.each.with_index do |channel, index|
@@ -9,7 +11,7 @@ class ItemsController < ApplicationController
         channel.extend RssChannelResponse::WithLatestItem
       end
     end
-    render json: { channels:, unreadCount: unread_count(channels) }
+    render json: { channels:, unreadCount: self.class.unread_count(channels) }
   end
 
   def mark_as_read
@@ -21,12 +23,6 @@ class ItemsController < ApplicationController
         .where('? < published_at', item.published_at)
         .update(read_at:)
     RssItem.where(url: item.url).update(read_at:)
-    render json: { readAt: read_at, unreadCount: unread_count(RssChannel.all) }
-  end
-
-  private
-
-  def unread_count(channels)
-    channels.to_h { |channel| [channel.id, channel.items.unread.count] }
+    render json: { readAt: read_at, unreadCount: self.class.unread_count(RssChannel.all) }
   end
 end

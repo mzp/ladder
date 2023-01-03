@@ -68,4 +68,15 @@ class ChannelsControllerTest < ActionDispatch::IntegrationTest
     assert_equal older_item1.id, channel['items'][0]['id']
     assert_equal older_item2.id, channel['items'][1]['id']
   end
+
+  test 'mark all as read' do
+    post channel_mark_all_as_read_url(@first_channel.id)
+    assert_response :success
+
+    unread_count = response.parsed_body['unreadCount']
+    assert_equal 0, unread_count[@first_channel.id.to_s]
+    assert_equal 6, unread_count[@second_channel.id.to_s]
+
+    assert_equal 0, @first_channel.items.reload.unread.count
+  end
 end

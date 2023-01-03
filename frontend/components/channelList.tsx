@@ -47,9 +47,7 @@ export default function ItemList({
                     <div className="shrink truncate whitespace-nowrap">
                         {channel.title}
                     </div>
-                    {unreadCount[channel.id] && (
-                        <div>({unreadCount[channel.id]})</div>
-                    )}
+                    <div>({unreadCount[channel.id]})</div>
                 </div>
             ))}
         </div>

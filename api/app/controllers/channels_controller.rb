@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class ChannelsController < ApplicationController
+  include UnreadCount
   def index
     channels = RssChannel.all.includes(:items).order(:id)
     channels.each do |channel|
@@ -32,5 +33,11 @@ class ChannelsController < ApplicationController
     end
 
     render json: channels
+  end
+
+  def mark_all_as_read
+    target = RssChannel.find(params[:channel_id])
+    target.items.unread.update!(read_at: Time.current)
+    render json: { unreadCount: self.class.unread_count(RssChannel.all) }
   end
 end

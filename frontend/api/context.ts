@@ -13,6 +13,7 @@ import getConfig from 'next/config'
 
 interface API {
     markAsRead(item: RssItem): Promise<MarkAsReadResponse>
+    markAllAsRead(channel: RssChannel): Promise<{ unreadCount: UnreadCount }>
     channels(): Promise<ChannelsResponse>
     items(id?: string): Promise<ItemsResponse>
     channel(id: string, upto?: string): Promise<RssChannel>
@@ -34,6 +35,12 @@ export const BackendAPI: API = {
     markAsRead(item: RssItem) {
         return fetch(
             `${publicRuntimeConfig.apiRoot}/items/${item.id}/markAsRead`,
+            { method: 'POST' }
+        ).then((res) => res.json())
+    },
+    markAllAsRead(channel: RssChannel) {
+        return fetch(
+            `${publicRuntimeConfig.apiRoot}/channels/${channel.id}/markAllAsRead`,
             { method: 'POST' }
         ).then((res) => res.json())
     },

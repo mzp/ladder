@@ -53,20 +53,7 @@ export default function Home() {
                             />
                         )}
                     </div>
-                    <div
-                        className="m-w-3xl"
-                        onScroll={
-                            api.canMarkAsRead
-                                ? undefined
-                                : () => {
-                                      ref.current &&
-                                          api.setCanMarkAsRead(
-                                              ref.current.scrollTop > 100
-                                          )
-                                  }
-                        }
-                        ref={ref}
-                    >
+                    <div className="m-w-3xl">
                         {selected ? (
                             <ChannelSummary
                                 channel={selected}
@@ -74,12 +61,28 @@ export default function Home() {
                             />
                         ) : null}
                         {selected ? (
-                            <ItemList
-                                channel={selected}
+                            <div
                                 className="overflow-scroll snap-y snap-mandatory"
                                 style={{ height: 'calc(100vh - 3.5rem)' }}
-                                items={selected.items}
-                            />
+                                ref={ref}
+                                onScroll={
+                                    api.canMarkAsRead
+                                        ? undefined
+                                        : () => {
+					      console.log('Scroll detected: enable unread management')
+                                              ref.current &&
+                                                  api.setCanMarkAsRead(
+                                                      ref.current.scrollTop >
+                                                          100
+                                                  )
+                                          }
+                                }
+                            >
+                                <ItemList
+                                    channel={selected}
+                                    items={selected.items}
+                                />
+                            </div>
                         ) : null}
                     </div>
                 </div>

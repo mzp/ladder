@@ -7,7 +7,6 @@ interface Props {
     channel: RssChannel
     items: RssItem[]
     className?: string
-    style?: { [key: string]: string }
 }
 
 export default function ItemList(props: Props) {
@@ -36,7 +35,7 @@ export default function ItemList(props: Props) {
     }, [props.channel])
 
     return (
-        <div className={`space-y-2 ${props.className}`} style={props.style}>
+        <div className={`space-y-2 ${props.className}`}>
             {items.map((item, index) => (
                 <ItemSummary
                     key={item.id}

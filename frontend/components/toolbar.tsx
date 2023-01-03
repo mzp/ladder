@@ -23,8 +23,8 @@ export default function Toolbar({ className }: { className?: string }) {
                     </div>
                     <div
                         className="hidden text-sm peer-hover:flex hover:flex
-		 w-[100px]
-		 flex-col bg-white ring-1 ring-slate-900/5 shadow fixed -ml-[80px] p-2 rounded-lg space-y-2"
+		 w-[150px]
+		 flex-col bg-white ring-1 ring-slate-900/5 shadow fixed -ml-[130px] p-2 rounded-lg space-y-2 -mt-2 z-10"
                     >
                         <Link
                             className="hover:text-sky-400"

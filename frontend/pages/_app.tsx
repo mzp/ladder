@@ -33,6 +33,14 @@ function Provider(props: { children: any }) {
                 setMarkAsRead({ item, resolver })
             })
         },
+        markAllAsRead(channel: RssChannel) {
+            return new Promise<{ unreadCount: UnreadCount }>((resolver) => {
+                setAPICall({
+                    resolver,
+                    api: () => BackendAPI.markAllAsRead(channel),
+                })
+            })
+        },
         channels() {
             return new Promise<ChannelsResponse>((resolver) => {
                 setAPICall({ resolver, api: () => BackendAPI.channels() })
@@ -106,7 +114,7 @@ function Provider(props: { children: any }) {
             return
         }
         const { item, resolver } = markAsRead
-
+        console.log(`markAsRead: ${item.title}`)
         setLoading(true)
         BackendAPI.markAsRead(item)
             .then(resolver)
