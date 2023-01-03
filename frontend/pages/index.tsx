@@ -53,7 +53,7 @@ export default function Home() {
                             />
                         )}
                     </div>
-                    <div className="m-w-3xl">
+                    <div className="w-full">
                         {selected ? (
                             <ChannelSummary
                                 channel={selected}

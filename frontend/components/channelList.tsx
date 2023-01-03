@@ -48,22 +48,24 @@ interface CategoryProps {
 }
 
 function Category({ category, selected, onSelect }: CategoryProps) {
-    const [isOpened, setOpened] = useState<boolean>(true)
     const { unreadCount } = useContext(APIContext)
+    const hasUnread = unreadCount.categories[category.id] > 0
+    const [isOpened, setOpened] = useState<boolean>(hasUnread)
+
     return (
         <div key={category.id} className="mb-3">
             <div
-                className="space-x-2 flex cursor-pointer hover:text-sky-400 text-sm"
+                className={`space-x-2 flex cursor-pointer hover:text-sky-400 text-sm ${hasUnread ? '' : 'opacity-30' }`}
                 onClick={() => setOpened(!isOpened)}
             >
                 <div>{isOpened ? <FolderOpen /> : <Folder />}</div>
-                <div>{category.title}</div>
+                <div>{category.title}({unreadCount.categories[category.id]})</div>
             </div>
             {isOpened &&
                 (category.channels || []).map((channel) => (
                     <div
                         key={channel.id}
-                        className={`border-l-4 text-xs ml-2 p-2 cursor-pointer flex hover:text-sky-400
+                        className={`text-xs ml-2 p-2 cursor-pointer flex hover:text-sky-400
 		    ${
                 (selected && selected.id == channel.id)
                     ? 'font-bold text-sky-400 border-sky-400'
@@ -122,7 +124,7 @@ export default function ItemList({
     }, [])
 
     return (
-        <div className={`${className} ml-[1px]`} style={style}>
+        <div className={`${className} ml-2`} style={style}>
             {categories.map((category) => {
                 const isOpened =
                     openedCategory && category.id == openedCategory.id

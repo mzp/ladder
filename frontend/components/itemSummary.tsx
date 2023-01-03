@@ -56,7 +56,9 @@ export default function ItemSummary({ item, className, onRead }: Props) {
 
     return (
         <div
-            className={`${className} ${item.readAt && 'opacity-30'} py-2`}
+            className={`${className ? className : ''} ${item.readAt ? 'opacity-30' : ''} py-2
+max-w-4xl mx-auto
+	    `}
             ref={ref}
         >
             <h2 className="font-bold">
@@ -64,7 +66,7 @@ export default function ItemSummary({ item, className, onRead }: Props) {
             </h2>
             <div className="flex space-x-4 my-2 leading-6">
                 <div
-                    className="text-gray-600 max-w-3xl flex-auto"
+                    className="text-gray-600 flex-auto"
                     dangerouslySetInnerHTML={{ __html: item.description }}
                 />
                 {item.imageurl ? (

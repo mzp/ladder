@@ -31,10 +31,14 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'unread count' do
-    unread_count = response.parsed_body['unreadCount']['channels']
-    assert_equal 5, unread_count[@channel1.id.to_s]
-    assert_equal 6, unread_count[@channel2.id.to_s]
-    assert_equal 7, unread_count[@channel3.id.to_s]
+    channel_unread_count = response.parsed_body['unreadCount']['channels']
+    assert_equal 5, channel_unread_count[@channel1.id.to_s]
+    assert_equal 6, channel_unread_count[@channel2.id.to_s]
+    assert_equal 7, channel_unread_count[@channel3.id.to_s]
+
+    category_unread_count = response.parsed_body['unreadCount']['categories']
+    assert_equal 11, category_unread_count[@category.id.to_s]
+    assert_equal 7, category_unread_count[Category.no_category.id.to_s]
   end
 end
 

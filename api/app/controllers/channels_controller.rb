@@ -34,6 +34,6 @@ class ChannelsController < ApplicationController
   def mark_all_as_read
     target = RssChannel.find(params[:channel_id])
     target.items.unread.update!(read_at: Time.current)
-    render json: { unreadCount: self.class.unread_count(RssChannel.all) }
+    render json: { unreadCount: self.class.unread_count }
   end
 end

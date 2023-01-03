@@ -35,7 +35,7 @@ export default function ItemList(props: Props) {
     }, [props.channel])
 
     return (
-        <div className={`space-y-2 ${props.className}`}>
+        <div className={`space-y-2 ${props.className ? props.className : ''}`}>
             {items.map((item, index) => (
                 <ItemSummary
                     key={item.id}

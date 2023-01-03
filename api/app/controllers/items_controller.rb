@@ -6,12 +6,12 @@ class ItemsController < ApplicationController
   def index
     categories = Category.visible.includes(rss_channels: [:items])
 
-    if params[:initial].blank?
-      target_id = RssChannel.find_by(category: Category.no_category).id
-    else
-      target_id = params[:initial].to_i
-    end
-  
+    target_id = if params[:initial].blank?
+                  RssChannel.find_by(category: Category.no_category).id
+                else
+                  params[:initial].to_i
+                end
+
     categories.each do |category|
       category.extend CategoryResponse
       category.rss_channels.each do |channel|
@@ -22,7 +22,7 @@ class ItemsController < ApplicationController
         end
       end
     end
-    render json: { categories:, unreadCount: self.class.unread_count(RssChannel.all) }
+    render json: { categories:, unreadCount: self.class.unread_count }
   end
 
   def mark_as_read
@@ -34,6 +34,6 @@ class ItemsController < ApplicationController
         .where('? < published_at', item.published_at)
         .update(read_at:)
     RssItem.where(url: item.url).update(read_at:)
-    render json: { readAt: read_at, unreadCount: self.class.unread_count(RssChannel.all) }
+    render json: { readAt: read_at, unreadCount: self.class.unread_count }
   end
 end
