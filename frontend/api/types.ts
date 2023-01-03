@@ -6,6 +6,7 @@ export interface RssItem {
     date: string
     imageurl: string | null
     description: string
+    content: string | null
     hatenaBookmarkCount: number
     readAt: string | null
 }

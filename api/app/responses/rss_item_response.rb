@@ -24,7 +24,7 @@ module RssItemResponse
     URI(url).host
   end
 
-  def content
+  def formatted_description
     if description.include?('<')
       description
     else
@@ -40,10 +40,10 @@ module RssItemResponse
 
   def as_json(options = {})
     super(options.merge(
-      only: %i[id url],
+      only: %i[id url content],
       methods: %i[title imageurl date site]
     )).merge(
-      description: content,
+      description: formatted_description,
       hatenaBookmarkCount: hatena_bookmark_count,
       readAt: read_at
     )

@@ -80,6 +80,7 @@ max-w-4xl mx-auto
                     </div>
                 ) : null}
             </div>
+	    { item.content && <div className="my-2">More</div> }
             <Link className="border-t-[1px] text-xs text-gray-600 flex space-x-4 font-light">
                 <div>{item.date}</div>
                 <div>{item.site}</div>

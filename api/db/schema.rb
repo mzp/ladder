@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_01_03_025754) do
+ActiveRecord::Schema[7.0].define(version: 2023_01_03_071824) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -43,6 +43,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_03_025754) do
     t.datetime "published_at"
     t.integer "hatena_bookmark_count"
     t.datetime "read_at"
+    t.string "original_description"
+    t.string "content"
+    t.string "original_content"
     t.index ["rss_channel_id"], name: "index_rss_items_on_rss_channel_id"
   end
 

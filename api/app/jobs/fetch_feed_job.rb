@@ -29,26 +29,35 @@ class FetchFeedJob < ApplicationJob
   class << self
     def analyze(item)
       result = {
+        original_description: item.description,
+        original_content: item.try(:content_encoded),
+        content: item.try(:content_encoded),
         description: item.description,
         imageurl: item.try(:hatena_imageurl) || thumbnail_enclosure(item),
         title: item.title,
         published_at: item.date || Time.zone.now,
         hatena_bookmark_count: item.try(:hatena_bookmarkcount).to_i
-      }.merge(parse_html(item.description))
-
-      result[:description] = scrub(result[:description])
-      result
+      }
+      [:parse_html, :scrub].reduce(result) do |arg, name|
+        send name, arg
+      end
     end
 
-    def scrub(description)
+    def scrub(item)
       scrubber = Rails::Html::PermitScrubber.new
       scrubber.tags = %w[a h1 h2 h3 h4 h5 h6 div p span ul li ol prei
                          b blockquote br code em i img
                          strong table td tr ul]
+      description = Loofah.fragment(item[:description])
+      description.scrub!(scrubber)
 
-      html_fragment = Loofah.fragment(description)
-      html_fragment.scrub!(scrubber)
-      html_fragment.to_s 
+      content = if item[:content]
+                  content = Loofah.fragment(item[:content])
+                  content.scrub!(scrubber)
+                  content.to_s
+                end
+
+      item.merge(description: description.to_s, content:)
     end
 
     def thumbnail_enclosure(item)
@@ -57,18 +66,26 @@ class FetchFeedJob < ApplicationJob
       item.enclosure.url
     end
 
-    def parse_html(description)
-      html = Nokogiri::HTML(description)
-      image_tag = html.at('img[src]')
-      return {} if image_tag.blank?
+    def parse_html(item)
+      return item if item[:imageurl].present?
+      description = Nokogiri::HTML(item[:description])
+      image_tag = description.at('img[src]')
+      if image_tag
+        imageurl = image_tag.attributes['src'].value
+        image_tag.remove
 
-      imageurl = image_tag.attributes['src'].value
-      image_tag.remove
-
-      { imageurl:, description: html.to_html }
+        item.merge({ imageurl:, description: description.to_html })
+      elsif item[:content]
+        content = Nokogiri::HTML(item[:content])
+        image_tag = content.at('img[src]')
+        imageurl = image_tag.attributes['src'].value
+        item.merge({ imageurl: })
+      else
+        item
+      end
     rescue StandardError => e
       Rails.logger.error "Can't parse feed: #{e}"
-      {}
+      item
     end
   end
 end
