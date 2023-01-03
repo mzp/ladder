@@ -3,10 +3,6 @@
 require 'json'
 
 module RssChannelResponse
-  def unread_count
-    items.unread.count
-  end
-
   def items_for_response
     []
   end
@@ -15,7 +11,6 @@ module RssChannelResponse
     super(options.merge(
       only: %i[id title url description category_id]
     )).merge(
-      unreadCount: unread_count,
       items: items_for_response
     )
   end

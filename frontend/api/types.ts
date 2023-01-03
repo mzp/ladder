@@ -16,7 +16,7 @@ export interface RssChannel {
     title: string
     description: string
     items: RssItem[]
-    unreadCount: number
+    category_id: string
 }
 
 export interface ChannelOption {
@@ -26,4 +26,15 @@ export interface ChannelOption {
 export interface Category {
     id: string
     title: string
+}
+
+export interface ChannelsResponse {
+    channels: RssChannel[]
+    categories: Category[]
+}
+
+export interface ItemsResponse {
+    channels: RssChannel[]
+    categories: Category[]
+    unreadCount: Map<string, number>
 }

@@ -27,7 +27,9 @@ export default function ItemList(props: Props) {
     useEffect(() => {
         setItems(props.items)
         if (props.items.length == 0) {
-            console.log(`${__filename}: initial load`)
+            console.log(
+                `${__filename}: initial load for ${props.channel.title}`
+            )
             handleLoadMore(null)
         }
     }, [props.channel])

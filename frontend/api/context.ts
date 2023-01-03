@@ -1,17 +1,23 @@
 import { createContext } from 'react'
-import { Category, RssChannel, RssItem, ChannelOption } from '@/api/types'
+import {
+    Category,
+    RssChannel,
+    RssItem,
+    ChannelOption,
+    ChannelsResponse,
+    ItemsResponse,
+} from '@/api/types'
 import getConfig from 'next/config'
 
 interface API {
     markAsRead(item: RssItem): Promise<string | null>
-    channels(): Promise<{ channels: RssChannel[]; categories: Category[] }>
-    items(
-        id?: string
-    ): Promise<{ channels: RssChannel[]; categories: Category[] }>
+    channels(): Promise<ChannelsResponse>
+    items(id?: string): Promise<ItemsResponse>
     channel(id: string, upto?: string): Promise<RssChannel>
-    updateChannel(id: string, option: { category_id: string }): Promise<void>
+    updateChannel(id: string, option: ChannelOption): Promise<RssChannel[]>
     createCategory(title: string): Promise<Category[]>
     updateCategory(id: string, title: string): Promise<Category[]>
+    removeCategory(id: string): Promise<Category[]>
     categories(): Promise<Category[]>
     isLoading: boolean
     setCanMarkAsRead(value: boolean): void
@@ -24,80 +30,58 @@ const { publicRuntimeConfig } = getConfig()
 
 export const BackendAPI: API = {
     markAsRead(item: RssItem): Promise<string> {
-        const response: Promise<any> = fetch(
+        return fetch(
             `${publicRuntimeConfig.apiRoot}/items/${item.id}/markAsRead`,
             { method: 'POST' }
-        )
-        return response.then((res) => res.json())
+        ).then((res) => res.json())
     },
     channels() {
-        const response: Promise<any> = fetch(
-            `${publicRuntimeConfig.apiRoot}/channels`
+        return fetch(`${publicRuntimeConfig.apiRoot}/channels`).then((res) =>
+            res.json()
         )
-        return response.then((res) => res.json())
     },
     items(initialSelectedID?: string) {
-        const response: Promise<any> = fetch(
+        return fetch(
             `${publicRuntimeConfig.apiRoot}/items?initial=${initialSelectedID}`
-        )
-        return response.then((res) => res.json())
+        ).then((res) => res.json())
     },
-
-    channel(id: string, upto: string): Promise<RssChannel> {
-        const response: Promise<any> = fetch(
+    channel(id: string, upto: string) {
+        return fetch(
             `${publicRuntimeConfig.apiRoot}/channels/${id}?upto=${
                 upto ? upto : ''
             }`
-        )
-        return response.then((res) => res.json())
+        ).then((res) => res.json())
     },
-    updateChannel(id: string, option: ChannelOption): Promise<RssChannel> {
-        const response: Promise<any> = fetch(
-            `${publicRuntimeConfig.apiRoot}/channels/${id}`,
-            {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(option),
-            }
-        )
-        return response.then((res) => res.json())
+    updateChannel(id: string, option: ChannelOption) {
+        return fetch(`${publicRuntimeConfig.apiRoot}/channels/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(option),
+        }).then((res) => res.json())
     },
     createCategory(title: string): Promise<Category[]> {
-        const response: Promise<any> = fetch(
-            `${publicRuntimeConfig.apiRoot}/categories`,
-            {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ title }),
-            }
-        )
-        return response.then((res) => res.json())
+        return fetch(`${publicRuntimeConfig.apiRoot}/categories`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title }),
+        }).then((res) => res.json())
     },
     updateCategory(id: string, title: string): Promise<Category[]> {
-        const response: Promise<any> = fetch(
-            `${publicRuntimeConfig.apiRoot}/categories/${id}`,
-            {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ title }),
-            }
-        )
-        return response.then((res) => res.json())
+        return fetch(`${publicRuntimeConfig.apiRoot}/categories/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title }),
+        }).then((res) => res.json())
     },
     removeCategory(id: string): Promise<Category[]> {
-        const response: Promise<any> = fetch(
-            `${publicRuntimeConfig.apiRoot}/categories/${id}`,
-            {
-                method: 'DELETE',
-            }
-        )
-        return response.then((res) => res.json())
+        return fetch(`${publicRuntimeConfig.apiRoot}/categories/${id}`, {
+            method: 'DELETE',
+        }).then((res) => res.json())
     },
     categories(): Promise<Category[]> {
-        const response: Promise<any> = fetch(
-            `${publicRuntimeConfig.apiRoot}/categories`
+        return fetch(`${publicRuntimeConfig.apiRoot}/categories`).then((res) =>
+            res.json()
         )
-        return response.then((res) => res.json())
     },
 
     isLoading: false,

@@ -1,9 +1,10 @@
+import { useContext, useEffect, useState } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
+import { Category, RssChannel } from '@/api/types'
+import APIContext from '@/api/context'
 import Toolbar from '@/components/toolbar'
 import SettingSidebar from '@/components/settingSidebar'
-import APIContext from '@/api/context'
-import { useContext, useEffect, useState } from 'react'
 
 export default function Folder() {
     const [channels, setChannels] = useState<RssChannel[]>([])
@@ -55,7 +56,7 @@ export default function Folder() {
                                                             category_id:
                                                                 e.target.value,
                                                         }
-                                                    ).then(({ channels }) =>
+                                                    ).then((channels) =>
                                                         setChannels(channels)
                                                     )
                                                 }}

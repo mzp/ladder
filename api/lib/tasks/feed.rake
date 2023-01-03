@@ -9,8 +9,8 @@ namespace :feed do
   end
 
   desc 'update'
-  task :update, [] => :environment do 
-    RssChannel.all.pluck(:feed_url).each do|url|
+  task :update, [] => :environment do
+    RssChannel.all.pluck(:feed_url).each do |url|
       FetchFeedJob.perform_now url
     end
   end

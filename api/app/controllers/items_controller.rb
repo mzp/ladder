@@ -6,11 +6,10 @@ class ItemsController < ApplicationController
     channels.each.with_index do |channel, index|
       channel.extend RssChannelResponse
       if channel.id == params[:initial].to_i || (params[:initial].blank? && index.zero?)
-        channel.extend RssChannelResponse::WithLatestItem 
+        channel.extend RssChannelResponse::WithLatestItem
       end
     end
-    response = channels.as_json
-    render json: { channels: response }
+    render json: { channels:, unreadCount: unread_count(channels) }
   end
 
   def mark_as_read
@@ -22,6 +21,12 @@ class ItemsController < ApplicationController
         .where('? < published_at', item.published_at)
         .update(read_at:)
     RssItem.where(url: item.url).update(read_at:)
-    render json: item.read_at
+    render json: { readAt: read_at, unreadCount: unread_count(RssChannel.all) }
+  end
+
+  private
+
+  def unread_count(channels)
+    channels.to_h { |channel| [channel.id, channel.items.unread.count] }
   end
 end

@@ -6,7 +6,7 @@ class ChannelsController < ApplicationController
     channels.each do |channel|
       channel.extend RssChannelResponse
     end
-    render json: { channels: channels, categories: Category.all }
+    render json: { channels:, categories: Category.all }
   end
 
   def show
@@ -19,11 +19,11 @@ class ChannelsController < ApplicationController
   end
 
   def update
-    channel = RssChannel.find(params[:id])
+    target = RssChannel.find(params[:id])
     if params[:category_id].blank?
-      channel.update!(category: nil)
+      target.update!(category: nil)
     else
-      channel.update(params.permit(:category_id))
+      target.update(params.permit(:category_id))
     end
 
     channels = RssChannel.all.order(:id)
@@ -31,6 +31,6 @@ class ChannelsController < ApplicationController
       channel.extend RssChannelResponse
     end
 
-    render json: {channels: channels}
+    render json: channels
   end
 end

@@ -27,11 +27,14 @@ function CategoryRow({ category, setCategories }: Props) {
             <td>
                 <button
                     className="bg-blue-500 hover:bg-blue-700 text-white font-bold p-1 text-sm rounded mx-2"
-                    onClick={() =>
-                        api
-                            .updateCategory(category.id, ref.current.value)
-                            .then(setCategories)
-                    }
+                    onClick={() => {
+                        if (ref.current) {
+                            api.updateCategory(
+                                category.id,
+                                ref.current.value
+                            ).then(setCategories)
+                        }
+                    }}
                 >
                     Update
                 </button>
@@ -78,10 +81,12 @@ export default function CategoryList() {
                             className="my-4 flex space-x-2"
                             onSubmit={(event) => {
                                 event.preventDefault()
-                                api.createCategory(ref.current.value).then(
-                                    setCategories
-                                )
-                                ref.current.value = ''
+                                if (ref.current) {
+                                    api.createCategory(ref.current.value).then(
+                                        setCategories
+                                    )
+                                    ref.current.value = ''
+                                }
                             }}
                         >
                             <input

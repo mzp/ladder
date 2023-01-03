@@ -2,7 +2,14 @@ import '../styles/globals.css'
 import type { AppProps } from 'next/app'
 
 import { useState, useEffect } from 'react'
-import { RssChannel, RssItem, ChannelOption } from '@/api/types'
+import {
+    Category,
+    RssChannel,
+    RssItem,
+    ChannelOption,
+    ChannelsResponse,
+    ItemsResponse,
+} from '@/api/types'
 import { default as APIContext, BackendAPI } from '@/api/context'
 
 function Provider(props: { children: any }) {
@@ -25,17 +32,17 @@ function Provider(props: { children: any }) {
             })
         },
         channels() {
-            return new Promise<RssChannel[]>((resolver) => {
+            return new Promise<ChannelsResponse>((resolver) => {
                 setAPICall({ resolver, api: () => BackendAPI.channels() })
             })
         },
         items(id: string) {
-            return new Promise<RssChannel[]>((resolver) => {
+            return new Promise<ItemsResponse>((resolver) => {
                 setAPICall({ resolver, api: () => BackendAPI.items(id) })
             })
         },
         channel(id: string, upto: string) {
-            return new Promise<RssChannel[]>((resolver) => {
+            return new Promise<RssChannel>((resolver) => {
                 setAPICall({
                     resolver,
                     api: () => BackendAPI.channel(id, upto),
@@ -43,7 +50,7 @@ function Provider(props: { children: any }) {
             })
         },
         updateChannel(id: string, option: ChannelOption) {
-            return new Promise<void>((resolver) => {
+            return new Promise<RssChannel[]>((resolver) => {
                 setAPICall({
                     resolver,
                     api: () => BackendAPI.updateChannel(id, option),
@@ -51,23 +58,23 @@ function Provider(props: { children: any }) {
             })
         },
         createCategory(title: string): Promise<Category[]> {
-            return new Promise<void>((resolver) => {
+            return new Promise<Category[]>((resolver) => {
                 setAPICall({
                     resolver,
                     api: () => BackendAPI.createCategory(title),
                 })
             })
         },
-        updateCategory(id: string, title: string): Promise<Category[]> {
-            return new Promise<void>((resolver) => {
+        updateCategory(id: string, title: string) {
+            return new Promise<Category[]>((resolver) => {
                 setAPICall({
                     resolver,
                     api: () => BackendAPI.updateCategory(id, title),
                 })
             })
         },
-        removeCategory(id: string): Promise<Category[]> {
-            return new Promise<void>((resolver) => {
+        removeCategory(id: string) {
+            return new Promise<Category[]>((resolver) => {
                 setAPICall({
                     resolver,
                     api: () => BackendAPI.removeCategory(id),
@@ -75,8 +82,8 @@ function Provider(props: { children: any }) {
             })
         },
 
-        categories(): Promise<Category[]> {
-            return new Promise<void>((resolver) => {
+        categories() {
+            return new Promise<Category[]>((resolver) => {
                 setAPICall({
                     resolver,
                     api: () => BackendAPI.categories(),
@@ -111,11 +118,12 @@ function Provider(props: { children: any }) {
         }
         const { resolver, api } = apiCall
         setLoading(true)
+        console.log('Start API Request')
         api()
             .then(resolver)
             .then(() => {
-                console.log('done')
                 setLoading(false)
+                console.log('End API Request')
             })
     }, [apiCall])
 
