@@ -12,30 +12,36 @@ interface Props {
 }
 
 export default function ItemList(props: Props) {
-    const [items, setItems] = useState<RssItem[]>(props.items)
+    const channelID = props.channel.id
+    const [itemData, setItemData] = useState<{ [key: string]: RssItem[] }>({
+        [channelID]: props.items,
+    })
     const api = useContext(APIContext)
 
     function handleLoadMore(lastItem: RssItem | null) {
         const oldestID = lastItem ? lastItem.id : undefined
-        api.channel(props.channel.id, oldestID).then((channel) => {
+        api.channel(channelID, oldestID).then((channel) => {
             if (lastItem) {
-                setItems([...items, ...channel.items])
+	        // avoid race condition(?)
+                const newItems = [...itemData[channel.id], ...channel.items]
+                setItemData({ ...itemData, [channel.id]: newItems })
             } else {
-                setItems(channel.items)
+                setItemData({ [channel.id]: channel.items })
             }
         })
     }
 
     useEffect(() => {
-        setItems(props.items)
+        setItemData({ [channelID]: props.items })
         if (props.items.length == 0) {
             console.log(
                 `${__filename}: initial load for ${props.channel.title}`
             )
             handleLoadMore(null)
         }
-    }, [props.channel])
+    }, [props.channel, props.items])
 
+    const items = itemData[channelID] || []
     return (
         <div
             className={`space-y-2 ${props.className ? props.className : ''} ${
