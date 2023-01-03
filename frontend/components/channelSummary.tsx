@@ -42,16 +42,18 @@ export default function ChannelSummary({ channel, className }: Props) {
                     </a>
                 </h2>
                 <DropMenu icon={<Adjustment />} width={180}>
-                        <button
-                            className={`text-left ${count == 0 ? 'opacity-30' : 'hover:text-sky-400'}`}
-                            onClick={() => {
-                                markAllAsRead(channel).then(({ unreadCount }) =>
-                                    setUnreadCount(unreadCount)
-                                )
-                            }}
-                        >
-                            Mark all as read({count})
-                        </button>
+                    <button
+                        className={`text-left ${
+                            count == 0 ? 'opacity-30' : 'hover:text-sky-400'
+                        }`}
+                        onClick={() => {
+                            markAllAsRead(channel).then(({ unreadCount }) =>
+                                setUnreadCount(unreadCount)
+                            )
+                        }}
+                    >
+                        Mark all as read({count})
+                    </button>
                 </DropMenu>
             </div>
             <div className="text-sm">

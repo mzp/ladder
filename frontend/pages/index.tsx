@@ -4,6 +4,7 @@ import { Category, RssChannel, RssItem } from '@/api/types'
 import { default as APIContext, BackendAPI } from '@/api/context'
 import ItemList from '@/components/itemList'
 import Toolbar from '@/components/toolbar'
+import ItemDetail from '@/components/itemDetail'
 import ChannelList from '@/components/channelList'
 import ChannelSummary from '@/components/channelSummary'
 import useLocalStorage from '@/components/hook/useLocalStorage'
@@ -57,7 +58,7 @@ export default function Home() {
                         {selected ? (
                             <ChannelSummary
                                 channel={selected}
-                                className="snap-start h-20 py-1 px-4"
+                                className="snap-start h-24 py-4 px-4"
                             />
                         ) : null}
                         {selected ? (
@@ -88,6 +89,10 @@ export default function Home() {
                         ) : null}
                     </div>
                 </div>
+                <ItemDetail
+                    className={`transition ease-in-out duration-200 w-1/2 right-0 fixed top-0 h-screen 
+	    ${api.detailItem ? 'translate-x-0' : 'translate-x-full'}`}
+                />
             </main>
         </>
     )

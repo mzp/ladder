@@ -9,12 +9,14 @@ export default function DropMenu({ icon, children, width }: Props) {
     const [opened, setOpened] = useState<boolean>(false)
     const ref = useRef<HTMLDivElement>(null)
     useEffect(() => {
-        if (!opened) { return }
+        if (!opened) {
+            return
+        }
         const listener = (event: any) => {
             if (!ref.current || ref.current.contains(event.target)) {
                 return
             }
-	    setOpened(false)
+            setOpened(false)
         }
         document.addEventListener('mousedown', listener)
         document.addEventListener('touchstart', listener)
@@ -34,8 +36,8 @@ export default function DropMenu({ icon, children, width }: Props) {
                 {icon}
             </div>
             <div
+                style={{ width: `${width}px`, marginLeft: `-${width - 20}px` }}
                 className={`text-sm flex
-		 w-[${width}px] -ml-[${width - 20}px]
 		 ${opened ? '' : 'hidden'}
 		 flex-col bg-white ring-1 ring-slate-900/5 shadow fixed p-2 rounded-lg space-y-2 mt-[1px] z-10`}
             >

@@ -29,7 +29,7 @@ module RssItemResponse
       description
     else
       description.gsub(URI::DEFAULT_PARSER.make_regexp) do |url|
-        %(<a href="#{url}" target="_blank">#{url}</a>)
+        %(<a href="#{url}" target="_blank" class="hover:text-sky-400" style="text-decoration: underline">#{url}</a>)
       end.gsub("\n", '<br />')
     end
   end

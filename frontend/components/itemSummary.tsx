@@ -54,6 +54,11 @@ export default function ItemSummary({ item, className, onRead }: Props) {
         )
     }
 
+    const handleOpenDetail = () => {
+      console.log(`open detail page: ${item.title}`)
+      api.openDetail(item)
+    }
+
     return (
         <div
             className={`${className ? className : ''} ${
@@ -69,6 +74,10 @@ max-w-4xl mx-auto
             <div className="flex space-x-4 my-2 leading-6">
                 <div
                     className="text-gray-600 flex-auto"
+		    data-prevent-menu-close="true"
+                    onClick={
+                        item.content ? handleOpenDetail : undefined
+                    }
                     dangerouslySetInnerHTML={{ __html: item.description }}
                 />
                 {item.imageurl ? (
@@ -80,7 +89,15 @@ max-w-4xl mx-auto
                     </div>
                 ) : null}
             </div>
-	    { item.content && <div className="my-2">More</div> }
+            {item.content && (
+                <div
+                    className="my-2 hover:text-sky-400 cursor-pointer"
+		    data-prevent-menu-close="true"
+                    onClick={handleOpenDetail}
+                >
+                    Detail
+                </div>
+            )}
             <Link className="border-t-[1px] text-xs text-gray-600 flex space-x-4 font-light">
                 <div>{item.date}</div>
                 <div>{item.site}</div>

@@ -27,6 +27,8 @@ interface API {
     canMarkAsRead: boolean
     unreadCount: UnreadCount
     setUnreadCount(unreadCount: UnreadCount): void
+    detailItem: RssItem | null
+    openDetail(item: RssItem | null): void
 }
 
 const { publicRuntimeConfig } = getConfig()
@@ -98,6 +100,8 @@ export const BackendAPI: API = {
     canMarkAsRead: false,
     unreadCount: { channels: {}, categories: {} },
     setUnreadCount(value: UnreadCount) {},
+    openDetail(item: RssItem | null) {},
+    detailItem: null,
 }
 
 const context = createContext<API>(BackendAPI)
