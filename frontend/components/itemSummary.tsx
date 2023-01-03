@@ -56,7 +56,9 @@ export default function ItemSummary({ item, className, onRead }: Props) {
 
     return (
         <div
-            className={`${className ? className : ''} ${item.readAt ? 'opacity-30' : ''} py-2
+            className={`${className ? className : ''} ${
+                item.readAt ? 'opacity-30' : ''
+            } py-2
 max-w-4xl mx-auto
 	    `}
             ref={ref}

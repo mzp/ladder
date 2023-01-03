@@ -1,6 +1,7 @@
 import { useContext } from 'react'
 import { RssChannel } from '@/api/types'
 import APIContext from '@/api/context'
+import DropMenu from '@/components/dropMenu'
 
 function Adjustment() {
     return (
@@ -29,6 +30,7 @@ interface Props {
 export default function ChannelSummary({ channel, className }: Props) {
     const { unreadCount, setUnreadCount, markAllAsRead } =
         useContext(APIContext)
+    const count = unreadCount.channels[channel.id]
     return (
         <div
             className={`backdrop-blur-sm w-full bg-slate-200/90 border-b-[1px] border-slate-300 ${className}`}
@@ -39,27 +41,18 @@ export default function ChannelSummary({ channel, className }: Props) {
                         {channel.title}
                     </a>
                 </h2>
-                <div>
-                    <div className="text-slate-400 hover:text-slate-600 peer">
-                        <Adjustment />
-                    </div>
-                    <div
-                        className="hidden text-sm peer-hover:flex hover:flex
-		 w-[180px]
-		 flex-col bg-white ring-1 ring-slate-900/5 shadow fixed -ml-[160px] p-2 rounded-lg space-y-2 -mt-4 z-10"
-                    >
+                <DropMenu icon={<Adjustment />} width={180}>
                         <button
-                            className="hover:text-sky-400 text-left"
+                            className={`text-left ${count == 0 ? 'opacity-30' : 'hover:text-sky-400'}`}
                             onClick={() => {
                                 markAllAsRead(channel).then(({ unreadCount }) =>
                                     setUnreadCount(unreadCount)
                                 )
                             }}
                         >
-                            Mark all as read({unreadCount.channels[channel.id]})
+                            Mark all as read({count})
                         </button>
-                    </div>
-                </div>
+                </DropMenu>
             </div>
             <div className="text-sm">
                 <a href={channel.url} target="_blank">

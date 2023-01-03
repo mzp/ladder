@@ -36,8 +36,8 @@ export interface ChannelsResponse {
 }
 
 export type UnreadCount = {
-	channels: { [key: string]: number }
-	categories: { [key: string]: number }
+    channels: { [key: string]: number }
+    categories: { [key: string]: number }
 }
 
 export interface ItemsResponse {

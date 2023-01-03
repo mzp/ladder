@@ -55,11 +55,15 @@ function Category({ category, selected, onSelect }: CategoryProps) {
     return (
         <div key={category.id} className="mb-3">
             <div
-                className={`space-x-2 flex cursor-pointer hover:text-sky-400 text-sm ${hasUnread ? '' : 'opacity-30' }`}
+                className={`space-x-2 flex cursor-pointer hover:text-sky-400 text-sm ${
+                    hasUnread ? '' : 'opacity-30'
+                }`}
                 onClick={() => setOpened(!isOpened)}
             >
                 <div>{isOpened ? <FolderOpen /> : <Folder />}</div>
-                <div>{category.title}({unreadCount.categories[category.id]})</div>
+                <div>
+                    {category.title}({unreadCount.categories[category.id]})
+                </div>
             </div>
             {isOpened &&
                 (category.channels || []).map((channel) => (
@@ -67,7 +71,7 @@ function Category({ category, selected, onSelect }: CategoryProps) {
                         key={channel.id}
                         className={`text-xs ml-2 p-2 cursor-pointer flex hover:text-sky-400
 		    ${
-                (selected && selected.id == channel.id)
+                selected && selected.id == channel.id
                     ? 'font-bold text-sky-400 border-sky-400'
                     : 'border-transparent'
             } ${unreadCount.channels[channel.id] == 0 && 'opacity-30'}`}
