@@ -3,23 +3,37 @@
 require 'test_helper'
 
 class ItemsControllerTest < ActionDispatch::IntegrationTest
-  test 'index' do
-    channel1 = FactoryBot.create(:rss_channel)
-    channel2 = FactoryBot.create(:rss_channel)
-    FactoryBot.create_list(:rss_item, 5, rss_channel: channel1)
-    FactoryBot.create_list(:rss_item, 6, rss_channel: channel2)
+  def setup
+    super
+    @category = FactoryBot.create(:category)
+    @channel1 = FactoryBot.create(:rss_channel, category: @category)
+    @channel2 = FactoryBot.create(:rss_channel, category: @category)
+    @channel3 = FactoryBot.create(:rss_channel)
+    FactoryBot.create_list(:rss_item, 5, rss_channel: @channel1)
+    FactoryBot.create_list(:rss_item, 6, rss_channel: @channel2)
+    FactoryBot.create_list(:rss_item, 7, rss_channel: @channel3)
 
-    get items_url
+    get items_url, params: { initial: @channel1.id }
     assert_response :success
+  end
 
-    channels = response.parsed_body['channels']
+  test 'category' do
+    categories = response.parsed_body['categories']
+    assert_equal categories.count, 2
+
+    assert_equal 1, categories[0]['channels'].count
+
+    channels = categories[1]['channels']
     assert_equal channels.count, 2
     assert_equal 5, channels[0]['items'].count
     assert_equal 0, channels[1]['items'].count
+  end
 
+  test 'unread count' do
     unread_count = response.parsed_body['unreadCount']
-    assert_equal 5, unread_count[channel1.id.to_s]
-    assert_equal 6, unread_count[channel2.id.to_s]
+    assert_equal 5, unread_count[@channel1.id.to_s]
+    assert_equal 6, unread_count[@channel2.id.to_s]
+    assert_equal 7, unread_count[@channel3.id.to_s]
   end
 end
 
