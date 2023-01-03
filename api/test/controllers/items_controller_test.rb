@@ -31,7 +31,7 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'unread count' do
-    unread_count = response.parsed_body['unreadCount']
+    unread_count = response.parsed_body['unreadCount']['channels']
     assert_equal 5, unread_count[@channel1.id.to_s]
     assert_equal 6, unread_count[@channel2.id.to_s]
     assert_equal 7, unread_count[@channel3.id.to_s]
@@ -78,7 +78,7 @@ class ItemsControllerUnreadCountTest < ActionDispatch::IntegrationTest
   end
 
   test 'unread count' do
-    unread_count = response.parsed_body['unreadCount']
+    unread_count = response.parsed_body['unreadCount']['channels']
     assert_equal 1, unread_count[@channel1.id.to_s]
     assert_equal 1, unread_count[@channel2.id.to_s]
   end

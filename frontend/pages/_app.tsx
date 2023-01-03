@@ -16,7 +16,7 @@ import { default as APIContext, BackendAPI } from '@/api/context'
 
 function Provider(props: { children: any }) {
     const [isLoading, setLoading] = useState<boolean>(false)
-    const [unreadCount, setUnreadCount] = useState<UnreadCount>({})
+    const [unreadCount, setUnreadCount] = useState<UnreadCount>({ channels: {}, categories: {} })
     const [markAsRead, setMarkAsRead] = useState<{
         item: RssItem
         resolver: any

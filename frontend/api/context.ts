@@ -96,7 +96,7 @@ export const BackendAPI: API = {
     isLoading: false,
     setCanMarkAsRead(value: boolean) {},
     canMarkAsRead: false,
-    unreadCount: {},
+    unreadCount: { channels:{}, categories:{} },
     setUnreadCount(value: UnreadCount) {},
 }
 

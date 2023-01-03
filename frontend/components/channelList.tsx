@@ -68,7 +68,7 @@ function Category({ category, selected, onSelect }: CategoryProps) {
                 (selected && selected.id == channel.id)
                     ? 'font-bold text-sky-400 border-sky-400'
                     : 'border-transparent'
-            } ${unreadCount[channel.id] == 0 && 'opacity-30'}`}
+            } ${unreadCount.channels[channel.id] == 0 && 'opacity-30'}`}
                         onClick={() => {
                             onSelect(channel)
                         }}
@@ -76,7 +76,7 @@ function Category({ category, selected, onSelect }: CategoryProps) {
                         <div className="shrink truncate whitespace-nowrap">
                             {channel.title}
                         </div>
-                        <div>({unreadCount[channel.id]})</div>
+                        <div>({unreadCount.channels[channel.id]})</div>
                     </div>
                 ))}
         </div>

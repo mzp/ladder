@@ -5,7 +5,9 @@ module UnreadCount
 
   class_methods do
     def unread_count(channels)
-      channels.to_h { |channel| [channel.id, channel.items.unread.count] }
+      {
+        channels: channels.to_h { |channel| [channel.id, channel.items.unread.count] }
+      }
     end
   end
 end

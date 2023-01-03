@@ -56,7 +56,7 @@ export default function ChannelSummary({ channel, className }: Props) {
                                 )
                             }}
                         >
-                            Mark all as read({unreadCount[channel.id]})
+                            Mark all as read({unreadCount.channels[channel.id]})
                         </button>
                     </div>
                 </div>

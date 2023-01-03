@@ -21,7 +21,7 @@ class ChannelsControllerTest < ActionDispatch::IntegrationTest
     assert_equal channels.count, 5
 
     categories = response.parsed_body['categories']
-    assert_equal categories.count, 3
+    assert_equal categories.count, 4
   end
 
   test 'should get show' do
@@ -73,7 +73,7 @@ class ChannelsControllerTest < ActionDispatch::IntegrationTest
     post channel_mark_all_as_read_url(@first_channel.id)
     assert_response :success
 
-    unread_count = response.parsed_body['unreadCount']
+    unread_count = response.parsed_body['unreadCount']['channels']
     assert_equal 0, unread_count[@first_channel.id.to_s]
     assert_equal 6, unread_count[@second_channel.id.to_s]
 
