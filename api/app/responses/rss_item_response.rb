@@ -25,9 +25,13 @@ module RssItemResponse
   end
 
   def content
-    description.gsub(URI::DEFAULT_PARSER.make_regexp) do |url|
-      %(<a href="#{url}" target="_blank">#{url}</a>)
-    end.gsub("\n", '<br />')
+    if description.include?('<')
+      description
+    else
+      description.gsub(URI::DEFAULT_PARSER.make_regexp) do |url|
+        %(<a href="#{url}" target="_blank">#{url}</a>)
+      end.gsub("\n", '<br />')
+    end
   end
 
   def date

@@ -204,6 +204,7 @@ DEPENDENCIES
   database_cleaner-active_record
   debug
   factory_bot_rails
+  nokogiri
   pg
   puma
   rack-cors

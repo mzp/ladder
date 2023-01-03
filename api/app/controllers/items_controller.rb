@@ -4,19 +4,22 @@ class ItemsController < ApplicationController
   include UnreadCount
 
   def index
-    categories = Category.visible.includes(rss_channels: [:items])
+    no_category = Category.no_category
+    target_id = params[:initial].presence || no_category.rss_channels.first.id || RssChannel.first.id
 
-    target_id = if params[:initial].blank?
-                  RssChannel.find_by(category: Category.no_category).id
-                else
-                  params[:initial].to_i
-                end
+    categories = if no_category.rss_channels.empty?
+                   Category.available
+                 else
+                   Category.visible
+                 end
+
+    categories = categories.includes(rss_channels: [:items])
 
     categories.each do |category|
       category.extend CategoryResponse
       category.rss_channels.each do |channel|
         channel.extend RssChannelResponse
-        if channel.id == target_id
+        if channel.id == target_id.to_i
           category.selected = true
           channel.extend RssChannelResponse::WithLatestItem
         end

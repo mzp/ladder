@@ -57,13 +57,13 @@ export default function Home() {
                         {selected ? (
                             <ChannelSummary
                                 channel={selected}
-                                className="snap-start h-14 py-1 px-4"
+                                className="snap-start h-20 py-1 px-4"
                             />
                         ) : null}
                         {selected ? (
                             <div
                                 className="overflow-scroll snap-y snap-mandatory"
-                                style={{ height: 'calc(100vh - 3.5rem)' }}
+                                style={{ height: 'calc(100vh - 5rem)' }}
                                 ref={ref}
                                 onScroll={
                                     api.canMarkAsRead

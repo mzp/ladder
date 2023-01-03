@@ -34,12 +34,4 @@ class RssItem < ApplicationRecord
       hatena_bookmark_count: item.try(:hatena_bookmarkcount).to_i
     )
   end
-
-  private
-
-  def thumbnail_enclosure(item)
-    return unless item.try(:enclosure).try(:type) =~ %r{image/*}
-
-    item.enclosure.url
-  end
 end
