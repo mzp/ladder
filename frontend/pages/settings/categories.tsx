@@ -73,7 +73,7 @@ export default function CategoryList() {
             <main>
                 <div className="flex h-screen">
                     <div className="w-80 flex-none border-r-[1px] overflow-scroll snap-y scroll-pt-8">
-                        <Toolbar className="w-80 h-8 fixed border-r-[1px]" />
+                        <Toolbar className="h-8" />
                         <SettingSidebar active="categories" />
                     </div>
                     <div className="m-w-3xl overflow-scroll snap-y snap-mandatory scroll-pt-14 p-4">

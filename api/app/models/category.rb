@@ -2,4 +2,6 @@
 
 class Category < ApplicationRecord
   has_many :rss_channels, dependent: :nullify
+  scope :visible, -> { order(no_category: :desc).order(:title) }
+  scope :available, -> { where(no_category: false).order(:title) }
 end
