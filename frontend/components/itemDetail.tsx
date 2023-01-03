@@ -35,10 +35,10 @@ export default function ItemDetail({ className }: Props) {
             if (!ref.current || ref.current.contains(event.target)) {
                 return
             }
-	    if(event.target.attributes['data-prevent-menu-close']) {
-	        return
-	    }
-	    console.log('close detail menu by outside click')
+            if (event.target.attributes['data-prevent-menu-close']) {
+                return
+            }
+            console.log('close detail menu by outside click')
             openDetail(null)
         }
         document.addEventListener('mousedown', listener)
@@ -52,9 +52,7 @@ export default function ItemDetail({ className }: Props) {
     return (
         <div
             ref={ref}
-            className={`bg-white py-4 px-10 pr-0 drop-shadow-lg ${
-                className 
-            }`}
+            className={`bg-white py-4 px-10 pr-0 drop-shadow-lg ${className}`}
         >
             <div className="bg-white">
                 <button

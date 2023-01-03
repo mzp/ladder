@@ -3,9 +3,10 @@ interface Props {
     width: number
     icon: any
     children: any
+    className?: string
 }
 
-export default function DropMenu({ icon, children, width }: Props) {
+export default function DropMenu({ className, icon, children, width }: Props) {
     const [opened, setOpened] = useState<boolean>(false)
     const ref = useRef<HTMLDivElement>(null)
     useEffect(() => {
@@ -37,7 +38,7 @@ export default function DropMenu({ icon, children, width }: Props) {
             </div>
             <div
                 style={{ width: `${width}px`, marginLeft: `-${width - 20}px` }}
-                className={`text-sm flex
+                className={`text-sm flex ${className ? className : ''}
 		 ${opened ? '' : 'hidden'}
 		 flex-col bg-white ring-1 ring-slate-900/5 shadow fixed p-2 rounded-lg space-y-2 mt-[1px] z-10`}
             >

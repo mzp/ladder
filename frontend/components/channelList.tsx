@@ -48,15 +48,16 @@ interface CategoryProps {
 }
 
 function Category({ category, selected, onSelect }: CategoryProps) {
-    const { unreadCount } = useContext(APIContext)
+    const { unreadCount, showUnread } = useContext(APIContext)
     const hasUnread = unreadCount.categories[category.id] > 0
     const [isOpened, setOpened] = useState<boolean>(hasUnread)
+    const readClassName = showUnread ? 'opacity-30' : 'hidden'
 
     return (
         <div key={category.id} className="mb-3">
             <div
                 className={`space-x-2 flex cursor-pointer hover:text-sky-400 text-sm ${
-                    hasUnread ? '' : 'opacity-30'
+                    hasUnread ? '' : readClassName
                 }`}
                 onClick={() => setOpened(!isOpened)}
             >
@@ -74,7 +75,7 @@ function Category({ category, selected, onSelect }: CategoryProps) {
                 selected && selected.id == channel.id
                     ? 'font-bold text-sky-400 border-sky-400'
                     : 'border-transparent'
-            } ${unreadCount.channels[channel.id] == 0 && 'opacity-30'}`}
+            } ${unreadCount.channels[channel.id] == 0 && readClassName}`}
                         onClick={() => {
                             onSelect(channel)
                         }}

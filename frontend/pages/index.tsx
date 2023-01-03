@@ -14,6 +14,7 @@ export default function Home() {
     const [selected, setSelected] = useState<RssChannel | null>(null)
     const [fetchInitalChannel, storeInitialChannel] =
         useLocalStorage('initial-channel-id')
+
     const ref = useRef<HTMLDivElement>(null)
 
     const api = useContext(APIContext)

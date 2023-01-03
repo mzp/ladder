@@ -29,6 +29,8 @@ interface API {
     setUnreadCount(unreadCount: UnreadCount): void
     detailItem: RssItem | null
     openDetail(item: RssItem | null): void
+    showUnread: boolean
+    setShowUnread(value: boolean): void
 }
 
 const { publicRuntimeConfig } = getConfig()
@@ -102,6 +104,8 @@ export const BackendAPI: API = {
     setUnreadCount(value: UnreadCount) {},
     openDetail(item: RssItem | null) {},
     detailItem: null,
+    showUnread: false,
+    setShowUnread(value: boolean) {},
 }
 
 const context = createContext<API>(BackendAPI)

@@ -55,14 +55,15 @@ export default function ItemSummary({ item, className, onRead }: Props) {
     }
 
     const handleOpenDetail = () => {
-      console.log(`open detail page: ${item.title}`)
-      api.openDetail(item)
+        console.log(`open detail page: ${item.title}`)
+        api.openDetail(item)
     }
+    const readClassName = api.showUnread ? 'opacity-30' : 'hidden'
 
     return (
         <div
             className={`${className ? className : ''} ${
-                item.readAt ? 'opacity-30' : ''
+                item.readAt ? readClassName : ''
             } py-2
 max-w-4xl mx-auto
 	    `}
@@ -74,10 +75,8 @@ max-w-4xl mx-auto
             <div className="flex space-x-4 my-2 leading-6">
                 <div
                     className="text-gray-600 flex-auto"
-		    data-prevent-menu-close="true"
-                    onClick={
-                        item.content ? handleOpenDetail : undefined
-                    }
+                    data-prevent-menu-close="true"
+                    onClick={item.content ? handleOpenDetail : undefined}
                     dangerouslySetInnerHTML={{ __html: item.description }}
                 />
                 {item.imageurl ? (
@@ -92,7 +91,7 @@ max-w-4xl mx-auto
             {item.content && (
                 <div
                     className="my-2 hover:text-sky-400 cursor-pointer"
-		    data-prevent-menu-close="true"
+                    data-prevent-menu-close="true"
                     onClick={handleOpenDetail}
                 >
                     Detail
