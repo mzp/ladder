@@ -17,9 +17,10 @@ export default function Home() {
 
     const api = useContext(APIContext)
     useEffect(() => {
-        api.items(fetchInitalChannel()).then(({ channels }) => {
+        api.items(fetchInitalChannel()).then(({ channels, unreadCount }) => {
             if (channels.length > 0) {
                 setChannels(channels)
+                api.setUnreadCount(unreadCount)
             }
         })
     }, [])

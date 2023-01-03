@@ -10,7 +10,7 @@ interface Props {
 }
 
 export default function ItemList({ channels, className, onSelect }: Props) {
-    const api = useContext(APIContext)
+    const { unreadCount } = useContext(APIContext)
     const [selected, setSelected] = useState<RssChannel>(
         channels.find(({ items }) => items.length > 0) || channels[0]
     )
@@ -30,10 +30,9 @@ export default function ItemList({ channels, className, onSelect }: Props) {
                 selected.id == channel.id
                     ? 'font-bold text-sky-400 border-sky-400'
                     : 'border-transparent'
-            } ${channel.unreadCount == 0 && 'opacity-30'}`}
+            } ${unreadCount[channel.id] == 0 && 'opacity-30'}`}
                     onClick={() => {
                         setSelected(channel)
-                        api.setReadCount(0)
                         if (onSelect) {
                             onSelect(channel)
                         }
@@ -42,12 +41,9 @@ export default function ItemList({ channels, className, onSelect }: Props) {
                     <div className="shrink truncate whitespace-nowrap">
                         {channel.title}
                     </div>
-                    <div>
-                        (
-                        {channel.unreadCount -
-                            (selected.id == channel.id ? api.readCount : 0)}
-                        )
-                    </div>
+                    {unreadCount[channel.id] && (
+                        <div>({unreadCount[channel.id]})</div>
+                    )}
                 </div>
             ))}
         </div>

@@ -25,7 +25,10 @@ export default function ItemSummary({ item, className, onRead }: Props) {
                     }
 
                     if (readAt == null) {
-                        api.markAsRead(item).then((readAt) => setReadAt(readAt))
+                        api.markAsRead(item).then(({ readAt, unreadCount }) => {
+                            setReadAt(readAt)
+                            api.setUnreadCount(unreadCount)
+                        })
                     }
                 }
             },

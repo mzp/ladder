@@ -6,11 +6,13 @@ import {
     ChannelOption,
     ChannelsResponse,
     ItemsResponse,
+    UnreadCount,
+    MarkAsReadResponse,
 } from '@/api/types'
 import getConfig from 'next/config'
 
 interface API {
-    markAsRead(item: RssItem): Promise<string | null>
+    markAsRead(item: RssItem): Promise<MarkAsReadResponse>
     channels(): Promise<ChannelsResponse>
     items(id?: string): Promise<ItemsResponse>
     channel(id: string, upto?: string): Promise<RssChannel>
@@ -22,14 +24,14 @@ interface API {
     isLoading: boolean
     setCanMarkAsRead(value: boolean): void
     canMarkAsRead: boolean
-    readCount: number
-    setReadCount(value: number): void
+    unreadCount: UnreadCount
+    setUnreadCount(unreadCount: UnreadCount): void
 }
 
 const { publicRuntimeConfig } = getConfig()
 
 export const BackendAPI: API = {
-    markAsRead(item: RssItem): Promise<string> {
+    markAsRead(item: RssItem) {
         return fetch(
             `${publicRuntimeConfig.apiRoot}/items/${item.id}/markAsRead`,
             { method: 'POST' }
@@ -87,8 +89,8 @@ export const BackendAPI: API = {
     isLoading: false,
     setCanMarkAsRead(value: boolean) {},
     canMarkAsRead: false,
-    readCount: 0,
-    setReadCount(value: number) {},
+    unreadCount: {},
+    setUnreadCount(value: UnreadCount) {},
 }
 
 const context = createContext<API>(BackendAPI)

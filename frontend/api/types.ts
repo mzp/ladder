@@ -33,8 +33,15 @@ export interface ChannelsResponse {
     categories: Category[]
 }
 
+export type UnreadCount = { [key: string]: number }
+
 export interface ItemsResponse {
     channels: RssChannel[]
     categories: Category[]
-    unreadCount: Map<string, number>
+    unreadCount: UnreadCount
+}
+
+export interface MarkAsReadResponse {
+    readAt: string
+    unreadCount: UnreadCount
 }

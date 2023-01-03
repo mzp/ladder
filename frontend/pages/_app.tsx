@@ -9,12 +9,14 @@ import {
     ChannelOption,
     ChannelsResponse,
     ItemsResponse,
+    UnreadCount,
+    MarkAsReadResponse,
 } from '@/api/types'
 import { default as APIContext, BackendAPI } from '@/api/context'
 
 function Provider(props: { children: any }) {
     const [isLoading, setLoading] = useState<boolean>(false)
-    const [readCount, setReadCount] = useState<number>(0)
+    const [unreadCount, setUnreadCount] = useState<UnreadCount>({})
     const [markAsRead, setMarkAsRead] = useState<{
         item: RssItem
         resolver: any
@@ -27,7 +29,7 @@ function Provider(props: { children: any }) {
 
     const ContextAPI = {
         markAsRead(item: RssItem) {
-            return new Promise<string | null>((resolver) => {
+            return new Promise<MarkAsReadResponse>((resolver) => {
                 setMarkAsRead({ item, resolver })
             })
         },
@@ -93,14 +95,13 @@ function Provider(props: { children: any }) {
         canMarkAsRead,
         setCanMarkAsRead,
         isLoading,
-        readCount,
-        setReadCount,
+        unreadCount,
+        setUnreadCount,
     }
     useEffect(() => {
         if (!canMarkAsRead) {
             return
         }
-        setReadCount(readCount + 1)
         if (!markAsRead) {
             return
         }
