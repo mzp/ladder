@@ -11,7 +11,8 @@ module RssChannelResponse
     super(options.merge(
       only: %i[id title url description category_id]
     )).merge(
-      items: items_for_response
+      items: items_for_response,
+      isImageMedia: image_media
     )
   end
 
@@ -32,7 +33,7 @@ module RssChannelResponse
         result = items.latest
       end
 
-      result.limit(10).each do |item|
+      result.limit(image_media ? 5 : 10).each do |item|
         item.extend RssItemResponse
       end
     end

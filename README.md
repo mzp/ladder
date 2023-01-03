@@ -27,3 +27,4 @@
 - [ ] Subscribe twitter account
 - [ ] Mark NSFW 
 - [ ] Image slidershow
+- [ ] Cache image for fast load

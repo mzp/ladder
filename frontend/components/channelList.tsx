@@ -110,8 +110,10 @@ export default function ItemList({
     const [openedCategory, setOpenedCategory] = useState<Category | undefined>(
         category
     )
-    const [selected, setSelected] = useState<RssChannel | undefined>(
-        (() => {
+    const [selected, setSelected] = useState<RssChannel | undefined>(undefined)
+
+    useEffect(() => {
+        const channel = (() => {
             if (!category) {
                 return undefined
             }
@@ -120,13 +122,12 @@ export default function ItemList({
             }
             return category.channels.find(({ items }) => items.length > 0)
         })()
-    )
-    useEffect(() => {
-        if (selected && onSelect) {
-            console.log(`Initial select: ${selected.title}`)
-            onSelect(selected)
+        setSelected(channel)
+        if (channel && onSelect) {
+            console.log(`Initial select: ${channel.title}`)
+            onSelect(channel)
         }
-    }, [])
+    }, [categories])
 
     return (
         <div className={`${className} ml-2`} style={style}>

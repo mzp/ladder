@@ -41,10 +41,11 @@ export default function ItemList(props: Props) {
                     key={item.id}
                     item={item}
                     className="snap-start px-4"
+		    channel={props.channel}
                     onRead={
                         index == Math.max(items.length - 3, 0)
                             ? () => {
-                                  // prefetch
+                                  console.log('prefetch items')
                                   handleLoadMore(items[items.length - 1])
                               }
                             : undefined

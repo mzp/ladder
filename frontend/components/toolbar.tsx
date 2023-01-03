@@ -15,14 +15,14 @@ export default function Toolbar({ className }: { className?: string }) {
 
     useEffect(() => {
         const value = fetchShowUnread() != 'false'
-	console.log(`restored value: ${value}`)
+        console.log(`restored value: ${value}`)
         api.setShowUnread(value)
     }, [])
 
     const handleToggleUnread = () => {
         const value = !api.showUnread
         api.setShowUnread(value)
-	storeShowUnread(value)
+        storeShowUnread(value)
     }
 
     return (

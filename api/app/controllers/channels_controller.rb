@@ -21,7 +21,7 @@ class ChannelsController < ApplicationController
 
   def update
     target = RssChannel.find(params[:id])
-    target.update(params.permit(:category_id))
+    target.update(params.permit(:category_id, :image_media))
 
     channels = RssChannel.all.order(:id)
     channels.each do |channel|

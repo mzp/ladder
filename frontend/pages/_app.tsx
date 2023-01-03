@@ -31,6 +31,7 @@ function Provider(props: { children: any }) {
     }>()
     const [detailItem, openDetail] = useState<RssItem | null>(null)
     const [showUnread, setShowUnread] = useState<boolean>(false)
+    const [needsRefresh, setNeedsRefresh] = useState<boolean>(false)
 
     const ContextAPI = {
         markAsRead(item: RssItem) {
@@ -114,6 +115,8 @@ function Provider(props: { children: any }) {
         detailItem,
         setShowUnread,
         showUnread,
+        needsRefresh,
+        setNeedsRefresh,
     }
     useEffect(() => {
         if (!canMarkAsRead) {

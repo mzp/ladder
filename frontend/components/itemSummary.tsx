@@ -2,13 +2,73 @@ import { useContext, useEffect, useRef, useState } from 'react'
 import { RssItem } from '@/api/types'
 import APIContext from '@/api/context'
 
+interface ContentProps {
+    item: RssItem
+    onClick(): void
+}
+
+function ArticleContent({ item, onClick }: ContentProps) {
+    return (
+        <div className="flex space-x-4 my-2 leading-6">
+            <div
+                className="text-gray-600 flex-auto"
+                data-prevent-menu-close="true"
+                onClick={item.content ? onClick : undefined}
+                dangerouslySetInnerHTML={{ __html: item.description }}
+            />
+            {item.imageurl ? (
+                <div className="w-48 flex-none">
+                    <img src={item.imageurl} className="max-w-full max-h-36" />
+                </div>
+            ) : null}
+            {item.content && (
+                <div
+                    className="my-2 hover:text-sky-400 cursor-pointer"
+                    data-prevent-menu-close="true"
+                    onClick={handleOpenDetail}
+                >
+                    Detail
+                </div>
+            )}
+        </div>
+    )
+}
+
+function MediaContent({ item, onClick }: ContentProps) {
+    return (
+        <div className="py-2 ">
+            {item.imageurl ? (
+                    <a href={item.url} target="_blank">
+		      <img src={item.imageurl} 
+                           className="min-h-[400px] max-h-[30vh]"
+		      />
+		    </a>
+            ) : null}
+            <div
+                className="text-gray-600 flex-auto"
+                dangerouslySetInnerHTML={{ __html: item.description }}
+            />
+            {item.content && (
+                <div
+                    className="my-2 hover:text-sky-400 cursor-pointer"
+                    data-prevent-menu-close="true"
+                    onClick={handleOpenDetail}
+                >
+                    Detail
+                </div>
+            )}
+        </div>
+    )
+}
+
 interface Props {
     item: RssItem
+    channel: RssChannel
     className?: string
     onRead: ((item: RssItem) => void) | undefined
 }
 
-export default function ItemSummary({ item, className, onRead }: Props) {
+export default function ItemSummary({ channel, item, className, onRead }: Props) {
     const ref = useRef<HTMLDivElement>(null)
     const [readAt, setReadAt] = useState<string | null>(item.readAt)
     const api = useContext(APIContext)
@@ -72,31 +132,9 @@ max-w-4xl mx-auto
             <h2 className="font-bold">
                 <Link>{item.title}</Link>
             </h2>
-            <div className="flex space-x-4 my-2 leading-6">
-                <div
-                    className="text-gray-600 flex-auto"
-                    data-prevent-menu-close="true"
-                    onClick={item.content ? handleOpenDetail : undefined}
-                    dangerouslySetInnerHTML={{ __html: item.description }}
-                />
-                {item.imageurl ? (
-                    <div className="w-48 flex-none">
-                        <img
-                            src={item.imageurl}
-                            className="max-w-full max-h-36"
-                        />
-                    </div>
-                ) : null}
-            </div>
-            {item.content && (
-                <div
-                    className="my-2 hover:text-sky-400 cursor-pointer"
-                    data-prevent-menu-close="true"
-                    onClick={handleOpenDetail}
-                >
-                    Detail
-                </div>
-            )}
+            {channel.isImageMedia ? 
+	     <MediaContent item={item} onClick={handleOpenDetail} /> 
+	    : <ArticleContent item={item} onClick={handleOpenDetail} /> }
             <Link className="border-t-[1px] text-xs text-gray-600 flex space-x-4 font-light">
                 <div>{item.date}</div>
                 <div>{item.site}</div>

@@ -19,13 +19,15 @@ export default function Home() {
 
     const api = useContext(APIContext)
     useEffect(() => {
+        console.log('load initial data')
         api.items(fetchInitalChannel() || '').then(
             ({ categories, unreadCount }) => {
                 setCategories(categories)
                 api.setUnreadCount(unreadCount)
+                api.setNeedsRefresh(false)
             }
         )
-    }, [])
+    }, [api.needsRefresh])
 
     return (
         <>
@@ -40,7 +42,7 @@ export default function Home() {
                 <div className="flex h-screen">
                     <div className="w-80 flex-none border-r-[1px]">
                         <Toolbar className="h-8" />
-                        {categories.length && (
+                        {categories && categories.length && (
                             <ChannelList
                                 className="overflow-scroll snap-y"
                                 categories={categories}

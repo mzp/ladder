@@ -31,6 +31,8 @@ interface API {
     openDetail(item: RssItem | null): void
     showUnread: boolean
     setShowUnread(value: boolean): void
+    setNeedsRefresh(value: boolean): void
+    needsRefresh: boolean
 }
 
 const { publicRuntimeConfig } = getConfig()
@@ -106,6 +108,8 @@ export const BackendAPI: API = {
     detailItem: null,
     showUnread: false,
     setShowUnread(value: boolean) {},
+    setNeedsRefresh(value: boolean) {},
+    needsRefresh: false,
 }
 
 const context = createContext<API>(BackendAPI)

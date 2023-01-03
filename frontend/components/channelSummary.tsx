@@ -28,8 +28,13 @@ interface Props {
 }
 
 export default function ChannelSummary({ channel, className }: Props) {
-    const { unreadCount, setUnreadCount, markAllAsRead } =
-        useContext(APIContext)
+    const {
+        unreadCount,
+        setUnreadCount,
+        markAllAsRead,
+        updateChannel,
+        setNeedsRefresh,
+    } = useContext(APIContext)
     const count = unreadCount.channels[channel.id]
     return (
         <div
@@ -42,6 +47,18 @@ export default function ChannelSummary({ channel, className }: Props) {
                     </a>
                 </h2>
                 <DropMenu icon={<Adjustment />} width={180}>
+                    <button
+                        className="text-left"
+                        onClick={() => {
+                            updateChannel(channel.id, {
+                                image_media: !channel.image_media,
+                            }).then((response) => {
+                                setNeedsRefresh(true)
+                            })
+                        }}
+                    >
+                        {channel.isImageMedia ? 'Unmark' : 'Mark'} as image media
+                    </button>
                     <button
                         className={`text-left ${
                             count == 0 ? 'opacity-30' : 'hover:text-sky-400'

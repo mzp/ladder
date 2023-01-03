@@ -26,9 +26,9 @@ module RssItemResponse
 
   def formatted_description
     if description.include?('<')
-      description
+      description.strip
     else
-      description.gsub(URI::DEFAULT_PARSER.make_regexp) do |url|
+      description.strip.gsub(URI::DEFAULT_PARSER.make_regexp) do |url|
         %(<a href="#{url}" target="_blank" class="hover:text-sky-400" style="text-decoration: underline">#{url}</a>)
       end.gsub("\n", '<br />')
     end
