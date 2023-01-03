@@ -11,12 +11,13 @@ class ItemsController < ApplicationController
     else
       target_id = params[:initial].to_i
     end
-   
+  
     categories.each do |category|
       category.extend CategoryResponse
       category.rss_channels.each do |channel|
         channel.extend RssChannelResponse
         if channel.id == target_id
+          category.selected = true
           channel.extend RssChannelResponse::WithLatestItem
         end
       end

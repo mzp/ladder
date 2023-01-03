@@ -1,6 +1,6 @@
 import { useContext, useState, useEffect, useRef } from 'react'
 import Head from 'next/head'
-import { RssChannel, RssItem } from '@/api/types'
+import { Category, RssChannel, RssItem } from '@/api/types'
 import { default as APIContext, BackendAPI } from '@/api/context'
 import ItemList from '@/components/itemList'
 import Toolbar from '@/components/toolbar'
@@ -9,7 +9,7 @@ import ChannelSummary from '@/components/channelSummary'
 import useLocalStorage from '@/components/hook/useLocalStorage'
 
 export default function Home() {
-    const [channels, setChannels] = useState<RssChannel[]>([])
+    const [categories, setCategories] = useState<Category[]>([])
     const [selected, setSelected] = useState<RssChannel | null>(null)
     const [fetchInitalChannel, storeInitialChannel] =
         useLocalStorage('initial-channel-id')
@@ -17,12 +17,12 @@ export default function Home() {
 
     const api = useContext(APIContext)
     useEffect(() => {
-        api.items(fetchInitalChannel()).then(({ channels, unreadCount }) => {
-            if (channels.length > 0) {
-                setChannels(channels)
+        api.items(fetchInitalChannel() || '').then(
+            ({ categories, unreadCount }) => {
+                setCategories(categories)
                 api.setUnreadCount(unreadCount)
             }
-        })
+        )
     }, [])
 
     return (
@@ -38,10 +38,10 @@ export default function Home() {
                 <div className="flex h-screen">
                     <div className="w-80 flex-none border-r-[1px]">
                         <Toolbar className="h-8" />
-                        {channels.length && (
+                        {categories.length && (
                             <ChannelList
                                 className="overflow-scroll snap-y"
-                                channels={channels}
+                                categories={categories}
                                 style={{ height: 'calc(100vh - 2rem)' }}
                                 onSelect={(channel) => {
                                     setSelected(channel)
@@ -69,7 +69,9 @@ export default function Home() {
                                     api.canMarkAsRead
                                         ? undefined
                                         : () => {
-					      console.log('Scroll detected: enable unread management')
+                                              console.log(
+                                                  'Scroll detected: enable unread management'
+                                              )
                                               ref.current &&
                                                   api.setCanMarkAsRead(
                                                       ref.current.scrollTop >

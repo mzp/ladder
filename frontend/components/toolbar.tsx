@@ -15,7 +15,9 @@ export default function Toolbar({ className }: { className?: string }) {
             className={`w-full text-xl align-middle bg-white px-2 ${className}`}
         >
             <div className="flex items-center">
-                <h1 className="pr-2 flex-none"><Link href="/">Ultraladder</Link></h1>
+                <h1 className="pr-2 flex-none">
+                    <Link href="/">Ultraladder</Link>
+                </h1>
                 <div className="flex-auto">{api.isLoading && <Spin />}</div>
                 <div>
                     <div className="text-slate-400 hover:text-slate-600 peer">

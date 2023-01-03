@@ -26,6 +26,8 @@ export interface ChannelOption {
 export interface Category {
     id: string
     title: string
+    channels?: RssChannel[]
+    selected?: boolean
 }
 
 export interface ChannelsResponse {
@@ -36,7 +38,6 @@ export interface ChannelsResponse {
 export type UnreadCount = { [key: string]: number }
 
 export interface ItemsResponse {
-    channels: RssChannel[]
     categories: Category[]
     unreadCount: UnreadCount
 }

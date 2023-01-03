@@ -24,6 +24,7 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 1, categories[0]['channels'].count
 
     channels = categories[1]['channels']
+    assert_equal true, categories[1]['selected']
     assert_equal channels.count, 2
     assert_equal 5, channels[0]['items'].count
     assert_equal 0, channels[1]['items'].count
