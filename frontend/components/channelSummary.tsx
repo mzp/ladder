@@ -51,13 +51,14 @@ export default function ChannelSummary({ channel, className }: Props) {
                         className="text-left"
                         onClick={() => {
                             updateChannel(channel.id, {
-                                image_media: !channel.image_media,
+                                image_media: !channel.isImageMedia,
                             }).then((response) => {
                                 setNeedsRefresh(true)
                             })
                         }}
                     >
-                        {channel.isImageMedia ? 'Unmark' : 'Mark'} as image media
+                        {channel.isImageMedia ? 'Unmark' : 'Mark'} as image
+                        media
                     </button>
                     <button
                         className={`text-left ${

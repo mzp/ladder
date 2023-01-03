@@ -1,7 +1,9 @@
 import { useContext, useState, useEffect } from 'react'
 import { RssChannel, RssItem } from '@/api/types'
 import APIContext from '@/api/context'
+import Intersection from '@/components/intersection'
 import ItemSummary from '@/components/itemSummary'
+import MediaSummary from '@/components/mediaSummary'
 
 interface Props {
     channel: RssChannel
@@ -37,11 +39,10 @@ export default function ItemList(props: Props) {
     return (
         <div className={`space-y-2 ${props.className ? props.className : ''}`}>
             {items.map((item, index) => (
-                <ItemSummary
+                <Intersection
                     key={item.id}
                     item={item}
                     className="snap-start px-4"
-		    channel={props.channel}
                     onRead={
                         index == Math.max(items.length - 3, 0)
                             ? () => {
@@ -50,7 +51,17 @@ export default function ItemList(props: Props) {
                               }
                             : undefined
                     }
-                />
+                >
+                    {props.channel.isImageMedia ? (
+                        <MediaSummary
+                            item={item}
+                        />
+                    ) : (
+                        <ItemSummary
+                            item={item}
+                        />
+                    )}
+                </Intersection>
             ))}
         </div>
     )

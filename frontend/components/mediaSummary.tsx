@@ -7,9 +7,10 @@ interface Props {
     className?: string
 }
 
-export default function ItemSummary({ item, className }: Props) {
+export default function MediaSummary({ item, className }: Props) {
     const api = useContext(APIContext)
 
+    
     const Link = (props: any) => {
         return (
             <a href={item.url} target="_blank" {...props}>
@@ -35,30 +36,19 @@ max-w-4xl mx-auto
             <h2 className="font-bold">
                 <Link>{item.title}</Link>
             </h2>
-            <div className="flex space-x-4 my-2 leading-6">
-                <div
-                    className="text-gray-600 flex-auto"
-                    data-prevent-menu-close="true"
-                    onClick={item.content ? handleOpenDetail : undefined}
-                    dangerouslySetInnerHTML={{ __html: item.description }}
-                />
+            <div className="py-2 ">
                 {item.imageurl ? (
-                    <div className="w-48 flex-none">
+                    <a href={item.url} target="_blank">
                         <img
                             src={item.imageurl}
-                            className="max-w-full max-h-36"
+                            className="min-h-[400px] max-h-[30vh]"
                         />
-                    </div>
+                    </a>
                 ) : null}
-                {item.content && (
-                    <div
-                        className="my-2 hover:text-sky-400 cursor-pointer"
-                        data-prevent-menu-close="true"
-                        onClick={handleOpenDetail}
-                    >
-                        Detail
-                    </div>
-                )}
+                <div
+                    className="text-gray-600 flex-auto"
+                    dangerouslySetInnerHTML={{ __html: item.description }}
+                />
             </div>
 
             <Link className="border-t-[1px] text-xs text-gray-600 flex space-x-4 font-light">
