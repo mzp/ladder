@@ -38,7 +38,7 @@ export default function ChannelSummary({ channel, className }: Props) {
     const count = unreadCount.channels[channel.id]
     return (
         <div
-            className={`backdrop-blur-sm w-full bg-slate-200/90 border-b-[1px] border-slate-300 ${className}`}
+            className={`backdrop-blur-sm w-full bg-slate-200/90 border-b-[1px] border-slate-300 ${className} text-ellipsis overflow-hidden`}
         >
             <div className="flex">
                 <h2 className="text-lg font-bold flex-auto">

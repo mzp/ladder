@@ -9,7 +9,12 @@ interface Props {
     onRead: ((item: RssItem) => void) | undefined
 }
 
-export default function Intersection({ item, children, onRead, className }: Props) {
+export default function Intersection({
+    item,
+    children,
+    onRead,
+    className,
+}: Props) {
     const ref = useRef<HTMLDivElement>(null)
     const [readAt, setReadAt] = useState<string | null>(item.readAt)
     const api = useContext(APIContext)
@@ -46,5 +51,9 @@ export default function Intersection({ item, children, onRead, className }: Prop
         }
     }, [item.id, readAt])
 
-    return <div ref={ref} className={className}>{children}</div>
+    return (
+        <div ref={ref} className={className}>
+            {children}
+        </div>
+    )
 }

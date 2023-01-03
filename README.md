@@ -26,5 +26,5 @@
 - [ ] Full text search
 - [ ] Subscribe twitter account
 - [ ] Mark NSFW 
-- [ ] Image slidershow
+- [x] Image slidershow
 - [ ] Cache image for fast load

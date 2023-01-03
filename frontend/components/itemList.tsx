@@ -37,12 +37,20 @@ export default function ItemList(props: Props) {
     }, [props.channel])
 
     return (
-        <div className={`space-y-2 ${props.className ? props.className : ''}`}>
+        <div
+            className={`space-y-2 ${props.className ? props.className : ''} ${
+                props.channel.isImageMedia
+                    ? 'grid grid-flow-row-dense grid-cols-2 mx-auto max-w-4xl'
+                    : ''
+            }`}
+        >
             {items.map((item, index) => (
                 <Intersection
                     key={item.id}
                     item={item}
-                    className="snap-start px-4"
+                    className={`snap-start px-4 ${
+                        props.channel.isImageMedia ? 'max-w-xl' : ''
+                    }`}
                     onRead={
                         index == Math.max(items.length - 3, 0)
                             ? () => {
@@ -53,13 +61,9 @@ export default function ItemList(props: Props) {
                     }
                 >
                     {props.channel.isImageMedia ? (
-                        <MediaSummary
-                            item={item}
-                        />
+                        <MediaSummary item={item} />
                     ) : (
-                        <ItemSummary
-                            item={item}
-                        />
+                        <ItemSummary item={item} />
                     )}
                 </Intersection>
             ))}

@@ -50,6 +50,7 @@ export default function Home() {
                                 onSelect={(channel) => {
                                     setSelected(channel)
                                     storeInitialChannel(channel.id)
+                                    api.setCanMarkAsRead(false)
                                     if (ref.current) {
                                         ref.current.scrollTo(0, 0)
                                     }

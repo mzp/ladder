@@ -50,6 +50,8 @@ max-w-4xl mx-auto
                         />
                     </div>
                 ) : null}
+            </div>
+            <div>
                 {item.content && (
                     <div
                         className="my-2 hover:text-sky-400 cursor-pointer"
