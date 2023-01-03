@@ -22,7 +22,7 @@ export default function ItemList(props: Props) {
         const oldestID = lastItem ? lastItem.id : undefined
         api.channel(channelID, oldestID).then((channel) => {
             if (lastItem) {
-	        // avoid race condition(?)
+                // avoid race condition(?)
                 const newItems = [...itemData[channel.id], ...channel.items]
                 setItemData({ ...itemData, [channel.id]: newItems })
             } else {

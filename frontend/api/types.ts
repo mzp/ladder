@@ -31,6 +31,7 @@ export interface Category {
     title: string
     channels?: RssChannel[]
     selected?: boolean
+    isNSFW: boolean
 }
 
 export interface ChannelsResponse {

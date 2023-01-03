@@ -11,18 +11,28 @@ const { publicRuntimeConfig } = getConfig()
 
 export default function Toolbar({ className }: { className?: string }) {
     const [fetchShowUnread, storeShowUnread] = useLocalStorage('show-unread')
+    const [fetchShowNSFW, storeShowNSFW] = useLocalStorage('show-nsfw')
     const api = useContext(APIContext)
 
     useEffect(() => {
-        const value = fetchShowUnread() != 'false'
-        console.log(`restored value: ${value}`)
-        api.setShowUnread(value)
+        const showUnread = fetchShowUnread() != 'false'
+        console.log(`restored unread: ${showUnread}`)
+        api.setShowUnread(showUnread)
+
+        const showNSFW = fetchShowNSFW() != 'false'
+        console.log(`restored nsfw: ${showNSFW}`)
+        api.setShowNSFW(showNSFW)
     }, [])
 
     const handleToggleUnread = () => {
         const value = !api.showUnread
         api.setShowUnread(value)
         storeShowUnread(value)
+    }
+    const handleToggleNSFW = () => {
+        const value = !api.showNSFW
+        api.setShowNSFW(value)
+        storeShowNSFW(value)
     }
 
     return (
@@ -39,7 +49,13 @@ export default function Toolbar({ className }: { className?: string }) {
                         className="text-left hover:text-sky-400"
                         onClick={handleToggleUnread}
                     >
-                        {api.showUnread ? 'Hide' : 'Show'} unread{' '}
+                        {api.showUnread ? 'Hide' : 'Show'} unread
+                    </button>
+                    <button
+                        className="text-left hover:text-sky-400"
+                        onClick={handleToggleNSFW}
+                    >
+                        {api.showNSFW ? 'Hide' : 'Show'} NSFW
                     </button>
                     <Link className="hover:text-sky-400" href="/settings/feeds">
                         Settings

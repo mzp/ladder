@@ -25,6 +25,6 @@
 - [x] Duplicated entry remover
 - [ ] Full text search
 - [ ] Subscribe twitter account
-- [ ] Mark NSFW 
+- [x] Mark NSFW 
 - [x] Image slidershow
 - [ ] Cache image for fast load

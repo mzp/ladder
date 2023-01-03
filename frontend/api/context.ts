@@ -31,6 +31,8 @@ interface API {
     openDetail(item: RssItem | null): void
     showUnread: boolean
     setShowUnread(value: boolean): void
+    showNSFW: boolean
+    setShowNSFW(value: boolean): void
     setNeedsRefresh(value: boolean): void
     needsRefresh: boolean
 }
@@ -110,6 +112,8 @@ export const BackendAPI: API = {
     setShowUnread(value: boolean) {},
     setNeedsRefresh(value: boolean) {},
     needsRefresh: false,
+    showNSFW: true,
+    setShowNSFW(value: boolean) {},
 }
 
 const context = createContext<API>(BackendAPI)

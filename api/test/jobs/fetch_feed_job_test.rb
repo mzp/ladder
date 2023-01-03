@@ -45,6 +45,16 @@ class FetchFeedJobTest < ActiveJob::TestCase
     assert_no_match(/<img/, result[:description])
   end
 
+  test 'data-src' do
+    item = OpenStruct.new
+    item.description = <<~'HTML'
+    <img data-src="//example.com/foo.png">
+    HTML
+
+    result = FetchFeedJob.analyze(item)
+    assert_equal 'https://example.com/foo.png', result[:imageurl]
+  end
+
   test 'sanitizer' do
     item = OpenStruct.new
     item.description = <<~'HTML'

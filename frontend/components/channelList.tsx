@@ -48,17 +48,17 @@ interface CategoryProps {
 }
 
 function Category({ category, selected, onSelect }: CategoryProps) {
-    const { unreadCount, showUnread } = useContext(APIContext)
+    const { unreadCount, showUnread, showNSFW } = useContext(APIContext)
     const hasUnread = unreadCount.categories[category.id] > 0
     const [isOpened, setOpened] = useState<boolean>(hasUnread)
     const readClassName = showUnread ? 'opacity-30' : 'hidden'
-
+    const nsfwClassName = showNSFW ? '' : 'hidden'
     return (
         <div key={category.id} className="mb-3">
             <div
                 className={`space-x-2 flex cursor-pointer hover:text-sky-400 text-sm ${
                     hasUnread ? '' : readClassName
-                }`}
+                } ${category.isNSFW ? nsfwClassName : ''}`}
                 onClick={() => setOpened(!isOpened)}
             >
                 <div>{isOpened ? <FolderOpen /> : <Folder />}</div>
@@ -75,7 +75,9 @@ function Category({ category, selected, onSelect }: CategoryProps) {
                 selected && selected.id == channel.id
                     ? 'font-bold text-sky-400 border-sky-400'
                     : 'border-transparent'
-            } ${unreadCount.channels[channel.id] == 0 && readClassName}`}
+            } ${unreadCount.channels[channel.id] == 0 && readClassName} ${
+                            category.isNSFW ? nsfwClassName : ''
+                        }`}
                         onClick={() => {
                             onSelect(channel)
                         }}

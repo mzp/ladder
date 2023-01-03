@@ -6,6 +6,6 @@ module CategoryResponse
   def as_json(options = {})
     super(options.merge(
       only: %i[id title]
-    )).merge(channels: rss_channels, selected:)
+    )).merge(channels: rss_channels, selected:, isNSFW: nsfw?)
   end
 end

@@ -18,7 +18,8 @@ export default function MediaSummary({ item, className }: Props) {
         )
     }
 
-    const readClassName = api.showUnread ? 'opacity-30' : 'hidden'
+    const readClassName = api.showUnread ? '' : 'hidden'
+    const readTitleClassName = api.showUnread ? 'opacity-30' : ''
 
     return (
         <div
@@ -27,10 +28,12 @@ export default function MediaSummary({ item, className }: Props) {
             } p-2 min-h-[50vh]
 	    `}
         >
-            <h2 className="font-bold truncate">
+            <h2 className={`font-bold truncate ${readTitleClassName}`}>
                 <Link>{item.title}</Link>
             </h2>
-            <Link className="text-xs text-gray-600 flex space-x-4 font-light">
+            <Link
+                className={`text-xs text-gray-600 flex space-x-4 font-light ${readTitleClassName}`}
+            >
                 <div>{item.date}</div>
                 <div>{item.site}</div>
                 {item.hatenaBookmarkCount > 0 && (

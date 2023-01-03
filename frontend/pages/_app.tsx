@@ -31,6 +31,7 @@ function Provider(props: { children: any }) {
     }>()
     const [detailItem, openDetail] = useState<RssItem | null>(null)
     const [showUnread, setShowUnread] = useState<boolean>(false)
+    const [showNSFW, setShowNSFW] = useState<boolean>(true)
     const [needsRefresh, setNeedsRefresh] = useState<boolean>(false)
 
     const ContextAPI = {
@@ -117,6 +118,8 @@ function Provider(props: { children: any }) {
         showUnread,
         needsRefresh,
         setNeedsRefresh,
+        showNSFW,
+        setShowNSFW,
     }
     useEffect(() => {
         if (!canMarkAsRead) {

@@ -38,7 +38,7 @@ class FetchFeedJob < ApplicationJob
         published_at: item.date || Time.zone.now,
         hatena_bookmark_count: item.try(:hatena_bookmarkcount).to_i
       }
-      [:parse_html, :scrub].reduce(result) do |arg, name|
+      %i[parse_html scrub].reduce(result) do |arg, name|
         send name, arg
       end
     end
@@ -68,17 +68,18 @@ class FetchFeedJob < ApplicationJob
 
     def parse_html(item)
       return item if item[:imageurl].present?
+
       description = Nokogiri::HTML(item[:description])
-      image_tag = description.at('img[src]')
+      image_tag = description.at('img')
       if image_tag
-        imageurl = image_tag.attributes['src'].value
+        imageurl = image_url(image_tag)
         image_tag.remove
 
         item.merge({ imageurl:, description: description.to_html })
       elsif item[:content]
         content = Nokogiri::HTML(item[:content])
-        image_tag = content.at('img[src]')
-        imageurl = image_tag.attributes['src'].value
+        image_tag = content.at('img')
+        imageurl = image_url(image_tag)
         item.merge({ imageurl: })
       else
         item
@@ -87,5 +88,19 @@ class FetchFeedJob < ApplicationJob
       Rails.logger.error "Can't parse feed: #{e}"
       item
     end
+
+    def image_url(tag)
+      hash = tag.attributes
+      url = hash['src']&.value || hash['data-src']&.value
+
+      if url
+        uri = URI(url)
+        # fix scheme
+        uri.scheme ||= 'https'
+        uri.to_s
+      end
+    end
   end
+
+
 end
