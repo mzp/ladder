@@ -27,6 +27,23 @@ class ChannelsControllerTest < ActionDispatch::IntegrationTest
     assert_equal categories.count, 5
   end
 
+  test 'update' do
+    category = FactoryBot.create(:category, user: current_user)
+    put channel_url(@first_channel), params: { category_id: category.id, image_media: true }
+    assert_response :success
+    @first_channel.reload
+    assert_equal category, @first_channel.category
+    assert @first_channel.image_media?
+
+    assert_equal 5, response.parsed_body.count
+  end
+
+  test 'destroy' do
+    delete channel_url(@first_channel)
+    assert_response :success
+    assert_equal 4, response.parsed_body.count
+  end
+
   test 'should get show' do
     get channel_url(@first_channel.id)
 

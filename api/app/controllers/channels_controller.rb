@@ -37,7 +37,18 @@ class ChannelsController < ApplicationController
     target = current_user.rss_channels.find(params[:id])
     target.update(params.permit(:category_id, :image_media))
 
-    channels = current_user.channels.order(:id)
+    channels = current_user.rss_channels.order(:id)
+    channels.each do |channel|
+      channel.extend RssChannelResponse
+    end
+
+    render json: channels
+  end
+
+  def destroy
+    target = current_user.rss_channels.find(params[:id])
+    target.destroy
+    channels = current_user.rss_channels.order(:id)
     channels.each do |channel|
       channel.extend RssChannelResponse
     end

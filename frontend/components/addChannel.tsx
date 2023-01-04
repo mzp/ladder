@@ -80,7 +80,11 @@ export default function AddChannel({ className, onClose }: Props) {
     const { newChannel } = useContext(APIContext)
 
     return (
-        <div className={`w-[600px] h-[300px] rounded-lg py-4 px-10 bg-white shadow m-auto absolute top-0 left-0 right-0 bottom-0 ${className ? className : ''}`}>
+        <div
+            className={`w-[600px] h-[300px] rounded-lg py-4 px-10 bg-white shadow m-auto absolute top-0 left-0 right-0 bottom-0 ${
+                className ? className : ''
+            }`}
+        >
             <button className="hover:text-sky-400" onClick={onClose}>
                 <Xmark />
             </button>

@@ -28,7 +28,11 @@ export default function MediaSummary({ item, className }: Props) {
             } p-2 min-h-[50vh]
 	    `}
         >
-            <h2 className={`font-bold truncate ${readTitleClassName}`}>
+            <h2
+                className={`font-bold truncate ${
+                    item.readAt ? readTitleClassName : ''
+                }`}
+            >
                 <Link>{item.title}</Link>
             </h2>
             <Link
