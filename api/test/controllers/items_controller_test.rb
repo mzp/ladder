@@ -5,6 +5,7 @@ require 'test_helper'
 class ItemsControllerTest < ActionDispatch::IntegrationTest
   def setup
     super
+
     @category = FactoryBot.create(:category)
     @channel1 = FactoryBot.create(:rss_channel, category: @category)
     @channel2 = FactoryBot.create(:rss_channel, category: @category)
@@ -12,6 +13,8 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
     FactoryBot.create_list(:rss_item, 5, rss_channel: @channel1)
     FactoryBot.create_list(:rss_item, 6, rss_channel: @channel2)
     FactoryBot.create_list(:rss_item, 7, rss_channel: @channel3)
+
+    login
 
     get items_url, params: { initial: @channel1.id }
     assert_response :success
@@ -61,6 +64,7 @@ class ItemsControllerUnreadCountTest < ActionDispatch::IntegrationTest
     @same_item = FactoryBot.create(:rss_item, rss_channel: @channel2,
                                               published_at: 3.days.ago,
                                               url: 'http://example.com')
+    login
     post item_mark_as_read_url(@item.id)
     assert_response :success
   end

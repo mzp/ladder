@@ -9,6 +9,8 @@ class ChannelsControllerTest < ActionDispatch::IntegrationTest
     @first_channel, @second_channel, = FactoryBot.create_list(:rss_channel, 5)
     FactoryBot.create_list(:rss_item, 5, rss_channel: @first_channel)
     FactoryBot.create_list(:rss_item, 6, rss_channel: @second_channel)
+
+    login
   end
 
   test 'should get index' do

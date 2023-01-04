@@ -20,10 +20,26 @@ module DatabaseCleanerSupport
   end
 end
 
+module SorceryHelper
+  def before_setup
+    super
+    https!
+  end
+
+  def current_user
+    @current_user ||= FactoryBot.create(:user)
+  end
+
+  def login(user = current_user, password = 'password')
+    post session_url, params: { username: user.username, password: }
+  end
+end
+
 module ActionDispatch
   class IntegrationTest
     include DatabaseCleanerSupport
     include FactoryBot::Syntax::Methods
+    include SorceryHelper
   end
 end
 
