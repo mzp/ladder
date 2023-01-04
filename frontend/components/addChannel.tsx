@@ -46,7 +46,6 @@ function Xmark() {
 function FeedURL({ url }: { url: string }) {
     const { newChannel, createChannel } = useContext(APIContext)
     const [isFinished, setFinished] = useState<boolean>(false)
-    const ref = useRef<HTMLInputElement>()
 
     function handleClick() {
         createChannel(url).then(() => setFinished(true))
@@ -76,7 +75,7 @@ function FeedURL({ url }: { url: string }) {
 }
 
 export default function AddChannel({ className, onClose }: Props) {
-    const ref = useRef<HTMLInputElement>()
+    const ref = useRef<HTMLInputElement>(null)
     const [urls, setURLs] = useState<string[]>([])
     const { newChannel } = useContext(APIContext)
 

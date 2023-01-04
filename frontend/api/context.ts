@@ -17,7 +17,7 @@ interface API {
     channels(): Promise<ChannelsResponse>
     items(id?: string): Promise<ItemsResponse>
     channel(id: string, upto?: string): Promise<RssChannel>
-    newChannel(url: string): Promise<{ urls: string }>
+    newChannel(url: string): Promise<{ urls: string[] }>
     createChannel(url: string): Promise<RssChannel[]>
     removeChannel(id: string): Promise<RssChannel[]>
     updateChannel(id: string, option: ChannelOption): Promise<RssChannel[]>

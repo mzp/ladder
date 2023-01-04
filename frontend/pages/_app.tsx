@@ -67,7 +67,7 @@ function Provider(props: { children: any }) {
             })
         },
         newChannel(url: string) {
-            return new Promise<RssChannel>((resolver) => {
+            return new Promise<{ urls: string[] }>((resolver) => {
                 setAPICall({
                     resolver,
                     api: () => BackendAPI.newChannel(url),
@@ -75,7 +75,7 @@ function Provider(props: { children: any }) {
             })
         },
         createChannel(url: string) {
-            return new Promise<RssChannel>((resolver) => {
+            return new Promise<RssChannel[]>((resolver) => {
                 setAPICall({
                     resolver,
                     api: () => BackendAPI.createChannel(url),
@@ -83,7 +83,7 @@ function Provider(props: { children: any }) {
             })
         },
         removeChannel(id: string) {
-            return new Promise<RssChannel>((resolver) => {
+            return new Promise<RssChannel[]>((resolver) => {
                 setAPICall({
                     resolver,
                     api: () => BackendAPI.removeChannel(id),
