@@ -43,6 +43,7 @@ export default function ChannelSummary({ channel, className }: Props) {
                     <a href={channel.url} target="_blank" rel="noreferrer">
                         {channel.title}
                     </a>
+                    <span>({unreadCount.channels[channel.id]})</span>
                 </h2>
                 <DropMenu icon={<Adjustment />} width={180}>
                     <button
