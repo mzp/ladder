@@ -17,6 +17,9 @@ interface API {
     channels(): Promise<ChannelsResponse>
     items(id?: string): Promise<ItemsResponse>
     channel(id: string, upto?: string): Promise<RssChannel>
+    newChannel(url: string): Promise<{ urls: string }>
+    createChannel(url: string): Promise<RssChannel[]>
+    removeChannel(id: string): Promise<RssChannel[]>
     updateChannel(id: string, option: ChannelOption): Promise<RssChannel[]>
     createCategory(title: string): Promise<Category[]>
     updateCategory(id: string, title: string): Promise<Category[]>
@@ -76,6 +79,29 @@ export const BackendAPI: API = {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(option),
+            credentials: 'include',
+        }).then((res) => res.json())
+    },
+    newChannel(url: string) {
+        return fetch(
+            `${publicRuntimeConfig.apiRoot}/channels/new?url=${encodeURI(url)}`,
+            {
+                method: 'GET',
+                credentials: 'include',
+            }
+        ).then((res) => res.json())
+    },
+    createChannel(url: string) {
+        return fetch(`${publicRuntimeConfig.apiRoot}/channels`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ url }),
+            credentials: 'include',
+        }).then((res) => res.json())
+    },
+    removeChannel(id: string) {
+        return fetch(`${publicRuntimeConfig.apiRoot}/channels/${id}`, {
+            method: 'DELETE',
             credentials: 'include',
         }).then((res) => res.json())
     },

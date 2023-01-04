@@ -5,9 +5,7 @@ require 'test_helper'
 class ItemsControllerTest < ActionDispatch::IntegrationTest
   def setup
     super
-
     login
-    
     @category = FactoryBot.create(:category, user: current_user)
     @channel1 = FactoryBot.create(:rss_channel, category: @category, user: current_user)
     @channel2 = FactoryBot.create(:rss_channel, category: @category, user: current_user)
@@ -15,15 +13,11 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
     FactoryBot.create_list(:rss_item, 5, rss_channel: @channel1)
     FactoryBot.create_list(:rss_item, 6, rss_channel: @channel2)
     FactoryBot.create_list(:rss_item, 7, rss_channel: @channel3)
-
-    other_user = FactoryBot.create(:user)
-    FactoryBot.create(:rss_channel, title: 'other user channel', user: other_user)
-
-    get items_url, params: { initial: @channel1.id }
-    assert_response :success
+    FactoryBot.create(:rss_channel, title: 'other user channel')
   end
 
   test 'category' do
+    get items_url, params: { initial: @channel1.id }
     categories = response.parsed_body['categories']
     assert_equal categories.count, 3
 
@@ -37,6 +31,7 @@ class ItemsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'unread count' do
+    get items_url, params: { initial: @channel1.id }
     channel_unread_count = response.parsed_body['unreadCount']['channels']
     assert_equal 5, channel_unread_count[@channel1.id.to_s]
     assert_equal 6, channel_unread_count[@channel2.id.to_s]
@@ -68,9 +63,9 @@ class ItemsControllerUnreadCountTest < ActionDispatch::IntegrationTest
                                               published_at: 3.days.ago,
                                               url: 'http://example.com')
 
-    @other_user_item = FactoryBot.create(:rss_item, 
-                                              published_at: 3.days.ago,
-                                              url: 'http://example.com')
+    @other_user_item = FactoryBot.create(:rss_item,
+                                         published_at: 3.days.ago,
+                                         url: 'http://example.com')
 
     login
     post item_mark_as_read_url(@item.id)

@@ -66,6 +66,30 @@ function Provider(props: { children: any }) {
                 })
             })
         },
+        newChannel(url: string) {
+            return new Promise<RssChannel>((resolver) => {
+                setAPICall({
+                    resolver,
+                    api: () => BackendAPI.newChannel(url),
+                })
+            })
+        },
+        createChannel(url: string) {
+            return new Promise<RssChannel>((resolver) => {
+                setAPICall({
+                    resolver,
+                    api: () => BackendAPI.createChannel(url),
+                })
+            })
+        },
+        removeChannel(id: string) {
+            return new Promise<RssChannel>((resolver) => {
+                setAPICall({
+                    resolver,
+                    api: () => BackendAPI.removeChannel(id),
+                })
+            })
+        },
         updateChannel(id: string, option: ChannelOption) {
             return new Promise<RssChannel[]>((resolver) => {
                 setAPICall({

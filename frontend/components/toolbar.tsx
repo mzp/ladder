@@ -64,6 +64,8 @@ export default function Toolbar({ className }: { className?: string }) {
                     <a
                         className="hover:text-sky-400"
                         href={`${publicRuntimeConfig.apiRoot}/sidekiq`}
+			target="_blank"
+			rel="noreferrer"
                     >
                         Job Monitor
                     </a>

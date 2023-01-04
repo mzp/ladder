@@ -2,6 +2,7 @@ import { useContext, useState, useEffect, useRef } from 'react'
 import Head from 'next/head'
 import { Category, RssChannel, RssItem } from '@/api/types'
 import { default as APIContext, BackendAPI } from '@/api/context'
+import AddChannel from '@/components/addChannel'
 import ItemList from '@/components/itemList'
 import Toolbar from '@/components/toolbar'
 import ItemDetail from '@/components/itemDetail'
@@ -9,11 +10,20 @@ import ChannelList from '@/components/channelList'
 import ChannelSummary from '@/components/channelSummary'
 import useLocalStorage from '@/components/hook/useLocalStorage'
 
+function PlusSmall() {
+return <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+  <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m6-6H6" />
+</svg>
+
+}
+
 export default function Home() {
     const [categories, setCategories] = useState<Category[]>([])
     const [selected, setSelected] = useState<RssChannel | null>(null)
     const [fetchInitalChannel, storeInitialChannel] =
         useLocalStorage('initial-channel-id')
+    const [showAddChannelModal, setShowAddChannelModal] =
+        useState<boolean>(false)
 
     const ref = useRef<HTMLDivElement>(null)
 
@@ -42,6 +52,11 @@ export default function Home() {
                 <div className="flex h-screen">
                     <div className="w-80 flex-none border-r-[1px]">
                         <Toolbar className="h-8" />
+			<div className="mb-2">
+			  <button className="hover:text-sky-400"
+			  onClick={() => setShowAddChannelModal(true)}
+			  ><PlusSmall /></button>
+			</div>
                         {categories && categories.length && (
                             <ChannelList
                                 className="overflow-scroll snap-y"
@@ -96,6 +111,10 @@ export default function Home() {
                 <ItemDetail
                     className={`transition ease-in-out duration-200 w-1/2 right-0 fixed top-0 h-screen 
 	    ${api.detailItem ? 'translate-x-0' : 'translate-x-full'}`}
+                />
+                <AddChannel
+                    className={`${showAddChannelModal ? '' : 'hidden'}`}
+                    onClose={() => setShowAddChannelModal(false)}
                 />
             </main>
         </>

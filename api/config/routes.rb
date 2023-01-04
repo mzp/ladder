@@ -8,7 +8,7 @@ Rails.application.routes.draw do
   post 'logout', to: 'user_sessions#destroy', as: :logout
 
   resources :users
-  resources 'channels', only: %i[index show update] do
+  resources 'channels', only: %i[new create destroy index show update] do
     post 'markAllAsRead', to: 'channels#mark_all_as_read', as: :mark_all_as_read
   end
   resources 'categories', only: %i[index create update destroy]

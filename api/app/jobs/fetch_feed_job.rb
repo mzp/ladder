@@ -6,15 +6,15 @@ require 'rss/hatena'
 class FetchFeedJob < ApplicationJob
   queue_as :default
 
-  def perform(url)
+  def perform(url, user_id)
     logger.info "#{self}.#{__callee__}: Fetch #{url}"
-
+    user = User.find(user_id)
     URI(url).open do |rss|
       feed = RSS::Parser.parse(rss, false)
 
       # update channel
       channel = feed.channel
-      record = RssChannel.find_or_create_by(feed_url: url)
+      record = user.rss_channels.find_or_create_by(feed_url: url)
       record.update_from_rss!(channel)
 
       # update item

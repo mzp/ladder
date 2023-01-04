@@ -1,15 +1,14 @@
 # frozen_string_literal: true
 
 class ItemsController < ApplicationController
+  skip_before_action :verify_authenticity_token
+
   include UnreadCount
 
   def index
-    no_category = current_user.no_category
-    target_id = params[:initial].presence || 
-      no_category.rss_channels.first.try(:id) ||
-      current_user.rss_channels.first.try(:id)
+    target_id = params[:initial].presence || first_channel_id
 
-    categories = if no_category.rss_channels.empty?
+    categories = if current_user.no_category.rss_channels.empty?
                    current_user.categories.available
                  else
                    current_user.categories.visible
@@ -30,15 +29,28 @@ class ItemsController < ApplicationController
   end
 
   def mark_as_read
-    items = current_user.items.unread
-    item = items.find(params[:item_id])
+    item = current_user.items.find(params[:item_id])
     read_at = Time.current
     item.update!(read_at:)
 
+    # mark newer items as read
     item.rss_channel.items
+        .unread
         .where('? < published_at', item.published_at)
         .update(read_at:)
-    items.where(url: item.url).update(read_at:)
+
+    # mark same url items as read
+    current_user.items
+                .unread
+                .where(url: item.url)
+                .update(read_at:)
     render json: { readAt: read_at, unreadCount: self.class.unread_count }
+  end
+
+  private
+
+  def first_channel_id
+    current_user.no_category.rss_channels.first&.id ||
+      current_user.rss_channels.first&.id
   end
 end

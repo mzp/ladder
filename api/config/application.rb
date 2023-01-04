@@ -25,9 +25,7 @@ module Ladder
     config.action_dispatch.cookies_same_site_protection = :none
 
     # Sidekiq
-    config.active_job.queue_name_prefix = Rails.env
     config.active_job.queue_adapter = :sidekiq
-    config.active_job.queue_name_prefix = Rails.env
 
     # For sidekiq monitor
     config.session_store :cookie_store, key: '_interslice_session', secure: true
