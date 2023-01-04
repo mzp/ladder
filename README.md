@@ -2,7 +2,7 @@
 ### Essential
 - [x] Unread management
 - [x] Authentication
-- [ ] RSS crawler(schedule job)
+- [x] RSS crawler(schedule job)
 - [x] Continuation scroll
 - [ ] RSS Channel management
 

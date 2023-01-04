@@ -29,7 +29,7 @@ class ChannelsController < ApplicationController
 
   def create
     url = params[:url]
-    FetchFeedJob.perform_later url
+    FetchFeedJob.perform_later url, current_user.id
     render json: []
   end
 

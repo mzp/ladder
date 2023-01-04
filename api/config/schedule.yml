@@ -1,0 +1,4 @@
+update_all_feeds:
+  cron: "* */8 * * *"
+  class: "UpdateAllFeeds"
+  queue: default
