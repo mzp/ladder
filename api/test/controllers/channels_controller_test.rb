@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'test_helper'
-
+# rubocop:disable Metrics/ClassLength
 class ChannelsControllerTest < ActionDispatch::IntegrationTest
   def setup
     super
@@ -123,4 +123,23 @@ class ChannelsControllerTest < ActionDispatch::IntegrationTest
     assert_includes urls, 'https://suer-til-blog.atsum.in/index.xml'
     assert_includes urls, 'https://suer-til-blog.atsum.in/atom.xml'
   end
+
+  test 'rss feed itself' do
+    html = <<~'HTML'
+      <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:admin="http://webns.net/mvcb/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:hatena="http://www.hatena.ne.jp/info/xmlns#" xmlns:syn="http://purl.org/rss/1.0/modules/syndication/" xmlns:taxo="http://purl.org/rss/1.0/modules/taxonomy/">
+      <channel rdf:about="https://b.hatena.ne.jp/hotentry/all">
+      <title>はてなブックマーク - 人気エントリー - 総合</title>
+      <link>https://b.hatena.ne.jp/hotentry/all</link>
+      <description>最近の人気エントリー</description>
+      <item>
+      </item>
+      </channel>
+      </rdf:RDF>
+
+    HTML
+
+    urls = ChannelsController.discover html, 'https://b.hatena.ne.jp/hotentry.rss'
+    assert_includes urls, 'https://b.hatena.ne.jp/hotentry.rss'
+  end
 end
+# rubocop:enable Metrics/ClassLength

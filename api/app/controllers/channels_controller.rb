@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require 'rss'
 
 class ChannelsController < ApplicationController
   skip_before_action :verify_authenticity_token
@@ -64,6 +65,12 @@ class ChannelsController < ApplicationController
 
   class << self
     def discover(content, base_url)
+      rss = RSS::Parser.parse(content, false) rescue nil
+      if rss
+        return [base_url]
+      end
+
+      # discover from link tag
       html = Nokogiri::HTML(content)
       links = html.css('link[href][type]').select do |link|
         type = link.attributes['type']&.value
