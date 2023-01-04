@@ -37,8 +37,6 @@ export default function Home() {
     const [showAddChannelModal, setShowAddChannelModal] =
         useState<boolean>(false)
 
-    const ref = useRef<HTMLDivElement>(null)
-
     const api = useContext(APIContext)
     useEffect(() => {
         console.log('load initial data')
@@ -80,10 +78,6 @@ export default function Home() {
                                 onSelect={(channel) => {
                                     setSelected(channel)
                                     storeInitialChannel(channel.id)
-                                    api.setCanMarkAsRead(false)
-                                    if (ref.current) {
-                                        ref.current.scrollTo(0, 0)
-                                    }
                                 }}
                             />
                         )}
@@ -96,30 +90,11 @@ export default function Home() {
                             />
                         ) : null}
                         {selected ? (
-                            <div
-                                className="overflow-scroll snap-y snap-mandatory"
-                                style={{ height: 'calc(100vh - 5rem)' }}
-                                ref={ref}
-                                onScroll={
-                                    api.canMarkAsRead
-                                        ? undefined
-                                        : () => {
-                                              console.log(
-                                                  'Scroll detected: enable unread management'
-                                              )
-                                              ref.current &&
-                                                  api.setCanMarkAsRead(
-                                                      ref.current.scrollTop >
-                                                          100
-                                                  )
-                                          }
-                                }
-                            >
-                                <ItemList
-                                    channel={selected}
-                                    items={selected.items}
-                                />
-                            </div>
+                            <ItemList
+                                height="calc(100vh - 5rem)"
+                                channel={selected}
+                                items={selected.items}
+                            />
                         ) : null}
                     </div>
                 </div>

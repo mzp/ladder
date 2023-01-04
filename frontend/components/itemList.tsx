@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from 'react'
+import { useContext, useState, useEffect, useRef } from 'react'
 import { RssChannel, RssItem } from '@/api/types'
 import APIContext from '@/api/context'
 import Intersection from '@/components/intersection'
@@ -9,6 +9,7 @@ interface Props {
     channel: RssChannel
     items: RssItem[]
     className?: string
+    height?: string
 }
 
 export default function ItemList(props: Props) {
@@ -17,6 +18,7 @@ export default function ItemList(props: Props) {
         [channelID]: props.items,
     })
     const api = useContext(APIContext)
+    const ref = useRef<HTMLDivElement>(null)
 
     function handleLoadMore(lastItem: RssItem | null) {
         const oldestID = lastItem ? lastItem.id : undefined
@@ -32,6 +34,11 @@ export default function ItemList(props: Props) {
     }
 
     useEffect(() => {
+        console.log('Disable unread management')
+        api.setCanMarkAsRead(false)
+    }, [props.channel.id])
+
+    useEffect(() => {
         setItemData({ [channelID]: props.items })
         if (props.items.length == 0) {
             console.log(
@@ -44,35 +51,54 @@ export default function ItemList(props: Props) {
     const items = itemData[channelID] || []
     return (
         <div
-            className={`space-y-2 ${props.className ? props.className : ''} ${
-                props.channel.isImageMedia
-                    ? 'grid grid-flow-row-dense grid-cols-2 mx-auto max-w-4xl'
-                    : ''
+            className={`overflow-scroll snap-y snap-mandatory ${
+                props.className ? props.className : ''
             }`}
+            style={{ height: props.height }}
+            ref={ref}
+            onScroll={
+                api.canMarkAsRead
+                    ? undefined
+                    : () => {
+                          console.log(
+                              'Scroll detected: enable unread management'
+                          )
+                          ref.current &&
+                              api.setCanMarkAsRead(ref.current.scrollTop > 100)
+                      }
+            }
         >
-            {items.map((item, index) => (
-                <Intersection
-                    key={item.id}
-                    item={item}
-                    className={`snap-start px-4 ${
-                        props.channel.isImageMedia ? 'max-w-xl' : ''
-                    }`}
-                    onRead={
-                        index == Math.max(items.length - 3, 0)
-                            ? () => {
-                                  console.log('prefetch items')
-                                  handleLoadMore(items[items.length - 1])
-                              }
-                            : undefined
-                    }
-                >
-                    {props.channel.isImageMedia ? (
-                        <MediaSummary item={item} />
-                    ) : (
-                        <ItemSummary item={item} />
-                    )}
-                </Intersection>
-            ))}
+            <div
+                className={`space-y-2 ${
+                    props.channel.isImageMedia
+                        ? 'grid grid-flow-row-dense grid-cols-2 mx-auto max-w-4xl'
+                        : ''
+                }`}
+            >
+                {items.map((item, index) => (
+                    <Intersection
+                        key={item.id}
+                        item={item}
+                        className={`snap-start px-4 ${
+                            props.channel.isImageMedia ? 'max-w-xl' : ''
+                        }`}
+                        onRead={
+                            index == Math.max(items.length - 3, 0)
+                                ? () => {
+                                      console.log('prefetch items')
+                                      handleLoadMore(items[items.length - 1])
+                                  }
+                                : undefined
+                        }
+                    >
+                        {props.channel.isImageMedia ? (
+                            <MediaSummary item={item} />
+                        ) : (
+                            <ItemSummary item={item} />
+                        )}
+                    </Intersection>
+                ))}
+            </div>
         </div>
     )
 }
