@@ -93,14 +93,12 @@ class FetchFeedJob < ApplicationJob
       hash = tag.attributes
       url = hash['src']&.value || hash['data-src']&.value
 
-      if url
-        uri = URI(url)
-        # fix scheme
-        uri.scheme ||= 'https'
-        uri.to_s
-      end
+      return unless url
+
+      uri = URI(url)
+      # fix scheme
+      uri.scheme ||= 'https'
+      uri.to_s
     end
   end
-
-
 end

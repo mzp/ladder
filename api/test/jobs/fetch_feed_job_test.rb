@@ -48,7 +48,7 @@ class FetchFeedJobTest < ActiveJob::TestCase
   test 'data-src' do
     item = OpenStruct.new
     item.description = <<~'HTML'
-    <img data-src="//example.com/foo.png">
+      <img data-src="//example.com/foo.png">
     HTML
 
     result = FetchFeedJob.analyze(item)

@@ -13,6 +13,7 @@ gem 'puma'
 gem 'rack-cors'
 gem 'rss'
 gem 'sidekiq'
+gem 'sorcery'
 
 group :development, :test do
   gem 'database_cleaner-active_record'

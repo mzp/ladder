@@ -3,6 +3,11 @@
 require 'sidekiq/web'
 
 Rails.application.routes.draw do
+  get 'login', to: 'user_sessions#new', as: :login
+  post 'login', to: 'user_sessions#create'
+  post 'logout', to: 'user_sessions#destroy', as: :logout
+
+  resources :users
   resources 'channels', only: %i[index show update] do
     post 'markAllAsRead', to: 'channels#mark_all_as_read', as: :mark_all_as_read
   end
