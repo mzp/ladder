@@ -6,8 +6,8 @@ class ItemsController < ApplicationController
   def index
     no_category = current_user.no_category
     target_id = params[:initial].presence || 
-      no_category.rss_channels.first.id || 
-      current_user.rss_channels.first.id
+      no_category.rss_channels.first.try(:id) ||
+      current_user.rss_channels.first.try(:id)
 
     categories = if no_category.rss_channels.empty?
                    current_user.categories.available
