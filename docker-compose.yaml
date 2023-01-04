@@ -1,4 +1,13 @@
 services:
+  web:
+    image: nginx:1.23.3
+    ports:
+      - 8000:8000
+    volumes:
+      - ./web/nginx.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - frontend
+      - api
   frontend:
     build:
       context: frontend/
