@@ -14,6 +14,8 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
       allowed_origins << 'http://localhost:8080'
       allowed_origins << 'https://app.localhost.letsrss.com:8443'
       allowed_origins << "https://#{ENV.fetch('CODESPACE_NAME', nil)}-8080.preview.app.github.dev"
+    elsif Rails.env.production?
+      allowed_origins << 'https://app.letsrss.com'
     end
 
     origins(*allowed_origins)

@@ -20,10 +20,14 @@ processes = []
   allowed_public_ports = []
   auto_rollback = true
 
+[processes]
+web = "bin/rails fly:server"
+worker = "bundle exec sidekiq"
+
 [[services]]
   http_checks = []
   internal_port = 8080
-  processes = ["app"]
+  processes = ["web"]
   protocol = "tcp"
   script_checks = []
   [services.concurrency]
