@@ -60,6 +60,7 @@ Rails.application.configure do
   # config.action_cable.disable_request_forgery_protection = true
 
   config.hosts << /.*\.preview\.app\.github\.dev/
+  config.hosts << "api.localhost.letsrss.com"
 
   config.log_level = :info
 end
