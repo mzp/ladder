@@ -7,12 +7,18 @@ module RssChannelResponse
     []
   end
 
+  def channel_title
+    override_title.presence || title
+  end
+
   def as_json(options = {})
     super(options.merge(
-      only: %i[id title url description category_id]
+      only: %i[id url description category_id],
     )).merge(
       items: items_for_response,
-      isImageMedia: image_media
+      isImageMedia: image_media,
+      title: channel_title,
+      originalTitle: title
     )
   end
 

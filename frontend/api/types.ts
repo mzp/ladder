@@ -15,6 +15,7 @@ export interface RssChannel {
     id: string
     url: string
     title: string
+    originalTitle: string
     description: string
     items: RssItem[]
     category_id: string
@@ -24,6 +25,7 @@ export interface RssChannel {
 export interface ChannelOption {
     category_id?: string
     image_media?: boolean
+    override_title?: string
 }
 
 export interface Category {

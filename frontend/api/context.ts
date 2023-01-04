@@ -84,7 +84,9 @@ export const BackendAPI: API = {
     },
     newChannel(url: string) {
         return fetch(
-            `${publicRuntimeConfig.apiRoot}/channels/new?url=${encodeURIComponent(url)}`,
+            `${
+                publicRuntimeConfig.apiRoot
+            }/channels/new?url=${encodeURIComponent(url)}`,
             {
                 method: 'GET',
                 credentials: 'include',

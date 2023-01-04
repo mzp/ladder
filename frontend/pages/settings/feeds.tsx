@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState, useRef } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
 import { Category, RssChannel } from '@/api/types'
@@ -24,7 +24,74 @@ function Trash() {
         </svg>
     )
 }
-export default function Folder() {
+
+interface Props {
+    categories: Category[]
+    channel: RssChannel,
+    setChannels(channels: RssChannel[]): void
+}
+function ChannelRow({ channel, categories, setChannels }: Props) {
+    const ref = useRef<HTMLInputElement>(null)
+    const api = useContext(APIContext)
+    return (
+        <tr key={channel.id}>
+            <td className="py-2">
+                <select
+                    value={channel.category_id || ''}
+                    onChange={(e) => {
+                        api.updateChannel(channel.id, {
+                            category_id: e.target.value,
+                        }).then((channels) => setChannels(channels))
+                    }}
+                    className="rounded-lg shadow-sm text-sm"
+                >
+                    {categories.map(({ id, title }) => (
+                        <option value={id} key={id}>
+                            {title}
+                        </option>
+                    ))}
+                </select>
+            </td>
+
+            <td className="px-4 py-2">
+                <input
+                    ref={ref}
+                    type="text"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-[300px]"
+                    defaultValue={channel.title}
+		    placeholder={channel.originalTitle}
+                />
+	    </td>
+            <td className="flex">
+                <button
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold p-1 text-sm rounded mx-2"
+                    onClick={() => {
+                        if (ref.current) {
+                            api.updateChannel(
+                                channel.id,
+                                { override_title: ref.current.value }
+                            ).then(setChannels)
+                        }
+
+                    }}
+                >
+                    Rename
+                </button>
+                <button
+                    className="bg-red-500 hover:bg-red-700 text-white font-bold p-1 text-sm rounded mx-2"
+                    onClick={() => {
+                        api.removeChannel(channel.id).then(setChannels)
+                    }}
+                >
+                    <Trash />
+                </button>
+            </td>
+            <td className="px-4 py-2">{channel.description}</td>
+        </tr>
+    )
+}
+
+export default function FeedsSetting() {
     const [channels, setChannels] = useState<RssChannel[]>([])
     const [categories, setCategories] = useState<Category[]>([])
     const api = useContext(APIContext)
@@ -62,59 +129,12 @@ export default function Folder() {
                             </thead>
                             <tbody>
                                 {channels.map((channel) => (
-                                    <tr key={channel.id}>
-                                        <td className="py-2">
-                                            <select
-                                                value={
-                                                    channel.category_id || ''
-                                                }
-                                                onChange={(e) => {
-                                                    api.updateChannel(
-                                                        channel.id,
-                                                        {
-                                                            category_id:
-                                                                e.target.value,
-                                                        }
-                                                    ).then((channels) =>
-                                                        setChannels(channels)
-                                                    )
-                                                }}
-                                                className="rounded-lg shadow-sm text-sm"
-                                            >
-                                                {categories.map(
-                                                    ({ id, title }) => (
-                                                        <option
-                                                            value={id}
-                                                            key={id}
-                                                        >
-                                                            {title}
-                                                        </option>
-                                                    )
-                                                )}
-                                            </select>
-                                        </td>
-
-                                        <td className="px-4 py-2">
-                                            {channel.title}
-                                        </td>
-                                        <td>
-                                            <button
-                                                className="bg-red-500 hover:bg-red-700 text-white font-bold p-1 text-sm rounded mx-2"
-                                                onClick={() => {
-                                                    api.removeChannel(
-                                                        channel.id
-                                                    ).then((channels) =>
-                                                        setChannels(channels)
-                                                    )
-                                                }}
-                                            >
-                                                <Trash />
-                                            </button>
-                                        </td>
-                                        <td className="px-4 py-2">
-                                            {channel.description}
-                                        </td>
-                                    </tr>
+                                    <ChannelRow
+                                        channel={channel}
+					setChannels={setChannels}
+                                        categories={categories}
+                                        key={channel.id}
+                                    />
                                 ))}
                             </tbody>
                         </table>
