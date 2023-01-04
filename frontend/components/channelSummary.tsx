@@ -1,4 +1,5 @@
 import { useContext } from 'react'
+import { useRouter } from 'next/router'
 import { RssChannel } from '@/api/types'
 import APIContext from '@/api/context'
 import DropMenu from '@/components/dropMenu'
@@ -28,14 +29,10 @@ interface Props {
 }
 
 export default function ChannelSummary({ channel, className }: Props) {
-    const {
-        unreadCount,
-        setUnreadCount,
-        markAllAsRead,
-        updateChannel,
-        setNeedsRefresh,
-    } = useContext(APIContext)
+    const { unreadCount, setUnreadCount, markAllAsRead, updateChannel } =
+        useContext(APIContext)
     const count = unreadCount.channels[channel.id]
+    const router = useRouter()
     return (
         <div
             className={`backdrop-blur-sm w-full bg-slate-200/90 border-b-[1px] border-slate-300 ${className} text-ellipsis overflow-hidden`}
@@ -53,7 +50,7 @@ export default function ChannelSummary({ channel, className }: Props) {
                             updateChannel(channel.id, {
                                 image_media: !channel.isImageMedia,
                             }).then((response) => {
-                                setNeedsRefresh(true)
+                                router.reload()
                             })
                         }}
                     >

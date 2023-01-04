@@ -44,10 +44,9 @@ export default function Home() {
             ({ categories, unreadCount }) => {
                 setCategories(categories)
                 api.setUnreadCount(unreadCount)
-                api.setNeedsRefresh(false)
             }
         )
-    }, [api.needsRefresh])
+    }, [])
 
     return (
         <>
