@@ -43,30 +43,32 @@ export const BackendAPI: API = {
     markAsRead(item: RssItem) {
         return fetch(
             `${publicRuntimeConfig.apiRoot}/items/${item.id}/markAsRead`,
-            { method: 'POST' }
+            { method: 'POST', credentials: 'include' }
         ).then((res) => res.json())
     },
     markAllAsRead(channel: RssChannel) {
         return fetch(
             `${publicRuntimeConfig.apiRoot}/channels/${channel.id}/markAllAsRead`,
-            { method: 'POST' }
+            { method: 'POST', credentials: 'include' }
         ).then((res) => res.json())
     },
     channels() {
-        return fetch(`${publicRuntimeConfig.apiRoot}/channels`).then((res) =>
-            res.json()
-        )
+        return fetch(`${publicRuntimeConfig.apiRoot}/channels`, {
+            credentials: 'include',
+        }).then((res) => res.json())
     },
     items(initialSelectedID?: string) {
         return fetch(
-            `${publicRuntimeConfig.apiRoot}/items?initial=${initialSelectedID}`
+            `${publicRuntimeConfig.apiRoot}/items?initial=${initialSelectedID}`,
+            { credentials: 'include' }
         ).then((res) => res.json())
     },
     channel(id: string, upto: string) {
         return fetch(
             `${publicRuntimeConfig.apiRoot}/channels/${id}?upto=${
                 upto ? upto : ''
-            }`
+            }`,
+            { credentials: 'include' }
         ).then((res) => res.json())
     },
     updateChannel(id: string, option: ChannelOption) {
@@ -74,6 +76,7 @@ export const BackendAPI: API = {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(option),
+            credentials: 'include',
         }).then((res) => res.json())
     },
     createCategory(title: string): Promise<Category[]> {
@@ -81,6 +84,7 @@ export const BackendAPI: API = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ title }),
+            credentials: 'include',
         }).then((res) => res.json())
     },
     updateCategory(id: string, title: string): Promise<Category[]> {
@@ -88,17 +92,21 @@ export const BackendAPI: API = {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ title }),
+            credentials: 'include',
         }).then((res) => res.json())
     },
     removeCategory(id: string): Promise<Category[]> {
         return fetch(`${publicRuntimeConfig.apiRoot}/categories/${id}`, {
             method: 'DELETE',
+            credentials: 'include',
         }).then((res) => res.json())
     },
     categories(): Promise<Category[]> {
-        return fetch(`${publicRuntimeConfig.apiRoot}/categories`).then((res) =>
-            res.json()
-        )
+        return fetch(
+            `${publicRuntimeConfig.apiRoot}/categories`,
+
+            { credentials: 'include' }
+        ).then((res) => res.json())
     },
 
     isLoading: false,

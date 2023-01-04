@@ -5,7 +5,7 @@ if (process.env.NODE_ENV == 'development') {
     if (process.env.CODESPACE_NAME != null) {
         apiRoot = `https://${process.env.CODESPACE_NAME}-3000.preview.app.github.dev`
     } else {
-        apiRoot = 'http://localhost:3000'
+        apiRoot = 'https://api.localhost.letsrss.com:8443'
     }
 }
 

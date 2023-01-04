@@ -26,7 +26,7 @@ Rails.application.config.sorcery.configure do |config|
   # Set domain option for cookies; Useful for remember_me submodule.
   # Default: `nil`
   #
-  config.cookie_domain = 'localhost'
+  # config.cookie_domain = 'localhost'
 
   # Allow the remember_me cookie to be set through AJAX
   # Default: `true`
