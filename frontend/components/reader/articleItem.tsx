@@ -35,7 +35,7 @@ max-w-4xl mx-auto
             <h2 className="font-bold">
                 <Link>{item.title}</Link>
             </h2>
-            <div className="flex space-x-4 my-2 leading-6">
+            <div className="md:flex space-x-4 my-2 leading-6">
                 <div
                     className="text-gray-600 flex-auto"
                     data-prevent-menu-close="true"

@@ -72,7 +72,7 @@ export default function ChannelSummary({ channel, className }: Props) {
                     </button>
                 </DropMenu>
             </div>
-            <div className="text-sm">
+            <div className="md:block hidden text-sm">
                 <a href={channel.url} target="_blank" rel="noreferrer">
                     {channel.description}
                 </a>

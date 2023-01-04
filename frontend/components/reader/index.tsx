@@ -152,7 +152,7 @@ export default function Reader() {
     return (
         <>
             <div className="flex h-screen">
-                <div className="w-80 flex-none border-r-[1px]">
+                <div className="md:w-80 w-0 flex-none border-r-[1px]">
                     <Toolbar className="h-8" />
                     <div className="mb-2 flex space-x-1">
                         <button
@@ -196,7 +196,7 @@ export default function Reader() {
                     {selected ? (
                         <ChannelSummary
                             channel={selected}
-                            className="snap-start h-24 py-4 px-4"
+                            className="snap-start md:h-24 py-4 px-4"
                         />
                     ) : null}
                     {selected ? (
