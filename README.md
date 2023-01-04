@@ -1,9 +1,10 @@
 ## TODO
 ### Essential
 - [x] Unread management
-- [ ] Authentication
+- [x] Authentication
 - [ ] RSS crawler(schedule job)
 - [x] Continuation scroll
+- [ ] RSS Channel management
 
 ### Basic
 - [ ] Optimize on mobile phone
@@ -16,8 +17,8 @@
 - [x] unread count
 
 ### Infrastracture
-- [ ] Deploy on AWS
-- [ ] domain
+- [x] Deploy 
+- [x] domain
 
 ### Advance
 - [ ] Paywall marker
