@@ -17,6 +17,7 @@ export default function ItemList(props: Props) {
     const [itemData, setItemData] = useState<{ [key: string]: RssItem[] }>({
         [channelID]: props.items,
     })
+    const [canMarkAsRead, setCanMarkAsRead] = useState<boolean>(false)
     const api = useContext(APIContext)
     const ref = useRef<HTMLDivElement>(null)
 
@@ -34,11 +35,6 @@ export default function ItemList(props: Props) {
     }
 
     useEffect(() => {
-        console.log('Disable unread management')
-        api.setCanMarkAsRead(false)
-    }, [props.channel.id])
-
-    useEffect(() => {
         setItemData({ [channelID]: props.items })
         if (props.items.length == 0) {
             console.log(
@@ -48,7 +44,13 @@ export default function ItemList(props: Props) {
         }
     }, [props.channel, props.items])
 
+    useEffect(() => {
+        console.log('Disable unread management')
+        setCanMarkAsRead(false)
+    }, [props.channel.id])
+
     const items = itemData[channelID] || []
+    const prefetchThreshold = Math.max(items.length - 3, 0)
     return (
         <div
             className={`overflow-scroll snap-y snap-mandatory ${
@@ -57,14 +59,15 @@ export default function ItemList(props: Props) {
             style={{ height: props.height }}
             ref={ref}
             onScroll={
-                api.canMarkAsRead
+                canMarkAsRead
                     ? undefined
                     : () => {
-                          console.log(
-                              'Scroll detected: enable unread management'
-                          )
-                          ref.current &&
-                              api.setCanMarkAsRead(ref.current.scrollTop > 100)
+                          if (ref.current && ref.current.scrollTop > 100) {
+                              console.log(
+                                  'Scroll detected: enable unread management'
+                              )
+                              setCanMarkAsRead(true)
+                          }
                       }
             }
         >
@@ -77,19 +80,27 @@ export default function ItemList(props: Props) {
             >
                 {items.map((item, index) => (
                     <Intersection
+                        enabled={
+                            (canMarkAsRead && item.readAt == null) ||
+                            index == prefetchThreshold
+                        }
                         key={item.id}
                         item={item}
                         className={`snap-start px-4 ${
                             props.channel.isImageMedia ? 'max-w-xl' : ''
                         }`}
-                        onRead={
-                            index == Math.max(items.length - 3, 0)
-                                ? () => {
-                                      console.log('prefetch items')
-                                      handleLoadMore(items[items.length - 1])
-                                  }
-                                : undefined
-                        }
+                        onIntersect={() => {
+                            if (item.readAt == null) {
+                                console.log(`markAsRead: ${item.title}`)
+                                api.markAsRead(item).then(({ unreadCount }) => {
+                                    api.setUnreadCount(unreadCount)
+                                })
+                            }
+                            if (index == prefetchThreshold) {
+                                console.log('prefetch items')
+                                handleLoadMore(items[items.length - 1])
+                            }
+                        }}
                     >
                         {props.channel.isImageMedia ? (
                             <MediaSummary item={item} />

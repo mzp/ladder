@@ -6,50 +6,42 @@ interface Props {
     children: any
     item: RssItem
     className?: string
-    onRead: ((item: RssItem) => void) | undefined
+    onIntersect?(): void
+    enabled: boolean
 }
 
 export default function Intersection({
     item,
     children,
-    onRead,
     className,
+    onIntersect,
+    enabled,
 }: Props) {
     const ref = useRef<HTMLDivElement>(null)
-    const [readAt, setReadAt] = useState<string | null>(item.readAt)
+    const [intersected, setIntersected] = useState<boolean>(false)
     const api = useContext(APIContext)
 
     useEffect(() => {
-        if (readAt != null && onRead == null) {
-            return
-        }
-        const observer = new IntersectionObserver(
-            ([element]) => {
-                if (element.isIntersecting) {
-                    if (onRead) {
-                        onRead(item)
+        if (enabled) {
+            const observer = new IntersectionObserver(
+                ([element]) => {
+                    if (element.isIntersecting && onIntersect) {
+                        onIntersect()
                     }
+                },
+                { threshold: 0.8 }
+            )
 
-                    if (readAt == null) {
-                        api.markAsRead(item).then(({ readAt, unreadCount }) => {
-                            setReadAt(readAt)
-                            api.setUnreadCount(unreadCount)
-                        })
-                    }
-                }
-            },
-            { threshold: 0.8 }
-        )
+            if (ref.current === null) return
 
-        if (ref.current === null) return
+            observer.observe(ref.current)
+            const { current } = ref
 
-        observer.observe(ref.current)
-        const { current } = ref
-
-        return () => {
-            observer.unobserve(current)
+            return () => {
+                observer.unobserve(current)
+            }
         }
-    }, [item.id, readAt])
+    }, [enabled])
 
     return (
         <div ref={ref} className={className}>

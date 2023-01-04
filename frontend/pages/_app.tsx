@@ -20,11 +20,6 @@ function Provider(props: { children: any }) {
         channels: {},
         categories: {},
     })
-    const [markAsRead, setMarkAsRead] = useState<{
-        item: RssItem
-        resolver: any
-    } | null>()
-    const [canMarkAsRead, setCanMarkAsRead] = useState<boolean>(false)
     const [apiCall, setAPICall] = useState<{
         api: () => any
         resolver: any
@@ -37,7 +32,10 @@ function Provider(props: { children: any }) {
     const ContextAPI = {
         markAsRead(item: RssItem) {
             return new Promise<MarkAsReadResponse>((resolver) => {
-                setMarkAsRead({ item, resolver })
+                setAPICall({
+                    resolver,
+                    api: () => BackendAPI.markAsRead(item),
+                })
             })
         },
         markAllAsRead(channel: RssChannel) {
@@ -131,8 +129,6 @@ function Provider(props: { children: any }) {
                 })
             })
         },
-        canMarkAsRead,
-        setCanMarkAsRead,
         isLoading,
         unreadCount,
         setUnreadCount,
@@ -145,20 +141,6 @@ function Provider(props: { children: any }) {
         showNSFW,
         setShowNSFW,
     }
-    useEffect(() => {
-        if (!canMarkAsRead) {
-            return
-        }
-        if (!markAsRead) {
-            return
-        }
-        const { item, resolver } = markAsRead
-        console.log(`markAsRead: ${item.title}`)
-        setLoading(true)
-        BackendAPI.markAsRead(item)
-            .then(resolver)
-            .then(() => setLoading(false))
-    }, [markAsRead, canMarkAsRead])
 
     useEffect(() => {
         if (!apiCall) {
