@@ -3,15 +3,15 @@
 class ChannelsController < ApplicationController
   include UnreadCount
   def index
-    channels = RssChannel.all.includes(:items).order(:id)
+    channels = current_user.rss_channels.includes(:items).order(:id)
     channels.each do |channel|
       channel.extend RssChannelResponse
     end
-    render json: { channels:, categories: Category.visible }
+    render json: { channels:, categories: current_user.categories.visible }
   end
 
   def show
-    channel = RssChannel.find(params[:id])
+    channel = current_user.rss_channels.find(params[:id])
     channel.extend RssChannelResponse
     channel.extend RssChannelResponse::WithLatestItem
 
@@ -20,7 +20,7 @@ class ChannelsController < ApplicationController
   end
 
   def update
-    target = RssChannel.find(params[:id])
+    target = current_user.rss_channels.find(params[:id])
     target.update(params.permit(:category_id, :image_media))
 
     channels = RssChannel.all.order(:id)
@@ -32,7 +32,7 @@ class ChannelsController < ApplicationController
   end
 
   def mark_all_as_read
-    target = RssChannel.find(params[:channel_id])
+    target = current_user.rss_channels.find(params[:channel_id])
     target.items.unread.update!(read_at: Time.current)
     render json: { unreadCount: self.class.unread_count }
   end

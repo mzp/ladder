@@ -4,12 +4,11 @@ FactoryBot.define do
   factory :rss_channel do
     title { 'RSS Feed' }
     description { 'The RSS Feed' }
+    user { association(:user) }
 
     sequence :url do |n|
       "http://#{n}.example.comperson"
     end
-
-    category { Category.find_or_create_by!(no_category: true) }
 
     factory :rss_channel_with_items do
       transient do

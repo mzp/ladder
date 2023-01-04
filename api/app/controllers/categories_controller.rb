@@ -2,22 +2,22 @@
 
 class CategoriesController < ApplicationController
   def index
-    render json: Category.available
+    render json: current_user.categories.available
   end
 
   def create
-    category = Category.create
+    category = current_user.categories.create
     category.update(params.permit(:title))
-    render json: Category.available
+    render json: current_user.categories.available
   end
 
   def update
-    Category.find(params[:id]).update(params.permit(:title))
-    render json: Category.available
+    current_user.categories.find(params[:id]).update(params.permit(:title))
+    render json: current_user.categories.available
   end
 
   def destroy
-    Category.find(params[:id]).destroy
-    render json: Category.available
+    current_user.categories.find(params[:id]).destroy
+    render json: current_user.categories.available
   end
 end

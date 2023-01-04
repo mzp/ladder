@@ -4,8 +4,9 @@ require 'open-uri'
 
 class RssChannel < ApplicationRecord
   has_many :items, class_name: 'RssItem', dependent: :destroy
+  belongs_to :user
   belongs_to :category, default: lambda {
-    Category.find_by(no_category: true)
+    user.no_category
   }
 
   def update_from_rss!(channel)

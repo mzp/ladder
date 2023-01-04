@@ -6,15 +6,16 @@ class ChannelsControllerTest < ActionDispatch::IntegrationTest
   def setup
     super
 
-    @first_channel, @second_channel, = FactoryBot.create_list(:rss_channel, 5)
+    @first_channel, @second_channel, = FactoryBot.create_list(:rss_channel, 5, user: current_user)
     FactoryBot.create_list(:rss_item, 5, rss_channel: @first_channel)
     FactoryBot.create_list(:rss_item, 6, rss_channel: @second_channel)
 
+    FactoryBot.create_list(:rss_channel, 2)
     login
   end
 
   test 'should get index' do
-    FactoryBot.create_list(:category, 3)
+    FactoryBot.create_list(:category, 3, user: current_user)
 
     get channels_url
     assert_response :success
@@ -23,7 +24,7 @@ class ChannelsControllerTest < ActionDispatch::IntegrationTest
     assert_equal channels.count, 5
 
     categories = response.parsed_body['categories']
-    assert_equal categories.count, 4
+    assert_equal categories.count, 5
   end
 
   test 'should get show' do
@@ -35,7 +36,7 @@ class ChannelsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should get show with upto' do
-    channel = FactoryBot.create(:rss_channel)
+    channel = FactoryBot.create(:rss_channel, user: current_user)
     read_item = FactoryBot.create(:rss_item, published_at: 1.day.ago, rss_channel: channel, read_at: Time.current)
     FactoryBot.create(:rss_item, published_at: 1.day.ago, rss_channel: channel)
     FactoryBot.create(:rss_item, published_at: 2.days.ago, rss_channel: channel)
@@ -56,7 +57,7 @@ class ChannelsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should get show with read' do
-    channel = FactoryBot.create(:rss_channel)
+    channel = FactoryBot.create(:rss_channel, user: current_user)
     FactoryBot.create(:rss_item, published_at: 1.day.ago, rss_channel: channel, read_at: Time.current)
     item = FactoryBot.create(:rss_item, published_at: 2.days.ago, rss_channel: channel, read_at: Time.current)
     older_item1 = FactoryBot.create(:rss_item, published_at: 3.days.ago, rss_channel: channel, read_at: Time.current)
