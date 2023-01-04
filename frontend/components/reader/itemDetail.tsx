@@ -52,7 +52,7 @@ export default function ItemDetail({ className }: Props) {
     return (
         <div
             ref={ref}
-            className={`bg-white py-4 px-10 pr-0 drop-shadow-lg  transition ease-in-out duration-200 w-1/2 right-0 fixed top-0 h-screen 
+            className={`bg-white p-4 md:px-10 md:pr-0 drop-shadow-lg  transition ease-in-out duration-200 w-full md:w-1/2 right-0 fixed top-0 h-screen 
             ${detailItem ? 'translate-x-0' : 'translate-x-full'}`}
         >
             <div className="bg-white">
@@ -75,7 +75,7 @@ export default function ItemDetail({ className }: Props) {
                         </a>
                     </h3>
                     <div className="text-sm text-slate-400">
-                        <div className="flex space-x-4">
+                        <div className="md:flex md:space-x-4">
                             <div>{detailItem.date}</div>
                             <div>
                                 <a
