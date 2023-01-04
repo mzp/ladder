@@ -16,7 +16,7 @@ services:
     command: npm run dev
     environment:
       NODE_ENV: development
-      API_ROOT: https://api.localhost.letsrss.com:8433
+      API_ROOT: https://api.localhost.letsrss.com:8443
     ports:
       - 8080:3000
     volumes:
