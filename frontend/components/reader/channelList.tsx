@@ -104,13 +104,7 @@ export default function ItemList({
     onSelect,
     style,
 }: Props) {
-    const { unreadCount } = useContext(ReaderContext)
-
     const category = categories.find(({ selected }) => selected)
-
-    const [openedCategory, setOpenedCategory] = useState<Category | undefined>(
-        category
-    )
     const [selected, setSelected] = useState<RssChannel | undefined>(undefined)
 
     useEffect(() => {
@@ -133,8 +127,6 @@ export default function ItemList({
     return (
         <div className={`${className} ml-2`} style={style}>
             {categories.map((category) => {
-                const isOpened =
-                    openedCategory && category.id == openedCategory.id
                 return (
                     <Category
                         key={category.id}

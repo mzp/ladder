@@ -1,15 +1,6 @@
 import { createContext, useState } from 'react'
 
-import {
-    Category,
-    RssChannel,
-    RssItem,
-    ChannelOption,
-    ChannelsResponse,
-    ItemsResponse,
-    UnreadCount,
-    MarkAsReadResponse,
-} from '@/api/types'
+import { RssItem, UnreadCount } from '@/api/types'
 
 interface ReaderContext {
     unreadCount: UnreadCount
