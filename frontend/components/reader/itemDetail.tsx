@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef } from 'react'
-import APIContext from '@/api/context'
+import ReaderContext from '@/components/reader/readerContext'
 
 function Xmark() {
     return (
@@ -25,7 +25,7 @@ interface Props {
 }
 
 export default function ItemDetail({ className }: Props) {
-    const { detailItem, openDetail } = useContext(APIContext)
+    const { detailItem, openDetail } = useContext(ReaderContext)
     const ref = useRef<HTMLDivElement>(null)
     useEffect(() => {
         if (!detailItem) {
@@ -52,7 +52,8 @@ export default function ItemDetail({ className }: Props) {
     return (
         <div
             ref={ref}
-            className={`bg-white py-4 px-10 pr-0 drop-shadow-lg ${className}`}
+            className={`bg-white py-4 px-10 pr-0 drop-shadow-lg  transition ease-in-out duration-200 w-1/2 right-0 fixed top-0 h-screen 
+            ${detailItem ? 'translate-x-0' : 'translate-x-full'}`}
         >
             <div className="bg-white">
                 <button

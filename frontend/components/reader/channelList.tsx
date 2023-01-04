@@ -1,7 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 import { Category, RssChannel } from '@/api/types'
-import ItemSummary from '@/components/itemSummary'
-import APIContext from '@/api/context'
+import ReaderContext from '@/components/reader/readerContext'
 
 function Folder() {
     return (
@@ -48,7 +47,7 @@ interface CategoryProps {
 }
 
 function Category({ category, selected, onSelect }: CategoryProps) {
-    const { unreadCount, showUnread, showNSFW } = useContext(APIContext)
+    const { unreadCount, showUnread, showNSFW } = useContext(ReaderContext)
     const hasUnread = unreadCount.categories[category.id] > 0
     const [isOpened, setOpened] = useState<boolean>(hasUnread)
     const readClassName = showUnread ? 'opacity-30' : 'hidden'
@@ -105,7 +104,7 @@ export default function ItemList({
     onSelect,
     style,
 }: Props) {
-    const { unreadCount } = useContext(APIContext)
+    const { unreadCount } = useContext(ReaderContext)
 
     const category = categories.find(({ selected }) => selected)
 

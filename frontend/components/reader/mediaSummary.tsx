@@ -1,6 +1,7 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 import { RssItem } from '@/api/types'
 import APIContext from '@/api/context'
+import ReaderContext from '@/components/reader/readerContext'
 
 interface Props {
     item: RssItem
@@ -8,7 +9,7 @@ interface Props {
 }
 
 export default function MediaSummary({ item, className }: Props) {
-    const api = useContext(APIContext)
+    const { showUnread } = useContext(ReaderContext)
 
     const Link = (props: any) => {
         return (
@@ -18,8 +19,8 @@ export default function MediaSummary({ item, className }: Props) {
         )
     }
 
-    const readClassName = api.showUnread ? '' : 'hidden'
-    const readTitleClassName = api.showUnread ? 'opacity-30' : ''
+    const readClassName = showUnread ? '' : 'hidden'
+    const readTitleClassName = showUnread ? 'opacity-30' : ''
 
     return (
         <div

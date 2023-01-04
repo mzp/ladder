@@ -1,4 +1,4 @@
-import { createContext } from 'react'
+import { createContext, useEffect, useState } from 'react'
 import {
     Category,
     RssChannel,
@@ -10,6 +10,7 @@ import {
     MarkAsReadResponse,
 } from '@/api/types'
 import getConfig from 'next/config'
+import { Context } from 'vm'
 
 interface API {
     markAsRead(item: RssItem): Promise<MarkAsReadResponse>
@@ -26,18 +27,6 @@ interface API {
     removeCategory(id: string): Promise<Category[]>
     categories(): Promise<Category[]>
     isLoading: boolean
-    setCanMarkAsRead(value: boolean): void
-    canMarkAsRead: boolean
-    unreadCount: UnreadCount
-    setUnreadCount(unreadCount: UnreadCount): void
-    detailItem: RssItem | null
-    openDetail(item: RssItem | null): void
-    showUnread: boolean
-    setShowUnread(value: boolean): void
-    showNSFW: boolean
-    setShowNSFW(value: boolean): void
-    setNeedsRefresh(value: boolean): void
-    needsRefresh: boolean
 }
 
 const { publicRuntimeConfig } = getConfig()
@@ -136,21 +125,136 @@ export const BackendAPI: API = {
             { credentials: 'include' }
         ).then((res) => res.json())
     },
-
     isLoading: false,
-    setCanMarkAsRead(value: boolean) {},
-    canMarkAsRead: false,
-    unreadCount: { channels: {}, categories: {} },
-    setUnreadCount(value: UnreadCount) {},
-    openDetail(item: RssItem | null) {},
-    detailItem: null,
-    showUnread: false,
-    setShowUnread(value: boolean) {},
-    setNeedsRefresh(value: boolean) {},
-    needsRefresh: false,
-    showNSFW: true,
-    setShowNSFW(value: boolean) {},
 }
 
 const context = createContext<API>(BackendAPI)
 export default context
+
+export function APIProvider({ children }: { children: any }) {
+    const [isLoading, setLoading] = useState<boolean>(false)
+    const [apiCall, setAPICall] = useState<{
+        api: () => any
+        resolver: any
+    }>()
+
+    const ContextAPI = {
+        markAsRead(item: RssItem) {
+            return new Promise<MarkAsReadResponse>((resolver) => {
+                setAPICall({
+                    resolver,
+                    api: () => BackendAPI.markAsRead(item),
+                })
+            })
+        },
+        markAllAsRead(channel: RssChannel) {
+            return new Promise<{ unreadCount: UnreadCount }>((resolver) => {
+                setAPICall({
+                    resolver,
+                    api: () => BackendAPI.markAllAsRead(channel),
+                })
+            })
+        },
+        channels() {
+            return new Promise<ChannelsResponse>((resolver) => {
+                setAPICall({ resolver, api: () => BackendAPI.channels() })
+            })
+        },
+        items(id: string) {
+            return new Promise<ItemsResponse>((resolver) => {
+                setAPICall({ resolver, api: () => BackendAPI.items(id) })
+            })
+        },
+        channel(id: string, upto: string) {
+            return new Promise<RssChannel>((resolver) => {
+                setAPICall({
+                    resolver,
+                    api: () => BackendAPI.channel(id, upto),
+                })
+            })
+        },
+        newChannel(url: string) {
+            return new Promise<{ urls: string[] }>((resolver) => {
+                setAPICall({
+                    resolver,
+                    api: () => BackendAPI.newChannel(url),
+                })
+            })
+        },
+        createChannel(url: string) {
+            return new Promise<RssChannel[]>((resolver) => {
+                setAPICall({
+                    resolver,
+                    api: () => BackendAPI.createChannel(url),
+                })
+            })
+        },
+        removeChannel(id: string) {
+            return new Promise<RssChannel[]>((resolver) => {
+                setAPICall({
+                    resolver,
+                    api: () => BackendAPI.removeChannel(id),
+                })
+            })
+        },
+        updateChannel(id: string, option: ChannelOption) {
+            return new Promise<RssChannel[]>((resolver) => {
+                setAPICall({
+                    resolver,
+                    api: () => BackendAPI.updateChannel(id, option),
+                })
+            })
+        },
+        createCategory(title: string): Promise<Category[]> {
+            return new Promise<Category[]>((resolver) => {
+                setAPICall({
+                    resolver,
+                    api: () => BackendAPI.createCategory(title),
+                })
+            })
+        },
+        updateCategory(id: string, title: string) {
+            return new Promise<Category[]>((resolver) => {
+                setAPICall({
+                    resolver,
+                    api: () => BackendAPI.updateCategory(id, title),
+                })
+            })
+        },
+        removeCategory(id: string) {
+            return new Promise<Category[]>((resolver) => {
+                setAPICall({
+                    resolver,
+                    api: () => BackendAPI.removeCategory(id),
+                })
+            })
+        },
+
+        categories() {
+            return new Promise<Category[]>((resolver) => {
+                setAPICall({
+                    resolver,
+                    api: () => BackendAPI.categories(),
+                })
+            })
+        },
+        isLoading,
+    }
+
+    useEffect(() => {
+        if (!apiCall) {
+            return
+        }
+        const { resolver, api } = apiCall
+        setLoading(true)
+        console.log('Start API Request')
+        api()
+            .then(resolver)
+            .then(() => {
+                setLoading(false)
+                console.log('End API Request')
+            })
+    }, [apiCall])
+
+    return <context.Provider value={ContextAPI}>{children}</context.Provider>
+}

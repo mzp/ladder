@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 import { RssItem } from '@/api/types'
-import APIContext from '@/api/context'
+import ReaderContext from '@/components/reader/readerContext'
 
 interface Props {
     item: RssItem
@@ -8,7 +8,7 @@ interface Props {
 }
 
 export default function ItemSummary({ item, className }: Props) {
-    const api = useContext(APIContext)
+    const { openDetail, showUnread } = useContext(ReaderContext)
 
     const Link = (props: any) => {
         return (
@@ -20,9 +20,9 @@ export default function ItemSummary({ item, className }: Props) {
 
     const handleOpenDetail = () => {
         console.log(`open detail page: ${item.title}`)
-        api.openDetail(item)
+        openDetail(item)
     }
-    const readClassName = api.showUnread ? 'opacity-30' : 'hidden'
+    const readClassName = showUnread ? 'opacity-30' : 'hidden'
 
     return (
         <div

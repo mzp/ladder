@@ -1,10 +1,7 @@
-import { useContext, useEffect, useRef, useState } from 'react'
-import { RssItem } from '@/api/types'
-import APIContext from '@/api/context'
+import { useEffect, useRef, useState } from 'react'
 
 interface Props {
     children: any
-    item: RssItem
     className?: string
     onIntersect?(): void
     enabled: boolean
@@ -19,7 +16,6 @@ export default function Intersection({
 }: Props) {
     const ref = useRef<HTMLDivElement>(null)
     const [intersected, setIntersected] = useState<boolean>(false)
-    const api = useContext(APIContext)
 
     useEffect(() => {
         if (enabled) {

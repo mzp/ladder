@@ -1,9 +1,10 @@
 import { useContext, useState, useEffect, useRef } from 'react'
 import { RssChannel, RssItem } from '@/api/types'
 import APIContext from '@/api/context'
+import ReaderContext from '@/components/reader/readerContext'
 import Intersection from '@/components/intersection'
-import ItemSummary from '@/components/itemSummary'
-import MediaSummary from '@/components/mediaSummary'
+import ItemSummary from '@/components/reader/itemSummary'
+import MediaSummary from '@/components/reader/mediaSummary'
 
 interface Props {
     channel: RssChannel
@@ -17,6 +18,7 @@ export default function ItemList(props: Props) {
     const [itemData, setItemData] = useState<{ [key: string]: RssItem[] }>({
         [channelID]: props.items,
     })
+    const { setUnreadCount } = useContext(ReaderContext)
     const [canMarkAsRead, setCanMarkAsRead] = useState<boolean>(false)
     const api = useContext(APIContext)
     const ref = useRef<HTMLDivElement>(null)
@@ -93,7 +95,7 @@ export default function ItemList(props: Props) {
                             if (item.readAt == null) {
                                 console.log(`markAsRead: ${item.title}`)
                                 api.markAsRead(item).then(({ unreadCount }) => {
-                                    api.setUnreadCount(unreadCount)
+                                    setUnreadCount(unreadCount)
                                 })
                             }
                             if (index == prefetchThreshold) {

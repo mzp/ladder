@@ -2,6 +2,7 @@ import { useContext } from 'react'
 import { useRouter } from 'next/router'
 import { RssChannel } from '@/api/types'
 import APIContext from '@/api/context'
+import ReaderContext from '@/components/reader/readerContext'
 import DropMenu from '@/components/dropMenu'
 
 function Adjustment() {
@@ -29,8 +30,8 @@ interface Props {
 }
 
 export default function ChannelSummary({ channel, className }: Props) {
-    const { unreadCount, setUnreadCount, markAllAsRead, updateChannel } =
-        useContext(APIContext)
+    const { markAllAsRead, updateChannel } = useContext(APIContext)
+    const { unreadCount, setUnreadCount } = useContext(ReaderContext)
     const count = unreadCount.channels[channel.id]
     const router = useRouter()
     return (
