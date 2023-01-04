@@ -12,7 +12,7 @@ export default function ItemSummary({ item, className }: Props) {
 
     const Link = (props: any) => {
         return (
-            <a href={item.url} target="_blank" {...props}>
+            <a href={item.url} target="_blank" rel="noreferrer" {...props}>
                 {props.children}
             </a>
         )

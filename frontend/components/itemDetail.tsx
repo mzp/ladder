@@ -65,7 +65,11 @@ export default function ItemDetail({ className }: Props) {
             {detailItem && detailItem.content && (
                 <div>
                     <h3 className="text-2xl font-bold">
-                        <a href={detailItem.url} target="_blank">
+                        <a
+                            href={detailItem.url}
+                            target="_blank"
+                            rel="noreferrer"
+                        >
                             {detailItem.title}
                         </a>
                     </h3>
@@ -73,7 +77,11 @@ export default function ItemDetail({ className }: Props) {
                         <div className="flex space-x-4">
                             <div>{detailItem.date}</div>
                             <div>
-                                <a href={detailItem.url} target="_blank">
+                                <a
+                                    href={detailItem.url}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
                                     {detailItem.url}
                                 </a>
                             </div>

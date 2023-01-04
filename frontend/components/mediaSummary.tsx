@@ -12,7 +12,7 @@ export default function MediaSummary({ item, className }: Props) {
 
     const Link = (props: any) => {
         return (
-            <a href={item.url} target="_blank" {...props}>
+            <a href={item.url} target="_blank" rel="noreferrer" {...props}>
                 {props.children}
             </a>
         )
@@ -45,7 +45,7 @@ export default function MediaSummary({ item, className }: Props) {
             </Link>
             <div className="py-2">
                 {item.imageurl ? (
-                    <a href={item.url} target="_blank">
+                    <a href={item.url} target="_blank" rel="noreferrer">
                         <img src={item.imageurl} className="max-h-[60vh]" />
                     </a>
                 ) : null}

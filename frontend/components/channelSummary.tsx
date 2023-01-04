@@ -42,7 +42,7 @@ export default function ChannelSummary({ channel, className }: Props) {
         >
             <div className="flex">
                 <h2 className="text-lg font-bold flex-auto">
-                    <a href={channel.url} target="_blank">
+                    <a href={channel.url} target="_blank" rel="noreferrer">
                         {channel.title}
                     </a>
                 </h2>
@@ -75,7 +75,7 @@ export default function ChannelSummary({ channel, className }: Props) {
                 </DropMenu>
             </div>
             <div className="text-sm">
-                <a href={channel.url} target="_blank">
+                <a href={channel.url} target="_blank" rel="noreferrer">
                     {channel.description}
                 </a>
             </div>
