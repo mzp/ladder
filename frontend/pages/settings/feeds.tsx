@@ -14,7 +14,7 @@ function Trash() {
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className="w-6 h-6"
+            className="w-3 h-3"
         >
             <path
                 strokeLinecap="round"
@@ -34,8 +34,21 @@ function ChannelRow({ channel, categories, setChannels }: Props) {
     const ref = useRef<HTMLInputElement>(null)
     const api = useContext(APIContext)
     return (
-        <tr key={channel.id}>
-            <td className="py-2">
+        <div
+            className={classNames(
+                'my-6',
+                'space-y-1',
+                'md:grid',
+                'md:grid-cols-4',
+                'md:gap-x-2',
+                'w-full'
+            )}
+        >
+            <div className={classNames('font-bold')}>{channel.title}</div>
+            <div className={classNames('text-sm', 'text-gray-600')}>
+                {channel.description}
+            </div>
+            <div className={classNames()}>
                 <select
                     value={channel.category_id || ''}
                     onChange={(e) => {
@@ -43,7 +56,7 @@ function ChannelRow({ channel, categories, setChannels }: Props) {
                             category_id: e.target.value,
                         }).then((channels) => setChannels(channels))
                     }}
-                    className="rounded-lg shadow-sm text-sm"
+                    className="rounded-lg shadow-sm text-sm w-full"
                 >
                     {categories.map(({ id, title }) => (
                         <option value={id} key={id}>
@@ -51,41 +64,25 @@ function ChannelRow({ channel, categories, setChannels }: Props) {
                         </option>
                     ))}
                 </select>
-            </td>
+            </div>
 
-            <td className="px-4 py-2">
-                <input
-                    ref={ref}
-                    type="text"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-[300px]"
-                    defaultValue={channel.title}
-                    placeholder={channel.originalTitle}
-                />
-            </td>
-            <td className="flex">
+            <div className={classNames()}>
                 <button
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold p-1 text-sm rounded mx-2"
+                    className="bg-red-500 hover:bg-red-700 text-white font-bold p-1 text-sm rounded"
                     onClick={() => {
-                        if (ref.current) {
-                            api.updateChannel(channel.id, {
-                                override_title: ref.current.value,
-                            }).then(setChannels)
+                        if (
+                            confirm(
+                                `Do you want to delete "${channel.originalTitle}"?`
+                            )
+                        ) {
+                            api.removeChannel(channel.id).then(setChannels)
                         }
-                    }}
-                >
-                    Rename
-                </button>
-                <button
-                    className="bg-red-500 hover:bg-red-700 text-white font-bold p-1 text-sm rounded mx-2"
-                    onClick={() => {
-                        api.removeChannel(channel.id).then(setChannels)
                     }}
                 >
                     <Trash />
                 </button>
-            </td>
-            <td className="px-4 py-2">{channel.description}</td>
-        </tr>
+            </div>
+        </div>
     )
 }
 
@@ -130,27 +127,17 @@ export default function FeedsSetting() {
                         <Toolbar className="h-8" />
                         <SettingSidebar active="feeds" />
                     </div>
-                    <div className="md:m-w-3xl overflow-scroll snap-y snap-mandatory scroll-pt-14 p-4">
-                        <table className="my-10">
-                            <thead>
-                                <tr>
-                                    <th>Category</th>
-                                    <th>Title</th>
-                                    <th>Action</th>
-                                    <th>Description</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {channels.map((channel) => (
-                                    <ChannelRow
-                                        channel={channel}
-                                        setChannels={setChannels}
-                                        categories={categories}
-                                        key={channel.id}
-                                    />
-                                ))}
-                            </tbody>
-                        </table>
+                    <div className="md:m-w-3xl p-4">
+                        <div className="my-10">
+                            {channels.map((channel) => (
+                                <ChannelRow
+                                    channel={channel}
+                                    setChannels={setChannels}
+                                    categories={categories}
+                                    key={channel.id}
+                                />
+                            ))}
+                        </div>
                     </div>
                 </div>
             </main>

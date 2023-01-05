@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useRef } from 'react'
 import { useRouter } from 'next/router'
 import classNames from 'classnames'
 import { RssChannel } from '@/api/types'
@@ -24,6 +24,83 @@ function Adjustment() {
         </svg>
     )
 }
+interface ChannelSettingProps {
+    channel: RssChannel
+}
+function ChannelSetting({ channel }: ChannelSettingProps) {
+    const ref = useRef<HTMLInputElement>(null)
+    const api = useContext(APIContext)
+    const router = useRouter()
+
+    return (
+        <form
+            onSubmit={(event) => {
+                event.preventDefault()
+
+                if (ref.current) {
+                    api.updateChannel(channel.id, {
+                        override_title: ref.current.value,
+                    }).then(() => {
+                        if (router) {
+                            router.reload()
+                        }
+                    })
+                }
+            }}
+        >
+            <div className={classNames('mb-4')}>
+                <label
+                    className={classNames(
+                        'block',
+                        'text-gray-700',
+                        'text-sm',
+                        'font-bold',
+                        'mb-2'
+                    )}
+                    htmlFor="username"
+                >
+                    Title
+                </label>
+                <input
+                    className={classNames(
+                        'shadow',
+                        'appearance-none',
+                        'border',
+                        'rounded',
+                        'w-full',
+                        'py-2',
+                        'px-3',
+                        'text-gray-700',
+                        'leading-tight',
+                        'focus:outline-none',
+                        'focus:shadow-outline'
+                    )}
+                    id="title"
+                    type="text"
+                    ref={ref}
+                    defaultValue={channel.title}
+                    placeholder={channel.originalTitle}
+                />
+            </div>
+
+            <input
+                type="submit"
+                className={classNames(
+                    'bg-blue-500',
+                    'hover:bg-blue-700',
+                    'text-white',
+                    'font-bold',
+                    'py-2',
+                    'px-4',
+                    'rounded',
+                    'focus:outline-none',
+                    'focus:shadow-outline'
+                )}
+                value="Save"
+            />
+        </form>
+    )
+}
 
 interface Props {
     channel: RssChannel
@@ -32,7 +109,7 @@ interface Props {
 
 export default function ChannelSummary({ channel, className }: Props) {
     const { markAllAsRead, updateChannel } = useContext(APIContext)
-    const { unreadCount, setUnreadCount } = useContext(ReaderContext)
+    const { unreadCount, setUnreadCount, openModal } = useContext(ReaderContext)
     const count = unreadCount.channels[channel.id]
     const router = useRouter()
     return (
@@ -65,9 +142,10 @@ export default function ChannelSummary({ channel, className }: Props) {
                         media
                     </button>
                     <button
-                        className={`text-left ${
+                        className={classNames(
+                            'text-left',
                             count == 0 ? 'opacity-30' : 'hover:text-sky-400'
-                        }`}
+                        )}
                         onClick={() => {
                             markAllAsRead(channel).then(({ unreadCount }) =>
                                 setUnreadCount(unreadCount)
@@ -75,6 +153,14 @@ export default function ChannelSummary({ channel, className }: Props) {
                         }}
                     >
                         Mark all as read({count})
+                    </button>
+                    <button
+                        className={classNames('text-left')}
+                        onClick={() => {
+                            openModal(<ChannelSetting channel={channel} />)
+                        }}
+                    >
+                        More settings
                     </button>
                 </DropMenu>
             </div>
