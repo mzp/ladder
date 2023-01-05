@@ -30,7 +30,7 @@ interface API {
 }
 
 const { publicRuntimeConfig } = getConfig()
-
+console.log(publicRuntimeConfig.apiRoot)
 export const BackendAPI: API = {
     markAsRead(item: RssItem) {
         return fetch(

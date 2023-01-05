@@ -17,6 +17,7 @@ services:
     environment:
       NODE_ENV: development
       API_ROOT: https://api.localhost.letsrss.com:8443
+      CODESPACE_NAME: ${CODESPACE_NAME}
     ports:
       - 8080:3000
     volumes:
@@ -36,6 +37,7 @@ services:
       - redis
     environment:
       REDIS_URL: redis://redis:6379
+      CODESPACE_NAME: ${CODESPACE_NAME}
   db:
     image: postgres:14.3
     restart: always
