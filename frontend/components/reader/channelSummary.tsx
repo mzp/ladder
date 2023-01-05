@@ -1,5 +1,6 @@
 import { useContext } from 'react'
 import { useRouter } from 'next/router'
+import classNames from 'classnames'
 import { RssChannel } from '@/api/types'
 import APIContext from '@/api/context'
 import ReaderContext from '@/components/reader/readerContext'
@@ -36,13 +37,18 @@ export default function ChannelSummary({ channel, className }: Props) {
     const router = useRouter()
     return (
         <div
-            className={`backdrop-blur-sm w-full bg-slate-200/90 border-b-[1px] border-slate-300 ${className} text-ellipsis overflow-hidden`}
+            className={classNames(
+                'text-ellipsis',
+                'overflow-hidden',
+                className
+            )}
         >
             <div className="flex">
-                <h2 className="text-lg font-bold flex-auto">
+                <h2 className="md:text-lg font-bold flex-auto">
                     <a href={channel.url} target="_blank" rel="noreferrer">
                         {channel.title}
                     </a>
+                    <span>({unreadCount.channels[channel.id]})</span>
                 </h2>
                 <DropMenu icon={<Adjustment />} width={180}>
                     <button
@@ -72,7 +78,7 @@ export default function ChannelSummary({ channel, className }: Props) {
                     </button>
                 </DropMenu>
             </div>
-            <div className="text-sm">
+            <div className="md:block hidden text-sm">
                 <a href={channel.url} target="_blank" rel="noreferrer">
                     {channel.description}
                 </a>

@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState, useRef } from 'react'
 import Head from 'next/head'
-import Link from 'next/link'
+import classNames from 'classnames'
 import { Category, RssChannel } from '@/api/types'
 import APIContext from '@/api/context'
 import Toolbar from '@/components/toolbar'
@@ -27,7 +27,7 @@ function Trash() {
 
 interface Props {
     categories: Category[]
-    channel: RssChannel,
+    channel: RssChannel
     setChannels(channels: RssChannel[]): void
 }
 function ChannelRow({ channel, categories, setChannels }: Props) {
@@ -59,20 +59,18 @@ function ChannelRow({ channel, categories, setChannels }: Props) {
                     type="text"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg w-[300px]"
                     defaultValue={channel.title}
-		    placeholder={channel.originalTitle}
+                    placeholder={channel.originalTitle}
                 />
-	    </td>
+            </td>
             <td className="flex">
                 <button
                     className="bg-blue-500 hover:bg-blue-700 text-white font-bold p-1 text-sm rounded mx-2"
                     onClick={() => {
                         if (ref.current) {
-                            api.updateChannel(
-                                channel.id,
-                                { override_title: ref.current.value }
-                            ).then(setChannels)
+                            api.updateChannel(channel.id, {
+                                override_title: ref.current.value,
+                            }).then(setChannels)
                         }
-
                     }}
                 >
                     Rename
@@ -112,12 +110,27 @@ export default function FeedsSetting() {
                 />
             </Head>
             <main>
-                <div className="flex h-screen">
-                    <div className="w-80 flex-none border-r-[1px] overflow-scroll snap-y scroll-pt-8">
+                <div
+                    className={classNames(
+                        'flex',
+                        'h-screen',
+                        'md:flex-row',
+                        'flex-col'
+                    )}
+                >
+                    <div
+                        className={classNames(
+                            'md:w-80',
+                            'md:flex-none',
+                            'md:border-r-[1px]',
+                            'border-b-[1px]',
+                            'md:border-b-0'
+                        )}
+                    >
                         <Toolbar className="h-8" />
                         <SettingSidebar active="feeds" />
                     </div>
-                    <div className="m-w-3xl overflow-scroll snap-y snap-mandatory scroll-pt-14 p-4">
+                    <div className="md:m-w-3xl overflow-scroll snap-y snap-mandatory scroll-pt-14 p-4">
                         <table className="my-10">
                             <thead>
                                 <tr>
@@ -131,7 +144,7 @@ export default function FeedsSetting() {
                                 {channels.map((channel) => (
                                     <ChannelRow
                                         channel={channel}
-					setChannels={setChannels}
+                                        setChannels={setChannels}
                                         categories={categories}
                                         key={channel.id}
                                     />

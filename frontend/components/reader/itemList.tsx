@@ -3,8 +3,8 @@ import { RssChannel, RssItem } from '@/api/types'
 import APIContext from '@/api/context'
 import ReaderContext from '@/components/reader/readerContext'
 import Intersection from '@/components/intersection'
-import ItemSummary from '@/components/reader/itemSummary'
-import MediaSummary from '@/components/reader/mediaSummary'
+import ArticleItem from '@/components/reader/articleItem'
+import MediaItem from '@/components/reader/mediaItem'
 
 interface Props {
     channel: RssChannel
@@ -37,19 +37,16 @@ export default function ItemList(props: Props) {
     }
 
     useEffect(() => {
-        setItemData({ [channelID]: props.items })
-        if (props.items.length == 0) {
+        console.log('Disable unread management')
+        setCanMarkAsRead(false)
+
+        if (items.length == 0) {
             console.log(
                 `${__filename}: initial load for ${props.channel.title}`
             )
             handleLoadMore(null)
         }
-    }, [props.channel, props.items])
-
-    useEffect(() => {
-        console.log('Disable unread management')
-        setCanMarkAsRead(false)
-    }, [props.channel.id])
+    }, [props.channel])
 
     const items = itemData[channelID] || []
     const prefetchThreshold = Math.max(items.length - 3, 0)
@@ -76,7 +73,7 @@ export default function ItemList(props: Props) {
             <div
                 className={`space-y-2 ${
                     props.channel.isImageMedia
-                        ? 'grid grid-flow-row-dense grid-cols-2 mx-auto max-w-4xl'
+                        ? 'md:grid grid-flow-row-dense grid-cols-2 mx-auto max-w-4xl'
                         : ''
                 }`}
             >
@@ -87,7 +84,6 @@ export default function ItemList(props: Props) {
                             index == prefetchThreshold
                         }
                         key={item.id}
-                        item={item}
                         className={`snap-start px-4 ${
                             props.channel.isImageMedia ? 'max-w-xl' : ''
                         }`}
@@ -105,9 +101,9 @@ export default function ItemList(props: Props) {
                         }}
                     >
                         {props.channel.isImageMedia ? (
-                            <MediaSummary item={item} />
+                            <MediaItem item={item} />
                         ) : (
-                            <ItemSummary item={item} />
+                            <ArticleItem item={item} />
                         )}
                     </Intersection>
                 ))}

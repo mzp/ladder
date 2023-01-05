@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import Link from 'next/link'
+import classNames from 'classnames'
 import SettingSidebar from '@/components/settingSidebar'
 import Toolbar from '@/components/toolbar'
 import { Category } from '@/api/types'
@@ -71,8 +71,23 @@ export default function CategoryList() {
                 />
             </Head>
             <main>
-                <div className="flex h-screen">
-                    <div className="w-80 flex-none border-r-[1px] overflow-scroll snap-y scroll-pt-8">
+                <div
+                    className={classNames(
+                        'flex',
+                        'h-screen',
+                        'md:flex-row',
+                        'flex-col'
+                    )}
+                >
+                    <div
+                        className={classNames(
+                            'md:w-80',
+                            'md:flex-none',
+                            'md:border-r-[1px]',
+                            'border-b-[1px]',
+                            'md:border-b-0'
+                        )}
+                    >
                         <Toolbar className="h-8" />
                         <SettingSidebar active="categories" />
                     </div>

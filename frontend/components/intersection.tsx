@@ -8,7 +8,6 @@ interface Props {
 }
 
 export default function Intersection({
-    item,
     children,
     className,
     onIntersect,

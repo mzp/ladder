@@ -1,14 +1,21 @@
 import { useContext, useState, useEffect, useRef } from 'react'
+import Link from 'next/link'
+
 import { Category, RssChannel, RssItem } from '@/api/types'
 import { default as APIContext, BackendAPI } from '@/api/context'
+
+import Toolbar from '@/components/toolbar'
+import DropMenu from '@/components/dropMenu'
+
 import AddChannel from '@/components/reader/addChannel'
 import ItemList from '@/components/reader/itemList'
-import Toolbar from '@/components/toolbar'
 import ItemDetail from '@/components/reader/itemDetail'
 import ChannelList from '@/components/reader/channelList'
 import ChannelSummary from '@/components/reader/channelSummary'
+
 import useLocalStorage from '@/components/hook/useLocalStorage'
 import { default as ReaderContext } from '@/components/reader/readerContext'
+import classNames from 'classnames'
 function PlusSmall() {
     return (
         <svg
@@ -105,9 +112,67 @@ function BookmarkSlash() {
         </svg>
     )
 }
+function Bar4() {
+    return (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-6 h-6"
+        >
+            <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M3.75 5.25h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5"
+            />
+        </svg>
+    )
+}
+
+function Cog() {
+    return (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-5 h-5"
+        >
+            <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M4.5 12a7.5 7.5 0 0015 0m-15 0a7.5 7.5 0 1115 0m-15 0H3m16.5 0H21m-1.5 0H12m-8.457 3.077l1.41-.513m14.095-5.13l1.41-.513M5.106 17.785l1.15-.964m11.49-9.642l1.149-.964M7.501 19.795l.75-1.3m7.5-12.99l.75-1.3m-6.063 16.658l.26-1.477m2.605-14.772l.26-1.477m0 17.726l-.26-1.477M10.698 4.614l-.26-1.477M16.5 19.794l-.75-1.299M7.5 4.205L12 12m6.894 5.785l-1.149-.964M6.256 7.178l-1.15-.964m15.352 8.864l-1.41-.513M4.954 9.435l-1.41-.514M12.002 12l-3.75 6.495"
+            />
+        </svg>
+    )
+}
+
+function Xmark() {
+    return (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-6 h-6"
+        >
+            <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+            />
+        </svg>
+    )
+}
+
 export default function Reader() {
     const [categories, setCategories] = useState<Category[]>([])
     const [selected, setSelected] = useState<RssChannel | null>(null)
+    const [showChannelList, setShowChannelList] = useState<boolean>(false)
 
     const [fetchInitalChannel, storeInitialChannel] =
         useLocalStorage('initial-channel-id')
@@ -152,8 +217,42 @@ export default function Reader() {
     return (
         <>
             <div className="flex h-screen">
-                <div className="w-80 flex-none border-r-[1px]">
-                    <Toolbar className="h-8" />
+                <div
+                    className={classNames(
+                        'md:w-80',
+                        'w-3/4',
+                        'flex-none',
+                        'border-r-[1px]',
+                        'transition',
+                        'ease-in-out',
+                        'duration-200',
+                        'bg-white',
+                        'z-10',
+                        'fixed',
+                        'md:relative',
+                        showChannelList ? 'translate-x-0' : '-translate-x-full',
+                        'md:translate-x-0'
+                    )}
+                >
+                    <Toolbar className="h-8">
+                        <DropMenu icon={<Cog />} width={150}>
+                            <Link
+                                className="hover:text-sky-400"
+                                href="/settings/feeds"
+                            >
+                                Settings
+                            </Link>
+                        </DropMenu>
+                        <button
+                            className={classNames(
+                                'hover:text-sky-400',
+                                'md:hidden'
+                            )}
+                            onClick={() => setShowChannelList(false)}
+                        >
+                            <Xmark />
+                        </button>
+                    </Toolbar>
                     <div className="mb-2 flex space-x-1">
                         <button
                             className="hover:text-sky-400"
@@ -186,6 +285,7 @@ export default function Reader() {
                             categories={categories}
                             style={{ height: 'calc(100vh - 2rem)' }}
                             onSelect={(channel) => {
+                                setShowChannelList(false)
                                 setSelected(channel)
                                 storeInitialChannel(channel.id)
                             }}
@@ -193,12 +293,37 @@ export default function Reader() {
                     )}
                 </div>
                 <div className="w-full">
-                    {selected ? (
-                        <ChannelSummary
-                            channel={selected}
-                            className="snap-start h-24 py-4 px-4"
-                        />
-                    ) : null}
+                    <div
+                        className={classNames(
+                            'backdrop-blur-sm',
+                            'w-full',
+                            'bg-slate-200/90',
+                            'border-b-[1px]',
+                            'border-slate-300',
+                            'md:h-24',
+                            'py-4',
+                            'px-4',
+                            'flex',
+                            'space-x-2'
+                        )}
+                    >
+                        <div
+                            className={classNames(
+                                'md:hidden',
+                                'hover:text-sky-400',
+                                'cursor-pointer'
+                            )}
+                            onClick={() => setShowChannelList(!showChannelList)}
+                        >
+                            <Bar4></Bar4>
+                        </div>
+                        {selected ? (
+                            <ChannelSummary
+                                channel={selected}
+                                className="flex-auto"
+                            />
+                        ) : null}
+                    </div>
                     {selected ? (
                         <ItemList
                             height="calc(100vh - 5rem)"

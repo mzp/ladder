@@ -7,7 +7,7 @@
 - [ ] RSS Channel management
 
 ### Basic
-- [ ] Optimize on mobile phone
+- [x] Optimize on mobile phone
 - [ ] Optimize on tablet
 - [ ] Keyboard shortcut for PC
 - [ ] Import OPML
