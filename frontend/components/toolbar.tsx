@@ -1,6 +1,11 @@
 import Link from 'next/link'
+import getConfig from 'next/config'
 import { useContext } from 'react'
 import APIContext from '@/api/context'
+
+const {
+    publicRuntimeConfig: { development },
+} = getConfig()
 
 function Spin() {
     return (
@@ -42,7 +47,9 @@ export default function Toolbar({
         >
             <div className="flex items-center">
                 <h1 className="pr-2 flex-none">
-                    <Link href="/">Ultraladder</Link>
+                    <Link href="/">
+                        Ultraladder {development ? '[dev]' : ''}
+                    </Link>
                 </h1>
                 <div className="flex-auto">{isLoading && <Spin />}</div>
                 {children}

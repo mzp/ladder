@@ -15,6 +15,7 @@ const nextConfig = {
     reactStrictMode: true,
     publicRuntimeConfig: {
         apiRoot: apiRoot,
+development: process.env.NODE_ENV == 'development'
     },
 }
 
