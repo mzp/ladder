@@ -4,11 +4,11 @@
 - [x] Authentication
 - [x] RSS crawler(schedule job)
 - [x] Continuation scroll
-- [ ] RSS Channel management
+- [x] RSS Channel management
 
 ### Basic
 - [x] Optimize on mobile phone
-- [ ] Optimize on tablet
+- [x] Optimize on tablet
 - [x] Keyboard shortcut for PC
 - [ ] Import OPML
 - [x] Site folder(group)
