@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from 'react'
 import { Category, RssChannel } from '@/api/types'
 import ReaderContext from '@/components/reader/readerContext'
+import classNames from 'classnames'
 
 function Folder() {
     return (
@@ -98,7 +99,7 @@ interface Props {
     style?: { [key: string]: string }
 }
 
-export default function ItemList({
+export default function ChannelList({
     categories,
     className,
     onSelect,
@@ -125,7 +126,7 @@ export default function ItemList({
     }, [categories])
 
     return (
-        <div className={`${className} ml-2`} style={style}>
+        <div className={classNames(className, 'ml-2')} style={style}>
             {categories.map((category) => {
                 return (
                     <Category

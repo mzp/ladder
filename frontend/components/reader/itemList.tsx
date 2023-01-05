@@ -1,4 +1,5 @@
 import { useContext, useState, useEffect, useRef } from 'react'
+import classNames from 'classnames'
 import { RssChannel, RssItem } from '@/api/types'
 import APIContext from '@/api/context'
 import ReaderContext from '@/components/reader/readerContext'
@@ -39,7 +40,7 @@ export default function ItemList(props: Props) {
     useEffect(() => {
         console.log('Disable unread management')
         setCanMarkAsRead(false)
-
+        setItemData({ [props.channel.id]: props.channel.items })
         if (items.length == 0) {
             console.log(
                 `${__filename}: initial load for ${props.channel.title}`
@@ -52,10 +53,22 @@ export default function ItemList(props: Props) {
     const prefetchThreshold = Math.max(items.length - 3, 0)
     return (
         <div
-            className={`overflow-scroll snap-y snap-mandatory ${
+            className={classNames(
+                'overflow-scroll',
+                'snap-y',
+                'snap-mandatory',
+                props.channel.isImageMedia
+                    ? classNames(
+                          'md:grid',
+                          'grid-flow-row-dense',
+                          'grid-cols-2',
+                          'mx-auto',
+                          'w-full',
+                          'md:max-w-4xl'
+                      )
+                    : '',
                 props.className ? props.className : ''
-            }`}
-            style={{ height: props.height }}
+            )}
             ref={ref}
             onScroll={
                 canMarkAsRead
@@ -70,44 +83,36 @@ export default function ItemList(props: Props) {
                       }
             }
         >
-            <div
-                className={`space-y-2 ${
-                    props.channel.isImageMedia
-                        ? 'md:grid grid-flow-row-dense grid-cols-2 mx-auto max-w-4xl'
-                        : ''
-                }`}
-            >
-                {items.map((item, index) => (
-                    <Intersection
-                        enabled={
-                            (canMarkAsRead && item.readAt == null) ||
-                            index == prefetchThreshold
+            {items.map((item, index) => (
+                <Intersection
+                    enabled={
+                        (canMarkAsRead && item.readAt == null) ||
+                        index == prefetchThreshold
+                    }
+                    key={item.id}
+                    className={`snap-start px-4 ${
+                        props.channel.isImageMedia ? 'max-w-xl' : ''
+                    }`}
+                    onIntersect={() => {
+                        if (item.readAt == null) {
+                            console.log(`markAsRead: ${item.title}`)
+                            api.markAsRead(item).then(({ unreadCount }) => {
+                                setUnreadCount(unreadCount)
+                            })
                         }
-                        key={item.id}
-                        className={`snap-start px-4 ${
-                            props.channel.isImageMedia ? 'max-w-xl' : ''
-                        }`}
-                        onIntersect={() => {
-                            if (item.readAt == null) {
-                                console.log(`markAsRead: ${item.title}`)
-                                api.markAsRead(item).then(({ unreadCount }) => {
-                                    setUnreadCount(unreadCount)
-                                })
-                            }
-                            if (index == prefetchThreshold) {
-                                console.log('prefetch items')
-                                handleLoadMore(items[items.length - 1])
-                            }
-                        }}
-                    >
-                        {props.channel.isImageMedia ? (
-                            <MediaItem item={item} />
-                        ) : (
-                            <ArticleItem item={item} />
-                        )}
-                    </Intersection>
-                ))}
-            </div>
+                        if (index == prefetchThreshold) {
+                            console.log('prefetch items')
+                            handleLoadMore(items[items.length - 1])
+                        }
+                    }}
+                >
+                    {props.channel.isImageMedia ? (
+                        <MediaItem item={item} />
+                    ) : (
+                        <ArticleItem item={item} />
+                    )}
+                </Intersection>
+            ))}
         </div>
     )
 }

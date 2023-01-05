@@ -121,7 +121,13 @@ export default function ChannelSummary({ channel, className }: Props) {
             )}
         >
             <div className="flex">
-                <h2 className="md:text-lg font-bold flex-auto">
+                <h2
+                    className={classNames(
+                        'md:text-lg',
+                        'font-bold',
+                        'flex-auto'
+                    )}
+                >
                     <a href={channel.url} target="_blank" rel="noreferrer">
                         {channel.title}
                     </a>

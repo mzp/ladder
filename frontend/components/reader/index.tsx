@@ -260,7 +260,7 @@ export default function Reader() {
                             <Xmark />
                         </button>
                     </Toolbar>
-                    <div className="mb-2 flex space-x-1">
+                    <div className="flex space-x-1 h-8">
                         <button
                             className="hover:text-sky-400"
                             onClick={() =>
@@ -296,7 +296,7 @@ export default function Reader() {
                         <ChannelList
                             className="overflow-scroll snap-y"
                             categories={categories}
-                            style={{ height: 'calc(100vh - 2rem)' }}
+                            style={{ height: 'calc(100vh - 4rem)' }}
                             onSelect={(channel) => {
                                 setShowChannelList(false)
                                 setSelected(channel)
@@ -305,7 +305,7 @@ export default function Reader() {
                         />
                     )}
                 </div>
-                <div className="w-full">
+                <div className={classNames('w-full', 'flex', 'flex-col')}>
                     <div
                         className={classNames(
                             'backdrop-blur-sm',
@@ -317,7 +317,8 @@ export default function Reader() {
                             'py-4',
                             'px-4',
                             'flex',
-                            'space-x-2'
+                            'space-x-2',
+                            'flex-none'
                         )}
                     >
                         <div
@@ -339,7 +340,7 @@ export default function Reader() {
                     </div>
                     {selected ? (
                         <ItemList
-                            height="calc(100vh - 5rem)"
+                            height="calc(100vh - 6rem)"
                             channel={selected}
                             items={selected.items}
                         />

@@ -1,7 +1,7 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 import { RssItem } from '@/api/types'
-import APIContext from '@/api/context'
 import ReaderContext from '@/components/reader/readerContext'
+import classNames from 'classnames'
 
 interface Props {
     item: RssItem
@@ -24,34 +24,43 @@ export default function MediaSummary({ item, className }: Props) {
 
     return (
         <div
-            className={`${className ? className : ''} ${
-                item.readAt ? readClassName : ''
-            } p-2 min-h-[50vh]
-	    `}
+            className={classNames(
+                className,
+                item.readAt && readClassName,
+                'p-2',
+                'w-full',
+                'min-h-[50vh]'
+            )}
         >
             <h2
-                className={`font-bold truncate ${
-                    item.readAt ? readTitleClassName : ''
-                }`}
+                className={classNames(
+                    'font-bold',
+                    'truncate',
+                    item.readAt && readTitleClassName
+                )}
             >
                 <Link>{item.title}</Link>
             </h2>
             <Link
-                className={`text-xs text-gray-600 flex space-x-4 font-light ${readTitleClassName}`}
+                className={classNames(
+                    'text-xs',
+                    'text-gray-600',
+                    'flex',
+                    'space-x-4',
+                    'font-light',
+                    item.readAt && readTitleClassName
+                )}
             >
                 <div>{item.date}</div>
                 <div>{item.site}</div>
-                {item.hatenaBookmarkCount > 0 && (
-                    <div>
-                        {item.hatenaBookmarkCount}
-                        users
-                    </div>
-                )}
             </Link>
             <div className="py-2">
                 {item.imageurl ? (
                     <a href={item.url} target="_blank" rel="noreferrer">
-                        <img src={item.imageurl} className="max-h-[60vh]" />
+                        <img
+                            src={item.imageurl}
+                            className={classNames('max-h-[60vh]')}
+                        />
                     </a>
                 ) : null}
                 <div
