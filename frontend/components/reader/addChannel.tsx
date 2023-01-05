@@ -2,53 +2,18 @@ import { useContext, useRef, useEffect, useState } from 'react'
 import APIContext from '@/api/context'
 
 interface Props {
-    className?: string
     onClose?(): void
 }
 
-function Check() {
-    return (
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="w-6 h-6"
-        >
-            <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M4.5 12.75l6 6 9-13.5"
-            />
-        </svg>
-    )
-}
-function Xmark() {
-    return (
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="w-6 h-6"
-        >
-            <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M6 18L18 6M6 6l12 12"
-            />
-        </svg>
-    )
-}
-
-function FeedURL({ url }: { url: string }) {
-    const { newChannel, createChannel } = useContext(APIContext)
-    const [isFinished, setFinished] = useState<boolean>(false)
+function FeedURL({ url, onClose }: { url: string; onClose?(): void }) {
+    const { createChannel } = useContext(APIContext)
 
     function handleClick() {
-        createChannel(url).then(() => setFinished(true))
+        createChannel(url).then(() => {
+            if (onClose) {
+                onClose()
+            }
+        })
     }
 
     return (
@@ -69,25 +34,17 @@ function FeedURL({ url }: { url: string }) {
                     Add
                 </button>
             </div>
-            {isFinished ? <Check /> : ''}
         </div>
     )
 }
 
-export default function AddChannel({ className, onClose }: Props) {
+export default function AddChannel({ onClose }: Props) {
     const ref = useRef<HTMLInputElement>(null)
     const [urls, setURLs] = useState<string[]>([])
     const { newChannel } = useContext(APIContext)
 
     return (
-        <div
-            className={`w-[600px] h-[300px] rounded-lg py-4 px-10 bg-white shadow m-auto absolute top-0 left-0 right-0 bottom-0 ${
-                className ? className : ''
-            }`}
-        >
-            <button className="hover:text-sky-400" onClick={onClose}>
-                <Xmark />
-            </button>
+        <div>
             <form
                 className="my-4 flex space-x-2"
                 onSubmit={(event) => {
@@ -114,7 +71,7 @@ export default function AddChannel({ className, onClose }: Props) {
             </form>
             <div>
                 {urls.map((url) => (
-                    <FeedURL key={url} url={url} />
+                    <FeedURL key={url} url={url} onClose={onClose} />
                 ))}
             </div>
         </div>

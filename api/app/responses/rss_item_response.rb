@@ -7,7 +7,11 @@ module RssItemResponse
 
   def title
     # Hatena bookmark on twitter has duplicated content
-    super&.gsub(description, '...')
+    if description.present?
+      super&.gsub(description, '...')
+    else
+      super
+    end
   end
 
   def imageurl

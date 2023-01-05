@@ -1,4 +1,4 @@
-import { createContext, useState } from 'react'
+import React, { createContext, useState, ReactNode } from 'react'
 
 import { RssItem, UnreadCount } from '@/api/types'
 
@@ -11,6 +11,10 @@ interface ReaderContext {
     setShowUnread(value: boolean): void
     showNSFW: boolean
     setShowNSFW(value: boolean): void
+    halfModal: ReactNode | null
+    openHalfModal(content: ReactNode | null): void
+    modal: ReactNode | null
+    openModal(content: ReactNode | null): void
 }
 
 const context = createContext<ReaderContext>({
@@ -22,6 +26,10 @@ const context = createContext<ReaderContext>({
     setShowUnread(value: boolean) {},
     showNSFW: true,
     setShowNSFW(value: boolean) {},
+    halfModal: null,
+    openHalfModal(value: ReactNode | null) {},
+    modal: null,
+    openModal(value: ReactNode | null) {},
 })
 export default context
 
@@ -33,6 +41,8 @@ export function ReaderContextProvider({ children }: { children: any }) {
     const [detailItem, openDetail] = useState<RssItem | null>(null)
     const [showUnread, setShowUnread] = useState<boolean>(false)
     const [showNSFW, setShowNSFW] = useState<boolean>(true)
+    const [halfModal, openHalfModal] = useState<ReactNode>(null)
+    const [modal, openModal] = useState<ReactNode>(null)
 
     return (
         <context.Provider
@@ -45,6 +55,10 @@ export function ReaderContextProvider({ children }: { children: any }) {
                 setShowUnread,
                 showNSFW,
                 setShowNSFW,
+                halfModal,
+                openHalfModal,
+                modal,
+                openModal,
             }}
         >
             {children}

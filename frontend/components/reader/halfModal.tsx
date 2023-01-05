@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef } from 'react'
+import { useContext, useEffect, useRef, ReactNode } from 'react'
 import classNames from 'classnames'
 import ReaderContext from '@/components/reader/readerContext'
 
@@ -21,15 +21,11 @@ function Xmark() {
     )
 }
 
-interface Props {
-    className?: string
-}
-
-export default function ItemDetail({ className }: Props) {
-    const { detailItem, openDetail } = useContext(ReaderContext)
+export default function HalfModal() {
+    const { halfModal, openHalfModal } = useContext(ReaderContext)
     const ref = useRef<HTMLDivElement>(null)
     useEffect(() => {
-        if (!detailItem) {
+        if (!halfModal) {
             return
         }
         const listener = (event: any) => {
@@ -40,7 +36,7 @@ export default function ItemDetail({ className }: Props) {
                 return
             }
             console.log('close detail menu by outside click')
-            openDetail(null)
+            openHalfModal(null)
         }
         document.addEventListener('mousedown', listener)
         document.addEventListener('touchstart', listener)
@@ -48,7 +44,7 @@ export default function ItemDetail({ className }: Props) {
             document.removeEventListener('mousedown', listener)
             document.removeEventListener('touchstart', listener)
         }
-    }, [detailItem, ref])
+    }, [halfModal, ref])
 
     return (
         <div
@@ -68,52 +64,18 @@ export default function ItemDetail({ className }: Props) {
                 'transition',
                 'ease-in-out',
                 'duration-200',
-                detailItem ? 'translate-x-0' : 'translate-x-full'
+                halfModal ? 'translate-x-0' : 'translate-x-full'
             )}
         >
             <div className="bg-white">
                 <button
-                    onClick={() => openDetail(null)}
+                    onClick={() => openHalfModal(null)}
                     className="hover:text-sky-400"
                 >
                     <Xmark />
                 </button>
             </div>
-            {detailItem && detailItem.content && (
-                <div>
-                    <h3 className="text-2xl font-bold">
-                        <a
-                            href={detailItem.url}
-                            target="_blank"
-                            rel="noreferrer"
-                        >
-                            {detailItem.title}
-                        </a>
-                    </h3>
-                    <div className="text-sm text-slate-400">
-                        <div className="md:flex md:space-x-4">
-                            <div>{detailItem.date}</div>
-                            <div>
-                                <a
-                                    href={detailItem.url}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                >
-                                    {detailItem.url}
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="h-screen overflow-scroll mt-2">
-                        <div
-                            className="text-gray-600 mr-10"
-                            dangerouslySetInnerHTML={{
-                                __html: detailItem.content,
-                            }}
-                        />
-                    </div>
-                </div>
-            )}
+            {halfModal}
         </div>
     )
 }

@@ -8,8 +8,9 @@ import Toolbar from '@/components/toolbar'
 import DropMenu from '@/components/dropMenu'
 
 import AddChannel from '@/components/reader/addChannel'
+import Modal from '@/components/reader/modal'
 import ItemList from '@/components/reader/itemList'
-import ItemDetail from '@/components/reader/itemDetail'
+import HalfModal from '@/components/reader/halfModal'
 import ChannelList from '@/components/reader/channelList'
 import ChannelSummary from '@/components/reader/channelSummary'
 
@@ -183,8 +184,14 @@ export default function Reader() {
         useState<boolean>(false)
 
     const api = useContext(APIContext)
-    const { setUnreadCount, setShowNSFW, setShowUnread, showNSFW, showUnread } =
-        useContext(ReaderContext)
+    const {
+        setUnreadCount,
+        setShowNSFW,
+        setShowUnread,
+        showNSFW,
+        showUnread,
+        openModal,
+    } = useContext(ReaderContext)
 
     useEffect(() => {
         console.log('load initial data')
@@ -256,7 +263,13 @@ export default function Reader() {
                     <div className="mb-2 flex space-x-1">
                         <button
                             className="hover:text-sky-400"
-                            onClick={() => setShowAddChannelModal(true)}
+                            onClick={() =>
+                                openModal(
+                                    <AddChannel
+                                        onClose={() => openModal(null)}
+                                    />
+                                )
+                            }
                         >
                             <PlusSmall />
                         </button>
@@ -333,11 +346,8 @@ export default function Reader() {
                     ) : null}
                 </div>
             </div>
-            <ItemDetail />
-            <AddChannel
-                className={`${showAddChannelModal ? '' : 'hidden'}`}
-                onClose={() => setShowAddChannelModal(false)}
-            />
+            <HalfModal />
+            <Modal />
         </>
     )
 }

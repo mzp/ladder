@@ -7,8 +7,8 @@ interface Props {
     className?: string
 }
 
-export default function ItemSummary({ item, className }: Props) {
-    const { openDetail, showUnread } = useContext(ReaderContext)
+export default function ArticleItem({ item, className }: Props) {
+    const { openHalfModal, showUnread } = useContext(ReaderContext)
 
     const Link = (props: any) => {
         return (
@@ -19,9 +19,42 @@ export default function ItemSummary({ item, className }: Props) {
     }
 
     const handleOpenDetail = () => {
-        console.log(`open detail page: ${item.title}`)
-        openDetail(item)
+        if (item.content) {
+            console.log(`open detail page: ${item.title}`)
+            openHalfModal(
+                <div>
+                    <h3 className="text-2xl font-bold">
+                        <a href={item.url} target="_blank" rel="noreferrer">
+                            {item.title}
+                        </a>
+                    </h3>
+                    <div className="text-sm text-slate-400">
+                        <div className="md:flex md:space-x-4">
+                            <div>{item.date}</div>
+                            <div>
+                                <a
+                                    href={item.url}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                                    {item.url}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="h-screen overflow-scroll mt-2">
+                        <div
+                            className="text-gray-600 mr-10"
+                            dangerouslySetInnerHTML={{
+                                __html: item.content,
+                            }}
+                        />
+                    </div>
+                </div>
+            )
+        }
     }
+
     const readClassName = showUnread ? 'opacity-30' : 'hidden'
 
     return (
