@@ -9,7 +9,7 @@
 ### Basic
 - [x] Optimize on mobile phone
 - [ ] Optimize on tablet
-- [ ] Keyboard shortcut for PC
+- [x] Keyboard shortcut for PC
 - [ ] Import OPML
 - [x] Site folder(group)
 - [ ] Favicon 

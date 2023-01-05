@@ -1,11 +1,13 @@
 import { useContext, useEffect, useRef, useState } from 'react'
+import classNames from 'classnames'
 import { RssItem } from '@/api/types'
 import ReaderContext from '@/components/reader/readerContext'
-import classNames from 'classnames'
+import useKeyBind from '@/components/hook/useKeyBind'
 
 interface Props {
     item: RssItem
     className?: string
+    enableKeyBind: boolean
 }
 
 export default function MediaSummary({ item, className }: Props) {

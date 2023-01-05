@@ -1,13 +1,16 @@
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useContext } from 'react'
+import classNames from 'classnames'
 import { RssItem } from '@/api/types'
 import ReaderContext from '@/components/reader/readerContext'
+import useKeyBind from '@/components/hook/useKeyBind'
 
 interface Props {
     item: RssItem
     className?: string
+    enableKeyBind: boolean
 }
 
-export default function ArticleItem({ item, className }: Props) {
+export default function ArticleItem({ item, className, enableKeyBind }: Props) {
     const { openHalfModal, showUnread } = useContext(ReaderContext)
 
     const Link = (props: any) => {
@@ -17,6 +20,22 @@ export default function ArticleItem({ item, className }: Props) {
             </a>
         )
     }
+
+    useKeyBind(
+        enableKeyBind
+            ? [
+                  {
+                      key: ' ',
+                      ctrlKey: false,
+                      action: () => {
+                          console.log('keybind: open')
+                          window.open(item.url)
+                      },
+                  },
+              ]
+            : [],
+        [item, enableKeyBind]
+    )
 
     const handleOpenDetail = () => {
         if (item.content) {
@@ -59,11 +78,14 @@ export default function ArticleItem({ item, className }: Props) {
 
     return (
         <div
-            className={`${className ? className : ''} ${
-                item.readAt ? readClassName : ''
-            } py-2
-max-w-4xl mx-auto
-	    `}
+            className={classNames(
+                className,
+                item.readAt ? readClassName : '',
+                'py-2',
+                'max-w-4xl',
+                'mx-auto'
+            )}
+            data-id={item.id}
         >
             <h2 className="font-bold">
                 <Link>{item.title}</Link>

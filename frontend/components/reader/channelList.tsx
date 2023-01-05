@@ -1,7 +1,8 @@
 import { useContext, useEffect, useState } from 'react'
 import { Category, RssChannel } from '@/api/types'
-import ReaderContext from '@/components/reader/readerContext'
 import classNames from 'classnames'
+import ReaderContext from '@/components/reader/readerContext'
+import useKeyBind from '@/components/hook/useKeyBind'
 
 function Folder() {
     return (
@@ -108,6 +109,51 @@ export default function ChannelList({
     const category = categories.find(({ selected }) => selected)
     const [selected, setSelected] = useState<RssChannel | undefined>(undefined)
 
+    const { unreadCount } = useContext(ReaderContext)
+
+    const handleChannelSelect = (forward: boolean) => {
+        if (!selected) {
+            return
+        }
+        const channels = categories.flatMap(({ channels }) => channels || [])
+        const index = channels.findIndex(({ id }) => id == selected.id)
+        if (forward) {
+            console.log(channels.slice(index))
+            const target = channels
+                .slice(index + 1)
+                .find((channel) => unreadCount.channels[channel.id] > 0)
+            setSelected(target)
+        } else {
+            const target = channels
+                .slice(0, index)
+                .reverse()
+                .find((channel) => unreadCount.channels[channel.id] > 0)
+            setSelected(target)
+        }
+    }
+
+    useKeyBind(
+        [
+            {
+                key: 'n',
+                ctrlKey: true,
+                action: () => {
+                    console.log('keybind: move next channel')
+                    handleChannelSelect(true)
+                },
+            },
+            {
+                key: 'p',
+                ctrlKey: true,
+                action: () => {
+                    console.log('keybind: move previous channel')
+                    handleChannelSelect(false)
+                },
+            },
+        ],
+        [selected, unreadCount]
+    )
+
     useEffect(() => {
         const channel = (() => {
             if (!category) {
@@ -125,6 +171,12 @@ export default function ChannelList({
         }
     }, [categories])
 
+    useEffect(() => {
+        if (onSelect && selected) {
+            onSelect(selected)
+        }
+    }, [selected])
+
     return (
         <div className={classNames(className, 'ml-2')} style={style}>
             {categories.map((category) => {
@@ -135,9 +187,6 @@ export default function ChannelList({
                         selected={selected}
                         onSelect={(channel) => {
                             setSelected(channel)
-                            if (onSelect) {
-                                onSelect(channel)
-                            }
                         }}
                     />
                 )
