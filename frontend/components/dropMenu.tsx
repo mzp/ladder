@@ -40,7 +40,7 @@ export default function DropMenu({ className, icon, children, width }: Props) {
                 style={{ width: `${width}px`, marginLeft: `-${width - 20}px` }}
                 className={`text-sm flex ${className ? className : ''}
 		 ${opened ? '' : 'hidden'}
-		 flex-col bg-white ring-1 ring-slate-900/5 shadow fixed p-2 rounded-lg space-y-2 mt-[1px] z-10`}
+		 flex-col bg-white dark:bg-slate-900 ring-1 ring-slate-900/5 shadow fixed p-2 rounded-lg space-y-2 mt-[1px] z-10`}
             >
                 {children}
             </div>

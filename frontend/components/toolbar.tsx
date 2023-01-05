@@ -43,7 +43,7 @@ export default function Toolbar({
 
     return (
         <div
-            className={`w-full text-xl align-middle bg-white px-2 ${className}`}
+            className={`w-full text-xl align-middle bg-white dark:bg-black px-2 ${className}`}
         >
             <div className="flex items-center">
                 <h1 className="pr-2 flex-none">

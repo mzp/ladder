@@ -28,7 +28,7 @@ export default function ArticleItem({ item, className }: Props) {
                             {item.title}
                         </a>
                     </h3>
-                    <div className="text-sm text-slate-400">
+                    <div className="text-sm text-slate-400 dark:text-slate-200">
                         <div className="md:flex md:space-x-4">
                             <div>{item.date}</div>
                             <div>
@@ -44,7 +44,7 @@ export default function ArticleItem({ item, className }: Props) {
                     </div>
                     <div className="h-screen overflow-scroll mt-2">
                         <div
-                            className="text-gray-600 mr-10"
+                            className="text-gray-600 dark:text-gray-200 mr-10"
                             dangerouslySetInnerHTML={{
                                 __html: item.content,
                             }}
@@ -70,7 +70,7 @@ max-w-4xl mx-auto
             </h2>
             <div className="md:flex space-x-4 my-2 leading-6">
                 <div
-                    className="text-gray-600 flex-auto"
+                    className="text-gray-600 flex-auto dark:text-gray-400"
                     data-prevent-menu-close="true"
                     onClick={item.content ? handleOpenDetail : undefined}
                     dangerouslySetInnerHTML={{ __html: item.description }}
@@ -96,7 +96,7 @@ max-w-4xl mx-auto
                 )}
             </div>
 
-            <Link className="border-t-[1px] text-xs text-gray-600 flex space-x-4 font-light">
+            <Link className="border-t-[1px] text-xs text-gray-600 flex dark:text-gray-400 space-x-4 font-light">
                 <div>{item.date}</div>
                 <div>{item.site}</div>
                 {item.hatenaBookmarkCount > 0 && (

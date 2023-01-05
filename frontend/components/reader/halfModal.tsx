@@ -51,6 +51,7 @@ export default function HalfModal() {
             ref={ref}
             className={classNames(
                 'bg-white',
+                'dark:bg-slate-800',
                 'p-4',
                 'md:px-10',
                 'md:pr-0',

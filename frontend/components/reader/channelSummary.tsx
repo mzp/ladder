@@ -135,7 +135,7 @@ export default function ChannelSummary({ channel, className }: Props) {
                 </h2>
                 <DropMenu icon={<Adjustment />} width={180}>
                     <button
-                        className="text-left"
+                        className="text-left hover:text-sky-400"
                         onClick={() => {
                             updateChannel(channel.id, {
                                 image_media: !channel.isImageMedia,
