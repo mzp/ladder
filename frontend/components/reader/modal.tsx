@@ -39,6 +39,7 @@ export default function Modal() {
                 'py-4',
                 'px-10',
                 'bg-white',
+                'dark:bg-slate-800',
                 'shadow',
                 'm-auto',
                 'absolute',
@@ -46,6 +47,7 @@ export default function Modal() {
                 'left-0',
                 'right-0',
                 'bottom-0',
+                'z-30',
                 modal ? '' : 'hidden'
             )}
         >

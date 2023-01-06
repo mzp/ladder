@@ -53,6 +53,7 @@ function ChannelSetting({ channel }: ChannelSettingProps) {
                     className={classNames(
                         'block',
                         'text-gray-700',
+                        'dark:text-gray-200',
                         'text-sm',
                         'font-bold',
                         'mb-2'
@@ -161,7 +162,10 @@ export default function ChannelSummary({ channel, className }: Props) {
                         Mark all as read({count})
                     </button>
                     <button
-                        className={classNames('text-left')}
+                        className={classNames(
+                            'text-left',
+                            'hover:text-sky-400'
+                        )}
                         onClick={() => {
                             openModal(<ChannelSetting channel={channel} />)
                         }}

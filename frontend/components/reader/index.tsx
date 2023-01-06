@@ -322,7 +322,8 @@ export default function Reader() {
                             'px-4',
                             'flex',
                             'space-x-2',
-                            'flex-none'
+                            'flex-none',
+                            'z-20'
                         )}
                     >
                         <div
