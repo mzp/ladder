@@ -47,7 +47,7 @@ export default function Modal() {
                 'left-0',
                 'right-0',
                 'bottom-0',
-                'z-30',
+                'z-40',
                 modal ? '' : 'hidden'
             )}
         >

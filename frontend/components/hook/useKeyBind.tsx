@@ -6,6 +6,9 @@ export default function useKeyBind(
 ) {
     useEffect(() => {
         const listener = (event: any) => {
+            if (event.target.localName == 'input') {
+                return
+            }
             const keyBind = keyBinds.find(
                 (bind) => bind.key == event.key && bind.ctrlKey == event.ctrlKey
             )
