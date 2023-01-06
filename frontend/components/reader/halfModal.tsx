@@ -69,7 +69,7 @@ export default function HalfModal() {
                 halfModal ? 'translate-x-0' : 'translate-x-full'
             )}
         >
-            <div className="bg-white">
+            <div>
                 <button
                     onClick={() => openHalfModal(null)}
                     className="hover:text-sky-400"

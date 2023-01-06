@@ -28,42 +28,42 @@ interface API {
     isLoading: boolean
 }
 
-const { publicRuntimeConfig } = getConfig()
+const {
+    publicRuntimeConfig: { apiRoot },
+} = getConfig()
+
+console.log(`apiRoot: ${apiRoot}`)
 
 export const BackendAPI: API = {
     markAsRead(item: RssItem) {
-        return fetch(
-            `${publicRuntimeConfig.apiRoot}/items/${item.id}/markAsRead`,
-            { method: 'POST', credentials: 'include' }
-        ).then((res) => res.json())
+        return fetch(`${apiRoot}/items/${item.id}/markAsRead`, {
+            method: 'POST',
+            credentials: 'include',
+        }).then((res) => res.json())
     },
     markAllAsRead(channel: RssChannel) {
-        return fetch(
-            `${publicRuntimeConfig.apiRoot}/channels/${channel.id}/markAllAsRead`,
-            { method: 'POST', credentials: 'include' }
-        ).then((res) => res.json())
+        return fetch(`${apiRoot}/channels/${channel.id}/markAllAsRead`, {
+            method: 'POST',
+            credentials: 'include',
+        }).then((res) => res.json())
     },
     channels() {
-        return fetch(`${publicRuntimeConfig.apiRoot}/channels`, {
+        return fetch(`${apiRoot}/channels`, {
             credentials: 'include',
         }).then((res) => res.json())
     },
     items(initialSelectedID?: string) {
-        return fetch(
-            `${publicRuntimeConfig.apiRoot}/items?initial=${initialSelectedID}`,
-            { credentials: 'include' }
-        ).then((res) => res.json())
+        return fetch(`${apiRoot}/items?initial=${initialSelectedID}`, {
+            credentials: 'include',
+        }).then((res) => res.json())
     },
     channel(id: string, upto: string) {
-        return fetch(
-            `${publicRuntimeConfig.apiRoot}/channels/${id}?upto=${
-                upto ? upto : ''
-            }`,
-            { credentials: 'include' }
-        ).then((res) => res.json())
+        return fetch(`${apiRoot}/channels/${id}?upto=${upto ? upto : ''}`, {
+            credentials: 'include',
+        }).then((res) => res.json())
     },
     updateChannel(id: string, option: ChannelOption) {
-        return fetch(`${publicRuntimeConfig.apiRoot}/channels/${id}`, {
+        return fetch(`${apiRoot}/channels/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(option),
@@ -71,18 +71,13 @@ export const BackendAPI: API = {
         }).then((res) => res.json())
     },
     newChannel(url: string) {
-        return fetch(
-            `${
-                publicRuntimeConfig.apiRoot
-            }/channels/new?url=${encodeURIComponent(url)}`,
-            {
-                method: 'GET',
-                credentials: 'include',
-            }
-        ).then((res) => res.json())
+        return fetch(`${apiRoot}/channels/new?url=${encodeURIComponent(url)}`, {
+            method: 'GET',
+            credentials: 'include',
+        }).then((res) => res.json())
     },
     createChannel(url: string) {
-        return fetch(`${publicRuntimeConfig.apiRoot}/channels`, {
+        return fetch(`${apiRoot}/channels`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ url }),
@@ -90,13 +85,13 @@ export const BackendAPI: API = {
         }).then((res) => res.json())
     },
     removeChannel(id: string) {
-        return fetch(`${publicRuntimeConfig.apiRoot}/channels/${id}`, {
+        return fetch(`${apiRoot}/channels/${id}`, {
             method: 'DELETE',
             credentials: 'include',
         }).then((res) => res.json())
     },
     createCategory(title: string): Promise<Category[]> {
-        return fetch(`${publicRuntimeConfig.apiRoot}/categories`, {
+        return fetch(`${apiRoot}/categories`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ title }),
@@ -104,7 +99,7 @@ export const BackendAPI: API = {
         }).then((res) => res.json())
     },
     updateCategory(id: string, title: string): Promise<Category[]> {
-        return fetch(`${publicRuntimeConfig.apiRoot}/categories/${id}`, {
+        return fetch(`${apiRoot}/categories/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ title }),
@@ -112,14 +107,14 @@ export const BackendAPI: API = {
         }).then((res) => res.json())
     },
     removeCategory(id: string): Promise<Category[]> {
-        return fetch(`${publicRuntimeConfig.apiRoot}/categories/${id}`, {
+        return fetch(`${apiRoot}/categories/${id}`, {
             method: 'DELETE',
             credentials: 'include',
         }).then((res) => res.json())
     },
     categories(): Promise<Category[]> {
         return fetch(
-            `${publicRuntimeConfig.apiRoot}/categories`,
+            `${apiRoot}/categories`,
 
             { credentials: 'include' }
         ).then((res) => res.json())
