@@ -187,6 +187,7 @@ GEM
       connection_pool
     regexp_parser (2.6.1)
     rexml (3.2.5)
+    rr (3.1.0)
     rss (0.2.9)
       rexml
     rubocop (1.41.1)
@@ -246,6 +247,7 @@ DEPENDENCIES
   puma
   rack-cors
   rails (= 7.0.4)
+  rr
   rss
   rubocop
   rubocop-rails

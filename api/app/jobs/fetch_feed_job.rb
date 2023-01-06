@@ -4,30 +4,15 @@ require 'uri'
 require 'rss/hatena'
 
 class FetchFeedJob < ApplicationJob
-  queue_as :default
+  class Item
+    attr_reader :item, :record
 
-  def perform(url, user_id)
-    logger.info "#{self}.#{__callee__}: Fetch #{url}"
-    user = User.find(user_id)
-    URI(url).open do |rss|
-      feed = RSS::Parser.parse(rss, false)
-
-      # update channel
-      channel = feed.channel
-      record = user.rss_channels.find_or_create_by(feed_url: url)
-      record.update_from_rss!(channel)
-
-      # update item
-      feed.items.each do |item|
-        record.items
-              .find_or_create_by(url: item.link)
-              .update!(self.class.analyze(item))
-      end
+    def initialize(item, record = nil)
+      @item = item
+      @record = record
     end
-  end
 
-  class << self
-    def analyze(item)
+    def attributes
       result = {
         original_description: item.description,
         original_content: item.try(:content_encoded),
@@ -99,6 +84,27 @@ class FetchFeedJob < ApplicationJob
       # fix scheme
       uri.scheme ||= 'https'
       uri.to_s
+    end
+  end
+  queue_as :default
+
+  def perform(url, user_id)
+    logger.info "#{self}.#{__callee__}: Fetch #{url}"
+    user = User.find(user_id)
+    URI(url).open do |rss|
+      feed = RSS::Parser.parse(rss, false)
+
+      # update channel
+      channel = feed.channel
+      record = user.rss_channels.find_or_create_by(feed_url: url)
+      record.update_from_rss!(channel)
+
+      # update item
+      feed.items.each do |item|
+        current_record = record.items.find_by(url: item.link)
+        record.items.find_or_create_by(url: item.link)
+              .update!(::FetchFeedJob::Item.new(item, current_record).attributes)
+      end
     end
   end
 end

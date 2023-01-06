@@ -29,3 +29,4 @@
 - [x] Mark NSFW 
 - [x] Image slidershow
 - [ ] Cache image for fast load
+- [ ] Get thumbnail from OGP image

@@ -20,6 +20,7 @@ group :development, :test do
   gem 'database_cleaner-active_record'
   gem 'debug'
   gem 'factory_bot_rails'
+  gem 'rr', require: false
 end
 
 group :development do
