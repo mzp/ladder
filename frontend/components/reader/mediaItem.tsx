@@ -1,6 +1,7 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 import classNames from 'classnames'
 import { RssItem } from '@/api/types'
+import APIContext from '@/api/context'
 import ReaderContext from '@/components/reader/readerContext'
 
 interface Props {
@@ -10,11 +11,23 @@ interface Props {
 }
 
 export default function MediaSummary({ item, className }: Props) {
-    const { showUnread, openHalfModal } = useContext(ReaderContext)
+    const { showUnread, openHalfModal, setUnreadCount } =
+        useContext(ReaderContext)
+    const { markAsRead } = useContext(APIContext)
 
     const Link = (props: any) => {
         return (
-            <a href={item.url} target="_blank" rel="noreferrer" {...props}>
+            <a
+                href={item.url}
+                target="_blank"
+                rel="noreferrer"
+                onClick={() =>
+                    markAsRead(item).then(({ unreadCount }) => {
+                        setUnreadCount(unreadCount)
+                    })
+                }
+                {...props}
+            >
                 {props.children}
             </a>
         )
@@ -29,21 +42,13 @@ export default function MediaSummary({ item, className }: Props) {
             openHalfModal(
                 <div>
                     <h3 className="text-2xl font-bold">
-                        <a href={item.url} target="_blank" rel="noreferrer">
-                            {item.title}
-                        </a>
+                        <Link>{item.title}</Link>
                     </h3>
                     <div className="text-sm text-slate-400 dark:text-slate-200">
                         <div className="md:flex md:space-x-4">
                             <div>{item.date}</div>
                             <div>
-                                <a
-                                    href={item.url}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                >
-                                    {item.url}
-                                </a>
+                                <Link>{item.url}</Link>
                             </div>
                         </div>
                     </div>
@@ -94,12 +99,12 @@ export default function MediaSummary({ item, className }: Props) {
             </Link>
             <div className="py-2">
                 {item.imageurl ? (
-                    <a href={item.url} target="_blank" rel="noreferrer">
+                    <Link>
                         <img
                             src={item.imageurl}
                             className={classNames('max-h-[60vh]')}
                         />
-                    </a>
+                    </Link>
                 ) : null}
                 <div
                     className="text-gray-600 text-sm truncate"

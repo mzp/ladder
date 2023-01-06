@@ -12,11 +12,22 @@ interface Props {
 }
 
 export default function ArticleItem({ item, className, enableKeyBind }: Props) {
-    const { openHalfModal, showUnread } = useContext(ReaderContext)
+    const { openHalfModal, showUnread, setUnreadCount } =
+        useContext(ReaderContext)
     const { markAsRead } = useContext(APIContext)
     const Link = (props: any) => {
         return (
-            <a href={item.url} target="_blank" rel="noreferrer" {...props}>
+            <a
+                href={item.url}
+                target="_blank"
+                rel="noreferrer"
+                onClick={() =>
+                    markAsRead(item).then(({ unreadCount }) => {
+                        setUnreadCount(unreadCount)
+                    })
+                }
+                {...props}
+            >
                 {props.children}
             </a>
         )
@@ -31,6 +42,9 @@ export default function ArticleItem({ item, className, enableKeyBind }: Props) {
                       action: () => {
                           console.log('keybind: open')
                           window.open(item.url)
+                          markAsRead(item).then(({ unreadCount }) => {
+                              setUnreadCount(unreadCount)
+                          })
                       },
                   },
               ]
@@ -44,22 +58,13 @@ export default function ArticleItem({ item, className, enableKeyBind }: Props) {
             openHalfModal(
                 <div>
                     <h3 className="text-2xl font-bold">
-                        <a href={item.url} target="_blank" rel="noreferrer">
-                            {item.title}
-                        </a>
+                        <Link>{item.title}</Link>
                     </h3>
                     <div className="text-sm text-slate-400 dark:text-slate-200">
                         <div className="md:flex md:space-x-4">
                             <div>{item.date}</div>
                             <div>
-                                <a
-                                    onClick={() => markAsRead(item)}
-                                    href={item.url}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                >
-                                    {item.url}
-                                </a>
+                                <Link>{item.url}</Link>
                             </div>
                         </div>
                     </div>
