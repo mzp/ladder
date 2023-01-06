@@ -5,6 +5,7 @@
 - [x] RSS crawler(schedule job)
 - [x] Continuation scroll
 - [x] RSS Channel management
+- [ ] Atom feed
 
 ### Basic
 - [x] Optimize on mobile phone
