@@ -7,7 +7,9 @@ class FetchFeedJobTest < ActiveJob::TestCase
     item = RSS::RDF::Item.new
     stub(item).description { 'hello' }
     stub(item).hatena_imageurl { 'https://example.com' }
-    result = FetchFeedJob::Item.new(item, nil).attributes
+    result = FetchFeedJob::Item.new(item, nil){
+      assert false
+    }.attributes
     assert_equal 'https://example.com', result[:imageurl]
     assert_equal 'hello', result[:description]
   end
@@ -61,7 +63,7 @@ class FetchFeedJobTest < ActiveJob::TestCase
     assert_match(/<img/, result[:content])
   end
 
-  test 'sanitizer' do
+  test '<script />' do
     item = RSS::RDF::Item.new
     stub(item).description do
       <<~'HTML'
@@ -78,5 +80,19 @@ class FetchFeedJobTest < ActiveJob::TestCase
     assert_match(/<a/, result[:description])
     assert_no_match(/<script/, result[:description])
     assert_no_match(/<script/, result[:content])
+  end
+
+  test 'og:image' do
+    item = RSS::RDF::Item.new
+    new_item = FetchFeedJob::Item.new(item, nil) {
+      '<meta property="og:image" content="http://example.com/ogp">'
+    }
+    assert_equal new_item.attributes[:imageurl], 'http://example.com/ogp'
+
+    item = RSS::RDF::Item.new
+    current_item = FetchFeedJob::Item.new(item, FactoryBot.create(:rss_item)) {
+      assert false
+    }
+    assert_nil current_item.attributes[:imageurl]
   end
 end

@@ -5,11 +5,12 @@ require 'rss/hatena'
 
 class FetchFeedJob < ApplicationJob
   class Item
-    attr_reader :item, :record
+    attr_reader :item, :record, :fetch
 
-    def initialize(item, record = nil)
+    def initialize(item, record = nil, &fetch)
       @item = item
       @record = record
+      @fetch = fetch
     end
 
     def attributes
@@ -23,7 +24,7 @@ class FetchFeedJob < ApplicationJob
         published_at: item.date || Time.zone.now,
         hatena_bookmark_count: item.try(:hatena_bookmarkcount).to_i
       }
-      %i[parse_html scrub].reduce(result) do |arg, name|
+      %i[parse_html scrub ogp_image].reduce(result) do |arg, name|
         send name, arg
       end
     end
@@ -85,6 +86,21 @@ class FetchFeedJob < ApplicationJob
       uri.scheme ||= 'https'
       uri.to_s
     end
+
+    def ogp_image(item)
+      return item if record
+      return item if item[:imageurl]
+
+      remote_content = fetch.call(self.item.link)
+      html = Nokogiri::HTML(remote_content)
+      html.css('meta').each do |meta|
+        attributes = meta.attributes
+        return item.merge(imageurl: attributes['content'].value) if attributes['property']&.value == 'og:image'
+      end
+      item
+    rescue StandardError
+      item
+    end
   end
   queue_as :default
 
@@ -102,8 +118,11 @@ class FetchFeedJob < ApplicationJob
       # update item
       feed.items.each do |item|
         current_record = record.items.find_by(url: item.link)
+        analyzed = ::FetchFeedJob::Item.new(item, current_record) do |link|
+          URI(link).read
+        end
         record.items.find_or_create_by(url: item.link)
-              .update!(::FetchFeedJob::Item.new(item, current_record).attributes)
+              .update!(analyzed.attributes)
       end
     end
   end
