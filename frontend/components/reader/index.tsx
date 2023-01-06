@@ -240,7 +240,8 @@ export default function Reader() {
                         'fixed',
                         'md:relative',
                         showChannelList ? 'translate-x-0' : '-translate-x-full',
-                        'md:translate-x-0'
+                        'md:translate-x-0',
+                        'z-40'
                     )}
                 >
                     <Toolbar className="h-8">
@@ -317,6 +318,9 @@ export default function Reader() {
                             'border-slate-300',
                             'dark:border-slate-700',
                             'dark:bg-slate-800/90',
+                            'fixed',
+                            'md:relative',
+                            'h-16',
                             'md:h-24',
                             'py-4',
                             'px-4',
@@ -345,6 +349,7 @@ export default function Reader() {
                     </div>
                     {selected ? (
                         <ItemList
+                        className={classNames('mt-16', 'md:mt-0')}
                             height="calc(100vh - 6rem)"
                             channel={selected}
                             items={selected.items}

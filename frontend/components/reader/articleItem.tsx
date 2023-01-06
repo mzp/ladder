@@ -2,6 +2,7 @@ import { useContext } from 'react'
 import classNames from 'classnames'
 import { RssItem } from '@/api/types'
 import ReaderContext from '@/components/reader/readerContext'
+import APIContext from '@/api/context'
 import useKeyBind from '@/components/hook/useKeyBind'
 
 interface Props {
@@ -12,7 +13,7 @@ interface Props {
 
 export default function ArticleItem({ item, className, enableKeyBind }: Props) {
     const { openHalfModal, showUnread } = useContext(ReaderContext)
-
+    const { markAsRead } = useContext(APIContext)
     const Link = (props: any) => {
         return (
             <a href={item.url} target="_blank" rel="noreferrer" {...props}>
@@ -52,6 +53,7 @@ export default function ArticleItem({ item, className, enableKeyBind }: Props) {
                             <div>{item.date}</div>
                             <div>
                                 <a
+                                    onClick={() => markAsRead(item)}
                                     href={item.url}
                                     target="_blank"
                                     rel="noreferrer"
