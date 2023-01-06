@@ -90,9 +90,9 @@ class FetchFeedJobTest < ActiveJob::TestCase
     assert_equal new_item.attributes[:imageurl], 'http://example.com/ogp'
 
     item = RSS::RDF::Item.new
-    current_item = FetchFeedJob::Item.new(item, FactoryBot.create(:rss_item)) {
+    current_item = FetchFeedJob::Item.new(item, FactoryBot.create(:rss_item, imageurl: 'http://example.com/ogp')) {
       assert false
     }
-    assert_nil current_item.attributes[:imageurl]
+    assert_equal current_item.attributes[:imageurl], 'http://example.com/ogp'
   end
 end

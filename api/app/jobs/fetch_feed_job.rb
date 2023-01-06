@@ -88,16 +88,18 @@ class FetchFeedJob < ApplicationJob
     end
 
     def ogp_image(item)
-      return item if record
       return item if item[:imageurl]
-
-      remote_content = fetch.call(self.item.link)
-      html = Nokogiri::HTML(remote_content)
-      html.css('meta').each do |meta|
-        attributes = meta.attributes
-        return item.merge(imageurl: attributes['content'].value) if attributes['property']&.value == 'og:image'
+      if record
+        item.merge(imageurl: record.imageurl)
+      else
+        remote_content = fetch.call(self.item.link)
+        html = Nokogiri::HTML(remote_content)
+        html.css('meta').each do |meta|
+          attributes = meta.attributes
+          return item.merge(imageurl: attributes['content'].value) if attributes['property']&.value == 'og:image'
+        end
+        item
       end
-      item
     rescue StandardError
       item
     end
