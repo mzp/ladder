@@ -6,7 +6,7 @@ type StorageType = 'session' | 'local'
 const useStorage = (key: string, type?: StorageType): any[] => {
     const isBrowser: boolean = ((): boolean => typeof window !== 'undefined')()
     const storageType: 'localStorage' | 'sessionStorage' = `${
-        type ?? 'session'
+        type ?? 'local'
     }Storage`
     const getItem = (): string => {
         return isBrowser ? window[storageType][key] : ''
