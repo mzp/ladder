@@ -1,8 +1,10 @@
-import { useContext, useState, useEffect, useRef } from 'react'
+import { useContext, useState, useEffect } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
+import getConfig from 'next/config'
 
-import { Category, RssChannel, RssItem } from '@/api/types'
-import { default as APIContext, BackendAPI } from '@/api/context'
+import { Category, RssChannel } from '@/api/types'
+import APIContext from '@/api/context'
 
 import Toolbar from '@/components/toolbar'
 import DropMenu from '@/components/dropMenu'
@@ -180,10 +182,7 @@ export default function Reader() {
     const [fetchShowUnread, storeShowUnread] = useLocalStorage('show-unread')
     const [fetchShowNSFW, storeShowNSFW] = useLocalStorage('show-nsfw')
 
-    const [showAddChannelModal, setShowAddChannelModal] =
-        useState<boolean>(false)
-
-    const api = useContext(APIContext)
+    const { items } = useContext(APIContext)
     const {
         setUnreadCount,
         setShowNSFW,
@@ -192,13 +191,24 @@ export default function Reader() {
         showUnread,
         openModal,
     } = useContext(ReaderContext)
+    const router = useRouter()
 
     useEffect(() => {
         console.log('load initial data')
-        api.items(fetchInitalChannel() || '').then(
-            ({ categories, unreadCount }) => {
-                setCategories(categories)
-                setUnreadCount(unreadCount)
+        items(fetchInitalChannel() || '').then(
+            ({ categories, unreadCount, error }) => {
+                if (error) {
+                    const {
+                        publicRuntimeConfig: { apiRoot },
+                    } = getConfig()
+                    router.push(`${apiRoot}/login`)
+                }
+                if (categories) {
+                    setCategories(categories)
+                }
+                if (unreadCount) {
+                    setUnreadCount(unreadCount)
+                }
             }
         )
         const showUnread = fetchShowUnread() != 'false'
@@ -349,7 +359,7 @@ export default function Reader() {
                     </div>
                     {selected ? (
                         <ItemList
-                        className={classNames('mt-16', 'md:mt-0')}
+                            className={classNames('mt-16', 'md:mt-0')}
                             height="calc(100vh - 6rem)"
                             channel={selected}
                             items={selected.items}

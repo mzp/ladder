@@ -47,8 +47,9 @@ export type UnreadCount = {
 }
 
 export interface ItemsResponse {
-    categories: Category[]
-    unreadCount: UnreadCount
+    categories?: Category[]
+    unreadCount?: UnreadCount
+    error?: string
 }
 
 export interface MarkAsReadResponse {
