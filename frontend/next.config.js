@@ -1,11 +1,17 @@
 /** @type {import('next').NextConfig} */
 
+function isEmpty(str) {
+    return (!str || str.length === 0 );
+}
+
 let apiRoot = 'https://api.letsrss.com'
-if (process.env.NODE_ENV == 'development') {
-    if (process.env.CODESPACE_NAME != null) {
-        apiRoot = `https://${process.env.CODESPACE_NAME}-3000.preview.app.github.dev`
-    } else if (process.env.API_ROOT != null) {
-        apiRoot = process.env.API_ROOT
+
+const { NODE_ENV, CODESPACE_NAME, API_ROOT } = process.env
+if (NODE_ENV == 'development') {
+    if (!isEmpty(CODESPACE_NAME)) {
+        apiRoot = `https://${CODESPACE_NAME}-3000.preview.app.github.dev`
+    } else if (!isEmpty(API_ROOT)) {
+        apiRoot = API_ROOT
     } else {
         apiRoot = 'https://api.letsrss.com'
     }
@@ -15,7 +21,7 @@ const nextConfig = {
     reactStrictMode: true,
     publicRuntimeConfig: {
         apiRoot: apiRoot,
-development: process.env.NODE_ENV == 'development'
+        development: NODE_ENV == 'development'
     },
 }
 
