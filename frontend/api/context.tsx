@@ -10,7 +10,6 @@ import {
     MarkAsReadResponse,
 } from '@/api/types'
 import getConfig from 'next/config'
-import { Context } from 'vm'
 
 interface API {
     markAsRead(item: RssItem): Promise<MarkAsReadResponse>
@@ -30,7 +29,7 @@ interface API {
 }
 
 const { publicRuntimeConfig } = getConfig()
-console.log(publicRuntimeConfig.apiRoot)
+
 export const BackendAPI: API = {
     markAsRead(item: RssItem) {
         return fetch(
@@ -136,7 +135,7 @@ export function APIProvider({ children }: { children: any }) {
     const [apiCall, setAPICall] = useState<{
         api: () => any
         resolver: any
-    }>()
+    } | null>(null)
 
     const ContextAPI = {
         markAsRead(item: RssItem) {
@@ -254,6 +253,7 @@ export function APIProvider({ children }: { children: any }) {
                 setLoading(false)
                 console.log('End API Request')
             })
+        setAPICall(null)
     }, [apiCall])
 
     return <context.Provider value={ContextAPI}>{children}</context.Provider>
