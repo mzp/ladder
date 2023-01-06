@@ -65,6 +65,7 @@ export default function HalfModal() {
                 'transition',
                 'ease-in-out',
                 'duration-200',
+                'z-30',
                 halfModal ? 'translate-x-0' : 'translate-x-full'
             )}
         >
