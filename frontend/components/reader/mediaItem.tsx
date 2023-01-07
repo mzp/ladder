@@ -1,9 +1,9 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 import classNames from 'classnames'
 import { RssItem } from '@/api/types'
-import APIContext from '@/api/context'
 import ReaderContext from '@/components/reader/readerContext'
 import ItemDetail from '@/components/reader/itemDetail'
+import APIContext from '@/api/context'
 
 interface Props {
     item: RssItem
@@ -12,7 +12,26 @@ interface Props {
 }
 
 export default function MediaSummary({ item, className }: Props) {
-    const { showUnread, openHalfModal } = useContext(ReaderContext)
+    const { openHalfModal, showUnread, setUnreadCount } =
+        useContext(ReaderContext)
+    const { markAsRead } = useContext(APIContext)
+    const Link = (props: any) => {
+        return (
+            <a
+                href={item.url}
+                target="_blank"
+                rel="noreferrer"
+                onClick={() =>
+                    markAsRead(item).then(({ unreadCount }) => {
+                        setUnreadCount(unreadCount)
+                    })
+                }
+                {...props}
+            >
+                {props.children}
+            </a>
+        )
+    }
 
     const readClassName = showUnread ? '' : 'hidden'
     const readTitleClassName = showUnread ? 'opacity-30' : ''
