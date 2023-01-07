@@ -13,7 +13,7 @@ module RssChannelResponse
 
   def as_json(options = {})
     super(options.merge(
-      only: %i[id url description category_id],
+      only: %i[id url description category_id]
     )).merge(
       items: items_for_response,
       isImageMedia: image_media,

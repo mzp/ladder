@@ -15,6 +15,7 @@ class FetchFeedJob < ApplicationJob
 
     def attributes
       result = {
+        url: item.link,
         original_description: item.description,
         original_content: item.try(:content_encoded),
         content: item.try(:content_encoded),
@@ -24,7 +25,7 @@ class FetchFeedJob < ApplicationJob
         published_at: item.date || Time.zone.now,
         hatena_bookmark_count: item.try(:hatena_bookmarkcount).to_i
       }
-      %i[parse_html scrub ogp_image].reduce(result) do |arg, name|
+      %i[parse_html scrub ogp_image twitter].reduce(result) do |arg, name|
         send name, arg
       end
     end
@@ -89,6 +90,7 @@ class FetchFeedJob < ApplicationJob
 
     def ogp_image(item)
       return item if item[:imageurl]
+
       if record
         item.merge(imageurl: record.imageurl)
       else
@@ -103,7 +105,23 @@ class FetchFeedJob < ApplicationJob
     rescue StandardError
       item
     end
+
+    def twitter(attributes)
+      return attributes if attributes[:url] !~ %r{^https://twitter\.com}
+
+      if record
+        attributes.merge(content: record.content)
+      else
+
+        remote_content = fetch.call("https://publish.twitter.com/oembed?url=#{attributes[:url]}")
+
+        html = JSON.parse(remote_content)['html']
+
+        attributes.merge(content: html)
+      end
+    end
   end
+
   queue_as :default
 
   def perform(url, user_id)

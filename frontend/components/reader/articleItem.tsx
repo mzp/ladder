@@ -4,6 +4,7 @@ import { RssItem } from '@/api/types'
 import ReaderContext from '@/components/reader/readerContext'
 import APIContext from '@/api/context'
 import useKeyBind from '@/components/hook/useKeyBind'
+import ItemDetail from '@/components/reader/itemDetail'
 
 interface Props {
     item: RssItem
@@ -55,29 +56,7 @@ export default function ArticleItem({ item, className, enableKeyBind }: Props) {
     const handleOpenDetail = () => {
         if (item.content) {
             console.log(`open detail page: ${item.title}`)
-            openHalfModal(
-                <div>
-                    <h3 className="text-2xl font-bold">
-                        <Link>{item.title}</Link>
-                    </h3>
-                    <div className="text-sm text-slate-400 dark:text-slate-200">
-                        <div className="md:flex md:space-x-4">
-                            <div>{item.date}</div>
-                            <div>
-                                <Link>{item.url}</Link>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="h-screen overflow-scroll mt-2">
-                        <div
-                            className="text-gray-600 dark:text-gray-200 mr-10"
-                            dangerouslySetInnerHTML={{
-                                __html: item.content,
-                            }}
-                        />
-                    </div>
-                </div>
-            )
+            openHalfModal(<ItemDetail item={item} />)
         }
     }
 

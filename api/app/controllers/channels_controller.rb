@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'rss'
 
 class ChannelsController < ApplicationController
@@ -65,10 +66,12 @@ class ChannelsController < ApplicationController
 
   class << self
     def discover(content, base_url)
-      rss = RSS::Parser.parse(content, false) rescue nil
-      if rss
-        return [base_url]
+      rss = begin
+        RSS::Parser.parse(content, false)
+      rescue StandardError
+        nil
       end
+      return [base_url] if rss
 
       # discover from link tag
       html = Nokogiri::HTML(content)
