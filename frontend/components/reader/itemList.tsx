@@ -39,6 +39,7 @@ export default function ItemList(props: Props) {
                     scrollTop < item.offsetTop + item.offsetHeight
             )
             const activeItem = items[index]
+            console.log(['active', activeItem])
             if (offset == 0) {
                 return activeItem
             } else if (offset < 0) {
@@ -62,7 +63,7 @@ export default function ItemList(props: Props) {
                 action: () => {
                     console.log('keybind: move next item')
                     const targetItem = activeItem(1)
-                    console.log(targetItem)
+                    console.log(['target', targetItem])
                     if (targetItem) {
                         targetItem.scrollIntoView({ behavior: 'smooth' })
                     }
@@ -85,6 +86,7 @@ export default function ItemList(props: Props) {
 
     function handleLoadMore(lastItem: RssItem | null) {
         const oldestID = lastItem ? lastItem.id : undefined
+        console.log(`load before ${oldestID}`)
         api.channel(channelID, oldestID).then((channel) => {
             if (lastItem) {
                 // avoid race condition(?)
@@ -165,15 +167,14 @@ export default function ItemList(props: Props) {
                             props.channel.isImageMedia && 'max-w-xl'
                         )}
                         onIntersect={() => {
-                            if (item.readAt == null) {
+                            if (index >= prefetchThreshold) {
+                                console.log('prefetch items')
+                                handleLoadMore(items[items.length - 1])
+                            } else if (item.readAt == null) {
                                 console.log(`markAsRead: ${item.title}`)
                                 api.markAsRead(item).then(({ unreadCount }) => {
                                     setUnreadCount(unreadCount)
                                 })
-                            }
-                            if (index == prefetchThreshold) {
-                                console.log('prefetch items')
-                                handleLoadMore(items[items.length - 1])
                             }
                         }}
                     >
