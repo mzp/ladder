@@ -20,6 +20,7 @@ export interface RssChannel {
     items: RssItem[]
     category_id: string
     isImageMedia: boolean
+    page: number
 }
 
 export interface ChannelOption {

@@ -1,9 +1,8 @@
-import { useContext, useState, useEffect, useRef } from 'react'
+import { useContext, useState, useEffect, useRef, RefObject } from 'react'
 import classNames from 'classnames'
 import { RssChannel, RssItem } from '@/api/types'
 import APIContext from '@/api/context'
 import ReaderContext from '@/components/reader/readerContext'
-import Intersection from '@/components/intersection'
 import ArticleItem from '@/components/reader/articleItem'
 import MediaItem from '@/components/reader/mediaItem'
 import useKeyBind from '@/components/hook/useKeyBind'
@@ -14,46 +13,67 @@ interface Props {
     height?: string
 }
 
-export default function ItemList(props: Props) {
-    const channelID = props.channel.id
-    const [itemData, setItemData] = useState<{ [key: string]: RssItem[] }>({
-        [channelID]: props.items,
-    })
-    const { setUnreadCount } = useContext(ReaderContext)
-    const [canMarkAsRead, setCanMarkAsRead] = useState<boolean>(false)
-    const api = useContext(APIContext)
-    const ref = useRef<HTMLDivElement>(null)
-    const [activeItemID, setActiveItemID] = useState<string | null>(
-        props.items[0]?.id
-    )
+function useIntersect(
+    action: (args: any[]) => void,
+    ref: RefObject<HTMLDivElement>,
+    argumentClass: string,
+    dependant: unknown[]
+) {
+    useEffect(() => {
+        if (ref.current === null) return
 
-    const activeItem = (offset: number) => {
+        const observer = new IntersectionObserver(
+            (elements) => {
+                let items = []
+                for (const element of elements) {
+                    if (element.isIntersecting) {
+                        const json =
+                            element.target.attributes.getNamedItem(
+                                argumentClass
+                            )?.value
+                        if (json) {
+                            items.push(JSON.parse(json))
+                        }
+                    }
+                }
+                if (items.length) {
+                    action(items)
+                }
+            },
+            { threshold: 0.8, root: ref.current }
+        )
+
+        for (const element of Array.from(
+            ref.current.querySelectorAll('.ladder-item')
+        )) {
+            observer.observe(element)
+        }
+        const { current } = ref
+
+        return () => {
+            observer.unobserve(current)
+        }
+    }, dependant)
+}
+
+function useNavigation(
+    ref: RefObject<HTMLDivElement>,
+    className: string,
+    dependant: unknown[]
+) {
+    const activeItem = (
+        f: (element: HTMLElement, scrollTop: number) => boolean
+    ) => {
         if (ref.current) {
-            const items: any[] = Array.from(
-                ref.current.querySelectorAll('.ladder-item')
+            const elements: any[] = Array.from(
+                ref.current.querySelectorAll(className)
             )
             const scrollTop = ref.current.scrollTop
-            const index = items.findIndex(
-                (item) =>
-                    item.offsetTop <= scrollTop &&
-                    scrollTop < item.offsetTop + item.offsetHeight
-            )
-            const activeItem = items[index]
-            if (offset == 0) {
-                return activeItem
-            } else if (offset < 0) {
-                return items
-                    .slice(0, index + offset + 1)
-                    .reverse()
-                    .find((item) => item.offsetTop < activeItem.offsetTop)
-            } else {
-                return items
-                    .slice(index + offset)
-                    .find((item) => item.offsetTop > activeItem.offsetTop)
-            }
+            return elements.filter((element) => f(element, scrollTop)) || []
+        } else {
+            return []
         }
     }
-
     useKeyBind(
         [
             {
@@ -61,8 +81,9 @@ export default function ItemList(props: Props) {
                 ctrlKey: false,
                 action: () => {
                     console.log('keybind: move next item')
-                    const targetItem = activeItem(1)
-                    console.log(targetItem)
+                    const targetItem = activeItem((element, scrollTop) => {
+                        return scrollTop < element.offsetTop
+                    })[0]
                     if (targetItem) {
                         targetItem.scrollIntoView({ behavior: 'smooth' })
                     }
@@ -73,43 +94,88 @@ export default function ItemList(props: Props) {
                 ctrlKey: false,
                 action: () => {
                     console.log('keybind: move previous item')
-                    const targetItem = activeItem(-1)
-                    if (targetItem) {
-                        targetItem.scrollIntoView({ behavior: 'smooth' })
+                    const targetItem = activeItem(
+                        (element, scrollTop) => element.offsetTop < scrollTop
+                    )
+                    if (targetItem.length) {
+                        targetItem
+                            .reverse()[0]
+                            .scrollIntoView({ behavior: 'smooth' })
                     }
                 },
             },
         ],
-        [props.channel]
+        dependant
     )
+}
 
-    function handleLoadMore(lastItem: RssItem | null) {
-        const oldestID = lastItem ? lastItem.id : undefined
-        api.channel(channelID, oldestID).then((channel) => {
-            if (lastItem) {
-                // avoid race condition(?)
-                const newItems = [...itemData[channel.id], ...channel.items]
-                setItemData({ ...itemData, [channel.id]: newItems })
-            } else {
-                setItemData({ [channel.id]: channel.items })
-            }
-        })
-    }
+export default function ItemList({ channel, className }: Props) {
+    const ref = useRef<HTMLDivElement>(null)
+    const [items, setItems] = useState<RssItem[]>([])
+    const [currentPage, setCurrentPage] = useState<number>(0)
+    const [canMarkAsRead, setCanMarkAsRead] = useState<boolean>(false)
+    const [page, setPage] = useState<number>(0)
+    const [activeItemID, setActiveItemID] = useState<
+        string /* RssItem#id */ | null
+    >(null)
+
+    const { channel: fetchChannel, markAsRead } = useContext(APIContext)
+    const { setUnreadCount } = useContext(ReaderContext)
 
     useEffect(() => {
-        console.log('Disable unread management')
-        setCanMarkAsRead(false)
-        setItemData({ [props.channel.id]: props.channel.items })
-        if (items.length == 0) {
-            console.log(
-                `${__filename}: initial load for ${props.channel.title}`
-            )
-            handleLoadMore(null)
-        }
-    }, [props.channel])
+        console.log(`initialize with: ${channel.title}`)
+        fetchChannel(channel.id, 0).then((newChannel) => {
+            setItems(newChannel.items)
+            setCurrentPage(newChannel.page)
+            setPage(0)
+            setCanMarkAsRead(false)
+            ref.current?.scrollTo(0, 0)
+        })
+    }, [channel])
 
-    const items = itemData[channelID] || []
+    useEffect(() => {
+        if (page <= currentPage) {
+            return
+        }
+        console.log(`pagination: ${channel.title} #${page}`)
+        fetchChannel(channel.id, page).then((newChannel) => {
+            setCurrentPage(newChannel.page)
+            setItems([...items, ...newChannel.items])
+            console.log(newChannel)
+        })
+    }, [page])
+
     const prefetchThreshold = Math.max(items.length - 3, 0)
+
+    useIntersect(
+        (items) => {
+            if (items.length) {
+                const [item, index] = items[items.length - 1]
+
+                const handleLoadMore = () => {
+                    if (index > prefetchThreshold) {
+                        console.log(`request #${currentPage + 1}`)
+                        setPage(currentPage + 1)
+                    }
+                }
+
+                if (item.readAt == null && canMarkAsRead) {
+                    markAsRead(item).then(({ unreadCount }) => {
+                        setUnreadCount(unreadCount)
+                        handleLoadMore()
+                    })
+                } else {
+                    handleLoadMore()
+                }
+            }
+        },
+        ref,
+        'data-item',
+        [items, canMarkAsRead]
+    )
+
+    useNavigation(ref, '.ladder-item', [channel])
+
     return (
         <div
             className={classNames(
@@ -117,31 +183,38 @@ export default function ItemList(props: Props) {
                 'snap-y',
                 'snap-mandatory',
                 'relative',
-                props.channel.isImageMedia && classNames('w-full'),
-                props.className && props.className
+                channel.isImageMedia && classNames('w-full'),
+                className && className
             )}
             ref={ref}
             onScroll={() => {
-                if (
-                    !canMarkAsRead &&
-                    ref.current &&
-                    ref.current.scrollTop > 200
-                ) {
-                    console.log(ref.current.scrollTop)
-                    console.log('Scroll detected: enable unread management')
-                    setCanMarkAsRead(true)
+                if (!ref.current) {
+                    return
                 }
 
-                const id = activeItem(0)?.attributes['data-id']?.value
-                if (id && activeItemID != id) {
-                    console.log(`active item: ${id}`)
-                    setActiveItemID(id)
+                const elements: any[] = Array.from(
+                    ref.current.querySelectorAll('.ladder-item')
+                )
+                const scrollTop = ref.current.scrollTop
+                const activeElement = elements.find(
+                    (element) => scrollTop <= element.offsetTop
+                )
+                const json =
+                    activeElement?.attributes?.getNamedItem('data-item')?.value
+                if (json) {
+                    const [item, index] = JSON.parse(json)
+                    console.log(item.title)
+                    setActiveItemID(item.id)
+                }
+
+                if (scrollTop > 150) {
+                    setCanMarkAsRead(true)
                 }
             }}
         >
             <div
                 className={
-                    props.channel.isImageMedia
+                    channel.isImageMedia
                         ? classNames(
                               'md:grid',
                               'md:grid-flow-row-dense',
@@ -153,44 +226,28 @@ export default function ItemList(props: Props) {
                 }
             >
                 {items.map((item, index) => (
-                    <Intersection
-                        enabled={
-                            (canMarkAsRead && item.readAt == null) ||
-                            index == prefetchThreshold
-                        }
+                    <div
                         key={item.id}
                         className={classNames(
                             'snap-start',
                             'px-4',
-                            props.channel.isImageMedia && 'max-w-xl'
+                            channel.isImageMedia && 'max-w-xl',
+                            'ladder-item'
                         )}
-                        onIntersect={() => {
-                            if (item.readAt == null) {
-                                console.log(`markAsRead: ${item.title}`)
-                                api.markAsRead(item).then(({ unreadCount }) => {
-                                    setUnreadCount(unreadCount)
-                                })
-                            }
-                            if (index == prefetchThreshold) {
-                                console.log('prefetch items')
-                                handleLoadMore(items[items.length - 1])
-                            }
-                        }}
+                        data-item={JSON.stringify([item, index])}
                     >
-                        {props.channel.isImageMedia ? (
+                        {channel.isImageMedia ? (
                             <MediaItem
-                                className="ladder-item"
                                 item={item}
-                                enableKeyBind={item.id == activeItemID}
+                                enableKeyBind={activeItemID == item.id}
                             />
                         ) : (
                             <ArticleItem
-                                className="ladder-item"
                                 item={item}
-                                enableKeyBind={item.id == activeItemID}
+                                enableKeyBind={activeItemID == item.id}
                             />
                         )}
-                    </Intersection>
+                    </div>
                 ))}
             </div>
         </div>

@@ -23,25 +23,22 @@ module RssChannelResponse
   end
 
   module WithLatestItem
-    attr_accessor :upto
+    attr_accessor :page
+
+    def page_size
+      image_media ? 5 : 10
+    end
 
     def items_for_response
-      if upto
-        target = RssItem.find(upto)
-        if target.read?
-          offset = items.read.proceeding(target).count
-          result = items.read.offset(offset)
-        else
-          offset = items.unread.proceeding(target).count
-          result = items.latest.offset(offset)
-        end
-      else
-        result = items.latest
-      end
-
-      result.limit(image_media ? 5 : 10).each do |item|
+      latest = items.latest.offset(page.to_i * page_size).limit(page_size)
+      latest.each do |item|
         item.extend RssItemResponse
       end
+      latest
+    end
+
+    def as_json(options = {})
+      super(options).merge(page: page.to_i)
     end
   end
 end

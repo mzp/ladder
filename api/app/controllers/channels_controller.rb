@@ -19,7 +19,7 @@ class ChannelsController < ApplicationController
     channel.extend RssChannelResponse
     channel.extend RssChannelResponse::WithLatestItem
 
-    channel.upto = params[:upto] if params[:upto].present?
+    channel.page = params[:page] if params[:page].present?
     render json: channel
   end
 
