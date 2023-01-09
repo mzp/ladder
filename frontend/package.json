@@ -19,7 +19,6 @@
         "eslint": "8.30.0",
         "eslint-config-next": "13.1.1",
         "next": "13.1.1",
-        "postcss-100vh-fix": "^1.0.2",
         "postcss-nested": "^6.0.0",
         "react": "18.2.0",
         "react-dom": "18.2.0",
@@ -27,7 +26,9 @@
     },
     "devDependencies": {
         "autoprefixer": "^10.4.13",
-        "postcss": "^8.4.20",
+        "postcss": "^8.4.21",
+        "postcss-100vh-fix": "^1.0.2",
+        "postcss-nesting": "^10.2.0",
         "prettier": "2.8.1",
         "tailwindcss": "^3.2.4"
     }
