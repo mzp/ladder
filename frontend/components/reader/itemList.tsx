@@ -140,7 +140,11 @@ export default function ItemList({ channel, className }: Props) {
         console.log(`pagination: ${channel.title} #${page}`)
         fetchChannel(channel.id, page).then((newChannel) => {
             setCurrentPage(newChannel.page)
-            setItems([...items, ...newChannel.items])
+            setItems(items => {
+                const ids = items.map((item)=>item.id)
+                const newItems = newChannel.items.filter(({id})=> !ids.includes(id))
+                return [...items, ...newItems]
+            })
             console.log(newChannel)
         })
     }, [page])
@@ -203,7 +207,6 @@ export default function ItemList({ channel, className }: Props) {
                     activeElement?.attributes?.getNamedItem('data-item')?.value
                 if (json) {
                     const [item, index] = JSON.parse(json)
-                    console.log(item.title)
                     setActiveItemID(item.id)
                 }
 
