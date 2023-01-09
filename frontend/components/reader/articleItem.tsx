@@ -69,16 +69,27 @@ export default function ArticleItem({ item, className, enableKeyBind }: Props) {
                 item.readAt ? readClassName : '',
                 'py-2',
                 'max-w-4xl',
-                'mx-auto'
+                'mx-auto',
+                'border-b-[1px]'
             )}
             data-id={item.id}
         >
-            <h2 className="font-bold">
+            <h2 className={classNames('font-bold', 'text-lg')}>
                 <Link>{item.title}</Link>
             </h2>
+            <Link className="text-xs text-gray-600 flex dark:text-gray-400 space-x-4 font-light">
+                <div>{item.date}</div>
+                <div>{item.site}</div>
+                {item.hatenaBookmarkCount > 0 && (
+                    <div>
+                        {item.hatenaBookmarkCount}
+                        users
+                    </div>
+                )}
+            </Link>
             <div className="md:flex space-x-4 my-2 leading-6">
                 <div
-                    className="text-gray-600 flex-auto dark:text-gray-400"
+                    className="text-gray-600 flex-auto dark:text-gray-400 content"
                     data-prevent-menu-close="true"
                     onClick={item.content ? handleOpenDetail : undefined}
                     dangerouslySetInnerHTML={{ __html: item.description }}
@@ -103,17 +114,6 @@ export default function ArticleItem({ item, className, enableKeyBind }: Props) {
                     </div>
                 )}
             </div>
-
-            <Link className="border-t-[1px] text-xs text-gray-600 flex dark:text-gray-400 space-x-4 font-light">
-                <div>{item.date}</div>
-                <div>{item.site}</div>
-                {item.hatenaBookmarkCount > 0 && (
-                    <div>
-                        {item.hatenaBookmarkCount}
-                        users
-                    </div>
-                )}
-            </Link>
         </div>
     )
 }

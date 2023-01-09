@@ -185,7 +185,6 @@ export default function ItemList({ channel, className }: Props) {
             className={classNames(
                 'overflow-scroll',
                 'snap-y',
-                'snap-mandatory',
                 'relative',
                 channel.isImageMedia && classNames('w-full'),
                 className && className
