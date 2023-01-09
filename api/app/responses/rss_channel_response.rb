@@ -23,14 +23,14 @@ module RssChannelResponse
   end
 
   module WithLatestItem
-    attr_accessor :page
+    attr_accessor :page, :date
 
     def page_size
       image_media ? 5 : 10
     end
 
     def items_for_response
-      latest = items.latest.offset(page.to_i * page_size).limit(page_size)
+      latest = items.latest(date).offset(page.to_i * page_size).limit(page_size)
       latest.each do |item|
         item.extend RssItemResponse
       end

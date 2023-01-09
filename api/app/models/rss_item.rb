@@ -6,8 +6,18 @@ class RssItem < ApplicationRecord
   scope :unread, -> { where(read_at: nil).order(published_at: :desc, id: :asc) }
   scope :read,   -> { where.not(read_at: nil).order(published_at: :desc, id: :asc) }
   scope :latest,
-        lambda {
-          order(Arel.sql('CASE WHEN read_at IS NULL THEN 0 ELSE 1 END, published_at DESC, id ASC'))
+        lambda { |date = nil|
+          if date.nil?
+            order(Arel.sql('CASE WHEN read_at IS NULL THEN 0 ELSE 1 END, published_at DESC, id ASC'))
+          else
+            order(Arel.sql(<<~SQL.squish))
+              CASE
+              WHEN '#{date.iso8601}' < read_at THEN 0#{' '}
+              WHEN read_at IS NULL THEN 0#{' '}
+              ELSE 1
+              END, published_at DESC, id ASC
+            SQL
+          end
         }
 
   scope :proceeding,

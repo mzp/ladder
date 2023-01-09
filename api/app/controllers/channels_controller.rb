@@ -20,6 +20,7 @@ class ChannelsController < ApplicationController
     channel.extend RssChannelResponse::WithLatestItem
 
     channel.page = params[:page] if params[:page].present?
+    channel.date = Time.zone.parse(params[:date])
     render json: channel
   end
 

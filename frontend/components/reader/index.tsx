@@ -246,15 +246,17 @@ export default function Reader() {
                         'bg-white',
                         'dark:border-slate-700',
                         'dark:bg-black',
-                        'z-10',
+                        'z-30',
                         'fixed',
                         'md:relative',
                         showChannelList ? 'translate-x-0' : '-translate-x-full',
                         'md:translate-x-0',
-                        'z-40'
+                        'flex',
+                        'flex-col',
+                        'h-screen',
                     )}
                 >
-                    <Toolbar className="h-8">
+                    <Toolbar className={classNames("h-8",'flex-nose')}>
                         <DropMenu icon={<Cog />} width={150}>
                             <Link
                                 className="hover:text-sky-400"
@@ -273,7 +275,7 @@ export default function Reader() {
                             <Xmark />
                         </button>
                     </Toolbar>
-                    <div className="flex space-x-1 h-8">
+                    <div className={classNames('flex','space-x-1','h-8','flex-none')}>
                         <button
                             className="hover:text-sky-400"
                             onClick={() =>
@@ -309,7 +311,6 @@ export default function Reader() {
                         <ChannelList
                             className="overflow-scroll snap-y"
                             categories={categories}
-                            style={{ height: 'calc(100vh - 4rem)' }}
                             onSelect={(channel) => {
                                 setShowChannelList(false)
                                 setSelected(channel)

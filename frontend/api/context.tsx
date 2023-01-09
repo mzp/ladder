@@ -12,11 +12,11 @@ import {
 import getConfig from 'next/config'
 
 interface API {
-    markAsRead(item: RssItem): Promise<MarkAsReadResponse>
+    markAsRead(id: RssItem): Promise<MarkAsReadResponse>
     markAllAsRead(channel: RssChannel): Promise<{ unreadCount: UnreadCount }>
     channels(): Promise<ChannelsResponse>
     items(id?: string): Promise<ItemsResponse>
-    channel(id: string, page: number): Promise<RssChannel>
+    channel(id: string, page: number, date: Date): Promise<RssChannel>
     newChannel(url: string): Promise<{ urls: string[] }>
     createChannel(url: string): Promise<RssChannel[]>
     removeChannel(id: string): Promise<RssChannel[]>
@@ -57,10 +57,13 @@ export const BackendAPI: API = {
             credentials: 'include',
         }).then((res) => res.json())
     },
-    channel(id: string, page: number) {
-        return fetch(`${apiRoot}/channels/${id}?page=${page}`, {
-            credentials: 'include',
-        }).then((res) => res.json())
+    channel(id: string, page: number, date: Date) {
+        return fetch(
+            `${apiRoot}/channels/${id}?page=${page}&date=${date.toISOString()}`,
+            {
+                credentials: 'include',
+            }
+        ).then((res) => res.json())
     },
     updateChannel(id: string, option: ChannelOption) {
         return fetch(`${apiRoot}/channels/${id}`, {
@@ -127,141 +130,183 @@ export default context
 
 export function APIProvider({ children }: { children: any }) {
     const [isLoading, setLoading] = useState<boolean>(false)
-    const [apiCall, setAPICall] = useState<{
-        api: Function
-        args: any[]
-        resolver: any
-    } | null>(null)
+    const [apiCalls, setAPICalls] = useState<
+        {
+            api: Function
+            args: any[]
+            resolver: any
+        }[]
+    >([])
 
     const ContextAPI = {
         markAsRead(item: RssItem) {
             return new Promise<MarkAsReadResponse>((resolver) => {
-                setAPICall({
-                    resolver,
-                    api: BackendAPI.markAsRead,
-                    args: [item],
-                })
+                setAPICalls((calls) => [
+                    ...calls,
+                    {
+                        resolver,
+                        api: BackendAPI.markAsRead,
+                        args: [item],
+                    },
+                ])
             })
         },
         markAllAsRead(channel: RssChannel) {
             return new Promise<{ unreadCount: UnreadCount }>((resolver) => {
-                setAPICall({
-                    resolver,
-                    api: BackendAPI.markAllAsRead,
-                    args: [channel],
-                })
+                setAPICalls((calls) => [
+                    ...calls,
+                    {
+                        resolver,
+                        api: BackendAPI.markAllAsRead,
+                        args: [channel],
+                    },
+                ])
             })
         },
         channels() {
             return new Promise<ChannelsResponse>((resolver) => {
-                setAPICall({ resolver, api: BackendAPI.channels, args: [] })
+                setAPICalls((calls) => [
+                    ...calls,
+                    { resolver, api: BackendAPI.channels, args: [] },
+                ])
             })
         },
         items(id: string) {
             return new Promise<ItemsResponse>((resolver) => {
-                setAPICall({ resolver, api: BackendAPI.items, args: [id] })
+                setAPICalls((calls) => [
+                    ...calls,
+                    { resolver, api: BackendAPI.items, args: [id] },
+                ])
             })
         },
-        channel(id: string, page: number) {
+        channel(id: string, page: number, date: Date) {
             return new Promise<RssChannel>((resolver) => {
-                setAPICall({
-                    resolver,
-                    api: BackendAPI.channel,
-                    args: [id, page],
-                })
+                setAPICalls((calls) => [
+                    ...calls,
+                    {
+                        resolver,
+                        api: BackendAPI.channel,
+                        args: [id, page, date],
+                    },
+                ])
             })
         },
         newChannel(url: string) {
             return new Promise<{ urls: string[] }>((resolver) => {
-                setAPICall({
-                    resolver,
-                    api: BackendAPI.newChannel,
-                    args: [url],
-                })
+                setAPICalls((calls) => [
+                    ...calls,
+                    {
+                        resolver,
+                        api: BackendAPI.newChannel,
+                        args: [url],
+                    },
+                ])
             })
         },
         createChannel(url: string) {
             return new Promise<RssChannel[]>((resolver) => {
-                setAPICall({
-                    resolver,
-                    api: BackendAPI.createChannel,
-                    args: [url],
-                })
+                setAPICalls((calls) => [
+                    ...calls,
+                    {
+                        resolver,
+                        api: BackendAPI.createChannel,
+                        args: [url],
+                    },
+                ])
             })
         },
         removeChannel(id: string) {
             return new Promise<RssChannel[]>((resolver) => {
-                setAPICall({
-                    resolver,
-                    api: BackendAPI.removeChannel,
-                    args: [id],
-                })
+                setAPICalls((calls) => [
+                    ...calls,
+                    {
+                        resolver,
+                        api: BackendAPI.removeChannel,
+                        args: [id],
+                    },
+                ])
             })
         },
         updateChannel(id: string, option: ChannelOption) {
             return new Promise<RssChannel[]>((resolver) => {
-                setAPICall({
-                    resolver,
-                    api: BackendAPI.updateChannel,
-                    args: [id, option],
-                })
+                setAPICalls((calls) => [
+                    ...calls,
+                    {
+                        resolver,
+                        api: BackendAPI.updateChannel,
+                        args: [id, option],
+                    },
+                ])
             })
         },
         createCategory(title: string): Promise<Category[]> {
             return new Promise<Category[]>((resolver) => {
-                setAPICall({
-                    resolver,
-                    api: BackendAPI.createCategory,
-                    args: [title],
-                })
+                setAPICalls((calls) => [
+                    ...calls,
+                    {
+                        resolver,
+                        api: BackendAPI.createCategory,
+                        args: [title],
+                    },
+                ])
             })
         },
         updateCategory(id: string, title: string) {
             return new Promise<Category[]>((resolver) => {
-                setAPICall({
-                    resolver,
-                    api: BackendAPI.updateCategory,
-                    args: [id, title],
-                })
+                setAPICalls((calls) => [
+                    ...calls,
+                    {
+                        resolver,
+                        api: BackendAPI.updateCategory,
+                        args: [id, title],
+                    },
+                ])
             })
         },
         removeCategory(id: string) {
             return new Promise<Category[]>((resolver) => {
-                setAPICall({
-                    resolver,
-                    api: BackendAPI.removeCategory,
-                    args: [id],
-                })
+                setAPICalls((calls) => [
+                    ...calls,
+                    {
+                        resolver,
+                        api: BackendAPI.removeCategory,
+                        args: [id],
+                    },
+                ])
             })
         },
 
         categories() {
             return new Promise<Category[]>((resolver) => {
-                setAPICall({
-                    resolver,
-                    api: BackendAPI.categories,
-                    args: [],
-                })
+                setAPICalls((calls) => [
+                    ...calls,
+                    {
+                        resolver,
+                        api: BackendAPI.categories,
+                        args: [],
+                    },
+                ])
             })
         },
         isLoading,
     }
 
     useEffect(() => {
-        if (!apiCall) {
+        if (apiCalls.length == 0) {
             return
         }
-        const { resolver, api, args } = apiCall
         setLoading(true)
-        console.log(`Start API Request:${api.name}(${args})`)
-        api.apply(null, args)
-            .then(resolver)
-            .then(() => {
-                setLoading(false)
+        ;(async () => {
+            for (const { resolver, api, args } of apiCalls) {
+                console.log(`Start API Request:${api.name}(${args})`)
+                const result = await api.apply(null, args)
                 console.log(`End API Request:${api.name}(${args})`)
-            })
-        setAPICall(null)
-    }, [apiCall?.api, apiCall?.args])
+                resolver(result)
+            }
+            setLoading(false)
+            setAPICalls([])
+        })()
+    }, [apiCalls])
 
     return <context.Provider value={ContextAPI}>{children}</context.Provider>
 }

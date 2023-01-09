@@ -113,6 +113,7 @@ export default function ItemList({ channel, className }: Props) {
     const ref = useRef<HTMLDivElement>(null)
     const [items, setItems] = useState<RssItem[]>([])
     const [currentPage, setCurrentPage] = useState<number>(0)
+    const [baseDate, setBaseDate] = useState<Date>(new Date())
     const [canMarkAsRead, setCanMarkAsRead] = useState<boolean>(false)
     const [page, setPage] = useState<number>(0)
     const [activeItemID, setActiveItemID] = useState<
@@ -124,11 +125,12 @@ export default function ItemList({ channel, className }: Props) {
 
     useEffect(() => {
         console.log(`initialize with: ${channel.title}`)
-        fetchChannel(channel.id, 0).then((newChannel) => {
+        fetchChannel(channel.id, 0, baseDate).then((newChannel) => {
             setItems(newChannel.items)
             setCurrentPage(newChannel.page)
             setPage(0)
             setCanMarkAsRead(false)
+            setBaseDate(new Date())
             ref.current?.scrollTo(0, 0)
         })
     }, [channel])
@@ -138,9 +140,11 @@ export default function ItemList({ channel, className }: Props) {
             return
         }
         console.log(`pagination: ${channel.title} #${page}`)
-        fetchChannel(channel.id, page).then((newChannel) => {
+        fetchChannel(channel.id, page, baseDate).then((newChannel) => {
             setCurrentPage(newChannel.page)
-            setItems([...items, ...newChannel.items])
+            setItems((items) => {
+                return [...items, ...newChannel.items]
+            })
             console.log(newChannel)
         })
     }, [page])
@@ -203,7 +207,6 @@ export default function ItemList({ channel, className }: Props) {
                     activeElement?.attributes?.getNamedItem('data-item')?.value
                 if (json) {
                     const [item, index] = JSON.parse(json)
-                    console.log(item.title)
                     setActiveItemID(item.id)
                 }
 
