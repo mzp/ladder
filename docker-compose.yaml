@@ -28,7 +28,7 @@ services:
       dockerfile: Dockerfile.dev
     ports:
       - 3000:3000
-    command: bundle exec rails s -b 0.0.0.0 -P /tmp/server.pid
+    command: bash -c 'rm -f /tmp/server.pid && bundle exec rails s -b 0.0.0.0 -P /tmp/server.pid'
     volumes:
       - ./api:/app
       - bundle:/usr/local/bundle

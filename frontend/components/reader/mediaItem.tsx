@@ -22,7 +22,7 @@ export default function MediaSummary({ item, className }: Props) {
                 target="_blank"
                 rel="noreferrer"
                 onClick={() =>
-                    markAsRead(item).then(({ unreadCount }) => {
+                    markAsRead(item.id).then(({ unreadCount }) => {
                         setUnreadCount(unreadCount)
                     })
                 }

@@ -201,7 +201,11 @@ export default function Reader() {
                     const {
                         publicRuntimeConfig: { apiRoot },
                     } = getConfig()
-                    router.push(`${apiRoot}/login`)
+                    router.push(
+                        `${apiRoot}/login?return_to=${encodeURIComponent(
+                            location.href
+                        )}`
+                    )
                 }
                 if (categories) {
                     setCategories(categories)
@@ -253,10 +257,10 @@ export default function Reader() {
                         'md:translate-x-0',
                         'flex',
                         'flex-col',
-                        'h-screen',
+                        'h-screen'
                     )}
                 >
-                    <Toolbar className={classNames("h-8",'flex-nose')}>
+                    <Toolbar className={classNames('h-8', 'flex-nose')}>
                         <DropMenu icon={<Cog />} width={150}>
                             <Link
                                 className="hover:text-sky-400"
@@ -275,7 +279,14 @@ export default function Reader() {
                             <Xmark />
                         </button>
                     </Toolbar>
-                    <div className={classNames('flex','space-x-1','h-8','flex-none')}>
+                    <div
+                        className={classNames(
+                            'flex',
+                            'space-x-1',
+                            'h-8',
+                            'flex-none'
+                        )}
+                    >
                         <button
                             className="hover:text-sky-400"
                             onClick={() =>

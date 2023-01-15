@@ -125,12 +125,13 @@ export default function ItemList({ channel, className }: Props) {
 
     useEffect(() => {
         console.log(`initialize with: ${channel.title}`)
-        fetchChannel(channel.id, 0, baseDate).then((newChannel) => {
+        const newBaseDate = new Date()
+        fetchChannel(channel.id, 0, newBaseDate).then((newChannel) => {
             setItems(newChannel.items)
             setCurrentPage(newChannel.page)
             setPage(0)
             setCanMarkAsRead(false)
-            setBaseDate(new Date())
+            setBaseDate(newBaseDate)
             ref.current?.scrollTo(0, 0)
         })
     }, [channel])
@@ -164,7 +165,7 @@ export default function ItemList({ channel, className }: Props) {
                 }
 
                 if (item.readAt == null && canMarkAsRead) {
-                    markAsRead(item).then(({ unreadCount }) => {
+                    markAsRead(item.id).then(({ unreadCount }) => {
                         setUnreadCount(unreadCount)
                         handleLoadMore()
                     })

@@ -12,7 +12,7 @@ import {
 import getConfig from 'next/config'
 
 interface API {
-    markAsRead(id: RssItem): Promise<MarkAsReadResponse>
+    markAsRead(id: string): Promise<MarkAsReadResponse>
     markAllAsRead(channel: RssChannel): Promise<{ unreadCount: UnreadCount }>
     channels(): Promise<ChannelsResponse>
     items(id?: string): Promise<ItemsResponse>
@@ -35,8 +35,8 @@ const {
 console.log(`apiRoot: ${apiRoot}`)
 
 export const BackendAPI: API = {
-    markAsRead(item: RssItem) {
-        return fetch(`${apiRoot}/items/${item.id}/markAsRead`, {
+    markAsRead(id: string) {
+        return fetch(`${apiRoot}/items/${id}/markAsRead`, {
             method: 'POST',
             credentials: 'include',
         }).then((res) => res.json())
@@ -139,14 +139,14 @@ export function APIProvider({ children }: { children: any }) {
     >([])
 
     const ContextAPI = {
-        markAsRead(item: RssItem) {
+        markAsRead(id: string) {
             return new Promise<MarkAsReadResponse>((resolver) => {
                 setAPICalls((calls) => [
                     ...calls,
                     {
                         resolver,
                         api: BackendAPI.markAsRead,
-                        args: [item],
+                        args: [id],
                     },
                 ])
             })

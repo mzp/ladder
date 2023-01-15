@@ -28,7 +28,7 @@ export default function ItemDetail({ item }: Props) {
                 target="_blank"
                 rel="noreferrer"
                 onClick={() =>
-                    markAsRead(item).then(({ unreadCount }) => {
+                    markAsRead(item.id).then(({ unreadCount }) => {
                         setUnreadCount(unreadCount)
                     })
                 }
