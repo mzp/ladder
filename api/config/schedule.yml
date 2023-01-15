@@ -1,4 +1,4 @@
 update_all_feeds:
-  cron: "0 */4 * * *"
+  cron: "0 * * * *"
   class: "UpdateAllFeeds"
   queue: default
