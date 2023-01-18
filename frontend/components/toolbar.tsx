@@ -10,7 +10,7 @@ const {
 function Spin() {
     return (
         <svg
-            className="animate-spin h-3 w-3 text-black"
+            className="animate-spin h-3 w-3"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
@@ -51,7 +51,9 @@ export default function Toolbar({
                         Ultraladder {development ? '[dev]' : ''}
                     </Link>
                 </h1>
-                <div className="flex-auto">{isLoading && <Spin />}</div>
+                <div className="flex-auto  text-black dark:text-white">
+                    {<Spin />}
+                </div>
                 {children}
             </div>
         </div>
