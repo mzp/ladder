@@ -52,7 +52,7 @@ export default function Toolbar({
                     </Link>
                 </h1>
                 <div className="flex-auto  text-black dark:text-white">
-                    {<Spin />}
+                    {isLoading && <Spin />}
                 </div>
                 {children}
             </div>
