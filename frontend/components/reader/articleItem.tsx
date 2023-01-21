@@ -23,7 +23,7 @@ export default function ArticleItem({ item, className, enableKeyBind }: Props) {
                 target="_blank"
                 rel="noreferrer"
                 onClick={() =>
-                    markAsRead(item.id).then(({ unreadCount }) => {
+                    markAsRead([item.id]).then(({ unreadCount }) => {
                         setUnreadCount(unreadCount)
                     })
                 }
@@ -43,7 +43,7 @@ export default function ArticleItem({ item, className, enableKeyBind }: Props) {
                       action: () => {
                           console.log('keybind: open')
                           window.open(item.url)
-                          markAsRead(item.id).then(({ unreadCount }) => {
+                          markAsRead([item.id]).then(({ unreadCount }) => {
                               setUnreadCount(unreadCount)
                           })
                       },
