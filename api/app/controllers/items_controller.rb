@@ -29,20 +29,22 @@ class ItemsController < ApplicationController
   end
 
   def mark_as_read
-    item = current_user.items.find(params[:item_id])
+    items = current_user.items.where(id: params[:ids])
     read_at = Time.current
-    item.update!(read_at:)
+    items.update!(read_at:)
 
     # mark newer items as read
-    item.rss_channel.items
-        .unread
-        .where('? < published_at', item.published_at)
-        .update(read_at:)
+    item = items.last
+    item&.rss_channel
+        &.items
+        &.unread
+        &.where('? < published_at', item.published_at)
+        &.update(read_at:)
 
     # mark same url items as read
     current_user.items
                 .unread
-                .where(url: item.url)
+                .where(url: items.pluck(:url))
                 .update(read_at:)
     render json: { readAt: read_at, unreadCount: self.class.unread_count }
   end

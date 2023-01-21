@@ -12,7 +12,7 @@ import {
 import getConfig from 'next/config'
 
 interface API {
-    markAsRead(id: string): Promise<MarkAsReadResponse>
+    markAsRead(ids: string[]): Promise<MarkAsReadResponse>
     markAllAsRead(channel: RssChannel): Promise<{ unreadCount: UnreadCount }>
     channels(): Promise<ChannelsResponse>
     items(id?: string): Promise<ItemsResponse>
@@ -35,9 +35,11 @@ const {
 console.log(`apiRoot: ${apiRoot}`)
 
 export const BackendAPI: API = {
-    markAsRead(id: string) {
-        return fetch(`${apiRoot}/items/${id}/markAsRead`, {
+    markAsRead(ids: string[]) {
+        return fetch(`${apiRoot}/items/markAsRead`, {
             method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ids: ids }),
             credentials: 'include',
         }).then((res) => res.json())
     },
@@ -137,16 +139,15 @@ export function APIProvider({ children }: { children: any }) {
             resolver: any
         }[]
     >([])
-
     const ContextAPI = {
-        markAsRead(id: string) {
+        markAsRead(ids: string[]) {
             return new Promise<MarkAsReadResponse>((resolver) => {
                 setAPICalls((calls) => [
                     ...calls,
                     {
                         resolver,
                         api: BackendAPI.markAsRead,
-                        args: [id],
+                        args: [ids],
                     },
                 ])
             })
@@ -297,9 +298,9 @@ export function APIProvider({ children }: { children: any }) {
         }
         setLoading(true)
         ;(async () => {
-            console.log('Start API Request')
+            console.log(`Start API Request: ${apiCalls.length}`)
             for (const { resolver, api, args } of apiCalls) {
-                console.log(`Start API Request:${api.name}(${args})`)
+                console.log(`${api.name}(${args})`)
                 const result = await api.apply(null, args)
                 resolver(result)
             }

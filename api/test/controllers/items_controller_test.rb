@@ -68,7 +68,7 @@ class ItemsControllerUnreadCountTest < ActionDispatch::IntegrationTest
                                          url: 'http://example.com')
 
     login
-    post item_mark_as_read_url(@item.id)
+    post mark_as_read_items_url, params: { ids: [@item.id] }
     assert_response :success
   end
 

@@ -1,4 +1,11 @@
-import { useContext, useState, useEffect, useRef, RefObject } from 'react'
+import {
+    useContext,
+    useState,
+    useEffect,
+    useRef,
+    RefObject,
+    useDeferredValue,
+} from 'react'
 import classNames from 'classnames'
 import { RssChannel, RssItem } from '@/api/types'
 import APIContext from '@/api/context'
@@ -115,6 +122,8 @@ export default function ItemList({ channel, className }: Props) {
     const [currentPage, setCurrentPage] = useState<number>(0)
     const [baseDate, setBaseDate] = useState<Date>(new Date())
     const [canMarkAsRead, setCanMarkAsRead] = useState<boolean>(false)
+    const [readItems, setReadItems] = useState<string[]>([])
+    const deferredReadItems = useDeferredValue(readItems)
     const [page, setPage] = useState<number>(0)
     const [activeItemID, setActiveItemID] = useState<
         string /* RssItem#id */ | null
@@ -165,19 +174,21 @@ export default function ItemList({ channel, className }: Props) {
                 }
 
                 if (item.readAt == null && canMarkAsRead) {
-                    markAsRead(item.id).then(({ unreadCount }) => {
-                        setUnreadCount(unreadCount)
-                        handleLoadMore()
-                    })
-                } else {
-                    handleLoadMore()
+                    setReadItems((items) => [...items, item.id])
                 }
+                handleLoadMore()
             }
         },
         ref,
         'data-item',
         [items, canMarkAsRead]
     )
+    useEffect(() => {
+        console.log(deferredReadItems)
+        markAsRead(deferredReadItems).then(({ unreadCount }) => {
+            setUnreadCount(unreadCount)
+        })
+    }, [deferredReadItems])
 
     useNavigation(ref, '.ladder-item', [channel])
 

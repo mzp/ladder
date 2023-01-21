@@ -15,7 +15,9 @@ Rails.application.routes.draw do
   resources 'categories', only: %i[index create update destroy]
 
   resources 'items', only: %i[index] do
-    post 'markAsRead', to: 'items#mark_as_read', as: :mark_as_read
+    collection do 
+      post 'markAsRead', to: 'items#mark_as_read', as: :mark_as_read
+    end
   end
   mount Sidekiq::Web => '/sidekiq'
 end
