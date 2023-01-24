@@ -205,6 +205,9 @@ export default function ItemList({ channel, className }: Props) {
         [items, canMarkAsRead]
     )
     useEffect(() => {
+        if (deferredReadItems.length == 0) {
+            return
+        }
         console.log(deferredReadItems)
         markAsRead(deferredReadItems).then(({ unreadCount }) => {
             setUnreadCount(unreadCount)
