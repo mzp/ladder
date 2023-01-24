@@ -296,11 +296,11 @@ export function APIProvider({ children }: { children: any }) {
         if (apiCalls.length == 0) {
             return
         }
-        setLoading(true)
         ;(async () => {
             console.log(`Start API Request: ${apiCalls.length}`)
             for (const { resolver, api, args } of apiCalls) {
                 console.log(`${api.name}(${args})`)
+                setLoading(true)
                 const result = await api.apply(null, args)
                 resolver(result)
             }

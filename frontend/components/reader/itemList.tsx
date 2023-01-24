@@ -4,7 +4,7 @@ import {
     useEffect,
     useRef,
     RefObject,
-    useDeferredValue,
+    Dispatch,
 } from 'react'
 import classNames from 'classnames'
 import { RssChannel, RssItem } from '@/api/types'
@@ -18,6 +18,27 @@ interface Props {
     items: RssItem[]
     className?: string
     height?: string
+}
+
+function useDebounce<T>(value: T, delay: number): T {
+    // State and setters for debounced value
+    const [debouncedValue, setDebouncedValue] = useState(value)
+    useEffect(
+        () => {
+            // Update debounced value after delay
+            const handler = setTimeout(() => {
+                setDebouncedValue(value)
+            }, delay)
+            // Cancel the timeout if value changes (also on delay change or unmount)
+            // This is how we prevent debounced value from updating if value is changed ...
+            // .. within the delay period. Timeout gets cleared and restarted.
+            return () => {
+                clearTimeout(handler)
+            }
+        },
+        [value, delay] // Only re-call effect if value or delay changes
+    )
+    return debouncedValue
 }
 
 function useIntersect(
@@ -123,7 +144,7 @@ export default function ItemList({ channel, className }: Props) {
     const [baseDate, setBaseDate] = useState<Date>(new Date())
     const [canMarkAsRead, setCanMarkAsRead] = useState<boolean>(false)
     const [readItems, setReadItems] = useState<string[]>([])
-    const deferredReadItems = useDeferredValue(readItems)
+    const deferredReadItems = useDebounce(readItems, 1000)
     const [page, setPage] = useState<number>(0)
     const [activeItemID, setActiveItemID] = useState<
         string /* RssItem#id */ | null
@@ -187,6 +208,7 @@ export default function ItemList({ channel, className }: Props) {
         console.log(deferredReadItems)
         markAsRead(deferredReadItems).then(({ unreadCount }) => {
             setUnreadCount(unreadCount)
+            setReadItems([])
         })
     }, [deferredReadItems])
 
