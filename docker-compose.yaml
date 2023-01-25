@@ -38,6 +38,14 @@ services:
     environment:
       REDIS_URL: redis://redis:6379
       CODESPACE_NAME: ${CODESPACE_NAME}
+    deploy:
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: 512M
+        reservations:
+          cpus: "0.10"
+          memory: 128M
   db:
     image: postgres:14.3
     restart: always

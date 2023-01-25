@@ -20,20 +20,21 @@ interface Props {
     height?: string
 }
 
-function useDebounce<T>(value: T, delay: number): T {
+function useDebounce<T>(value: T[], delay: number): T[] {
     // State and setters for debounced value
     const [debouncedValue, setDebouncedValue] = useState(value)
     useEffect(
         () => {
-            // Update debounced value after delay
-            const handler = setTimeout(() => {
-                setDebouncedValue(value)
-            }, delay)
-            // Cancel the timeout if value changes (also on delay change or unmount)
-            // This is how we prevent debounced value from updating if value is changed ...
-            // .. within the delay period. Timeout gets cleared and restarted.
-            return () => {
-                clearTimeout(handler)
+            if (value.length != 0) {
+                const handler = setTimeout(() => {
+                    setDebouncedValue(value)
+                }, delay)
+                // Cancel the timeout if value changes (also on delay change or unmount)
+                // This is how we prevent debounced value from updating if value is changed ...
+                // .. within the delay period. Timeout gets cleared and restarted.
+                return () => {
+                    clearTimeout(handler)
+                }
             }
         },
         [value, delay] // Only re-call effect if value or delay changes
@@ -180,7 +181,10 @@ export default function ItemList({ channel, className }: Props) {
         })
     }, [page])
 
-    const prefetchThreshold = Math.max(items.length - 3, 0)
+    const prefetchThreshold = Math.max(
+        items.length - (channel.isImageMedia ? 2 : 8),
+        0
+    )
 
     useIntersect(
         (items) => {
@@ -206,6 +210,7 @@ export default function ItemList({ channel, className }: Props) {
     )
     useEffect(() => {
         if (deferredReadItems.length == 0) {
+            console.log('skip')
             return
         }
         console.log(deferredReadItems)

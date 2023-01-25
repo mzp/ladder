@@ -26,7 +26,7 @@ module RssChannelResponse
     attr_accessor :page, :date
 
     def page_size
-      image_media ? 5 : 10
+      image_media ? 6 : 15
     end
 
     def items_for_response
