@@ -145,7 +145,7 @@ export default function ItemList({ channel, className }: Props) {
     const [baseDate, setBaseDate] = useState<Date>(new Date())
     const [canMarkAsRead, setCanMarkAsRead] = useState<boolean>(false)
     const [readItems, setReadItems] = useState<string[]>([])
-    const deferredReadItems = useDebounce(readItems, 1000)
+    const deferredReadItems = useDebounce(readItems, 500)
     const [page, setPage] = useState<number>(0)
     const [activeItemID, setActiveItemID] = useState<
         string /* RssItem#id */ | null
