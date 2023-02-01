@@ -30,7 +30,7 @@ class ItemsController < ApplicationController
 
   def mark_as_read
     read_at = Time.current
-    items = current_user.items.unread.where(id: params[:ids])
+    items = current_user.items.where(id: params[:ids])
     items.update!(read_at:)
 
     # mark newer items as read
