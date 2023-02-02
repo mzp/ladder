@@ -216,8 +216,8 @@ export default function ItemList({ channel, className }: Props) {
         console.log(deferredReadItems)
         markAsRead(deferredReadItems).then(({ unreadCount }) => {
             setUnreadCount(unreadCount)
-            setReadItems([])
         })
+        setReadItems([])
     }, [deferredReadItems])
 
     useNavigation(ref, '.ladder-item', [channel])

@@ -31,21 +31,15 @@ class ItemsController < ApplicationController
   def mark_as_read
     read_at = Time.current
     items = current_user.items.where(id: params[:ids])
-    items.update!(read_at:)
-
-    # mark newer items as read
-    item = items.last
-    item&.rss_channel
-        &.items
-        &.unread
-        &.where('? < published_at', item.published_at)
-        &.update(read_at:)
-
-    # mark same url items as read
-    current_user.items
-                .unread
-                .where(url: items.pluck(:url))
-                .update(read_at:)
+    if !items.empty?
+      urls = items.pluck(:url)
+      item = items.last
+      current_user.items
+          .unread
+          .where('? < published_at AND rss_channel_id = ?', item.published_at, item.rss_channel_id)
+          .or(RssItem.where(url: urls))
+          .update(read_at:)
+    end
     render json: { readAt: read_at, unreadCount: self.class.unread_count }
   end
 
