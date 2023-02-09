@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_01_04_124308) do
+ActiveRecord::Schema[7.0].define(version: 2023_02_09_050728) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -53,7 +53,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_04_124308) do
     t.string "original_description"
     t.string "content"
     t.string "original_content"
+    t.index ["read_at"], name: "index_rss_items_on_read_at"
     t.index ["rss_channel_id"], name: "index_rss_items_on_rss_channel_id"
+    t.index ["url"], name: "index_rss_items_on_url"
   end
 
   create_table "users", force: :cascade do |t|
