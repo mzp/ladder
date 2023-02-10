@@ -20,28 +20,6 @@ interface Props {
     height?: string
 }
 
-function useDebounce<T>(value: T[], delay: number): T[] {
-    // State and setters for debounced value
-    const [debouncedValue, setDebouncedValue] = useState(value)
-    useEffect(
-        () => {
-            if (value.length != 0) {
-                const handler = setTimeout(() => {
-                    setDebouncedValue(value)
-                }, delay)
-                // Cancel the timeout if value changes (also on delay change or unmount)
-                // This is how we prevent debounced value from updating if value is changed ...
-                // .. within the delay period. Timeout gets cleared and restarted.
-                return () => {
-                    clearTimeout(handler)
-                }
-            }
-        },
-        [value, delay] // Only re-call effect if value or delay changes
-    )
-    return debouncedValue
-}
-
 function useIntersect(
     action: (args: any[]) => void,
     ref: RefObject<HTMLDivElement>,
@@ -143,9 +121,7 @@ export default function ItemList({ channel, className }: Props) {
     const [items, setItems] = useState<RssItem[]>([])
     const [currentPage, setCurrentPage] = useState<number>(0)
     const [baseDate, setBaseDate] = useState<Date>(new Date())
-    const [canMarkAsRead, setCanMarkAsRead] = useState<boolean>(false)
     const [readItems, setReadItems] = useState<string[]>([])
-    const deferredReadItems = useDebounce(readItems, 500)
     const [page, setPage] = useState<number>(0)
     const [activeItemID, setActiveItemID] = useState<
         string /* RssItem#id */ | null
@@ -161,7 +137,6 @@ export default function ItemList({ channel, className }: Props) {
             setItems(newChannel.items)
             setCurrentPage(newChannel.page)
             setPage(0)
-            setCanMarkAsRead(false)
             setBaseDate(newBaseDate)
             ref.current?.scrollTo(0, 0)
         })
@@ -177,7 +152,10 @@ export default function ItemList({ channel, className }: Props) {
             setItems((items) => {
                 return [...items, ...newChannel.items]
             })
-            console.log(newChannel)
+            markAsRead(readItems).then(({ unreadCount }) => {
+                setUnreadCount(unreadCount)
+            })
+            setReadItems([])
         })
     }, [page])
 
@@ -198,7 +176,7 @@ export default function ItemList({ channel, className }: Props) {
                     }
                 }
 
-                if (item.readAt == null && canMarkAsRead) {
+                if (item.readAt == null) {
                     setReadItems((items) => [...items, item.id])
                 }
                 handleLoadMore()
@@ -206,20 +184,8 @@ export default function ItemList({ channel, className }: Props) {
         },
         ref,
         'data-item',
-        [items, canMarkAsRead]
+        [items]
     )
-    useEffect(() => {
-        if (deferredReadItems.length == 0) {
-            console.log('skip')
-            return
-        }
-        console.log(deferredReadItems)
-        markAsRead(deferredReadItems).then(({ unreadCount }) => {
-            setUnreadCount(unreadCount)
-        })
-        setReadItems([])
-    }, [deferredReadItems])
-
     useNavigation(ref, '.ladder-item', [channel])
 
     return (
@@ -249,10 +215,6 @@ export default function ItemList({ channel, className }: Props) {
                 if (json) {
                     const [item, index] = JSON.parse(json)
                     setActiveItemID(item.id)
-                }
-
-                if (scrollTop > 150) {
-                    setCanMarkAsRead(true)
                 }
             }}
         >
