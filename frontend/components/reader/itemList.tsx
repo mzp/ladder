@@ -139,6 +139,11 @@ export default function ItemList({ channel, className }: Props) {
             setPage(0)
             setBaseDate(newBaseDate)
             ref.current?.scrollTo(0, 0)
+
+            markAsRead(readItems).then(({ unreadCount }) => {
+                setUnreadCount(unreadCount)
+            })
+            setReadItems([])
         })
     }, [channel])
 
